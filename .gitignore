@@ -116,6 +116,8 @@ target/
 
 # Package Files
 *.jar
+# for spring maven wrapper
+!**/maven-wrapper.jar
 *.war
 *.nar
 *.ear
