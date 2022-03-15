@@ -1,4 +1,4 @@
-package ch.bbbaden.m151.wheeloffortune.dto;
+package ch.bbbaden.m151.wheeloffortune.auth.api;
 
 import lombok.*;
 

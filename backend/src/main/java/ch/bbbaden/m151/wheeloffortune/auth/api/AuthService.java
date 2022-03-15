@@ -5,9 +5,11 @@ import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenDTO;
 import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenService;
 import ch.bbbaden.m151.wheeloffortune.auth.user.AdminService;
 import ch.bbbaden.m151.wheeloffortune.auth.user.AdminUser;
-import ch.bbbaden.m151.wheeloffortune.dto.BasicResponseDTO;
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.BadCredentialsException;
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.InvalidatedSecurityTokenException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.AccountNotFoundException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException;
+import ch.bbbaden.m151.wheeloffortune.util.BasicResponseDTO;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.BadCredentialsException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException;
 import ch.bbbaden.m151.wheeloffortune.util.EncodingUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,7 @@ public class AuthService {
     /**
      * @param tokenString the token
      * @return the username of the admin owning the token
-     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.SecurityTokenNotFoundException
+     * @throws SecurityTokenNotFoundException
      * when the token was not found
      */
     public ResponseEntity<BasicResponseDTO> getUsernameByToken(String tokenString){
@@ -36,7 +38,7 @@ public class AuthService {
      * @param password the plain password of the Admin
      * @return {@link SecurityTokenDTO} with the new token
      * @throws BadCredentialsException when the password was incorrect
-     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.AccountNotFoundException when the username was incorrect
+     * @throws AccountNotFoundException when the username was incorrect
      */
     public ResponseEntity<SecurityTokenDTO> loginAdmin(String username, String password){
         AdminUser admin = authenticateAdmin(username, password);
@@ -51,7 +53,7 @@ public class AuthService {
      * @param tokenString the token
      * @return when valid: OK response with message
      * @throws InvalidatedSecurityTokenException when the token is invalid
-     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.SecurityTokenNotFoundException when the token does not exist
+     * @throws SecurityTokenNotFoundException when the token does not exist
      */
     public ResponseEntity<BasicResponseDTO> isTokenValid(String tokenString){
         if(!securityTokenService.isTokenValid(tokenString))
@@ -63,7 +65,7 @@ public class AuthService {
      * @param tokenString the valid token to refresh
      * @return a new {@link SecurityTokenDTO} that contains the new SecurityToken
      * @throws InvalidatedSecurityTokenException when the token is invalid
-     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.SecurityTokenNotFoundException when the token does not exist
+     * @throws SecurityTokenNotFoundException when the token does not exist
      */
     public ResponseEntity<SecurityTokenDTO> refreshToken(String tokenString){
         SecurityToken securityTokenToRefresh = securityTokenService.getByToken(tokenString);
@@ -79,7 +81,7 @@ public class AuthService {
     /**
      * @param tokenString the token to delete
      * @return when token found: OK with message
-     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.SecurityTokenNotFoundException when token does not exist
+     * @throws SecurityTokenNotFoundException when token does not exist
      */
     public ResponseEntity<BasicResponseDTO> logout(String tokenString){
         securityTokenService.deleteToken(securityTokenService.getByToken(tokenString));
@@ -91,7 +93,7 @@ public class AuthService {
      * @param username the username of the admin
      * @param password the plain password of the admin
      * @return the admin that matches with these credentials
-     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.AccountNotFoundException when the username does not exist
+     * @throws AccountNotFoundException when the username does not exist
      */
     public AdminUser authenticateAdmin(String username, String password){
         AdminUser admin = adminService.getAdminByUsername(username);

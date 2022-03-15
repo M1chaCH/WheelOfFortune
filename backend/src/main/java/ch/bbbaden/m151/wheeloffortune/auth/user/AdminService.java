@@ -1,6 +1,6 @@
 package ch.bbbaden.m151.wheeloffortune.auth.user;
 
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.AccountNotFoundException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.AccountNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

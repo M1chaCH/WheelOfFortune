@@ -2,8 +2,7 @@ package ch.bbbaden.m151.wheeloffortune.auth.api;
 
 import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenDTO;
 import ch.bbbaden.m151.wheeloffortune.config.CustomHTTPHeaders;
-import ch.bbbaden.m151.wheeloffortune.dto.BasicResponseDTO;
-import ch.bbbaden.m151.wheeloffortune.dto.LoginRequestDTO;
+import ch.bbbaden.m151.wheeloffortune.util.BasicResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

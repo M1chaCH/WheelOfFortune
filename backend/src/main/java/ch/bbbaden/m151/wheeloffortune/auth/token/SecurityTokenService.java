@@ -1,8 +1,8 @@
 package ch.bbbaden.m151.wheeloffortune.auth.token;
 
 import ch.bbbaden.m151.wheeloffortune.auth.user.AdminUser;
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.InvalidatedSecurityTokenException;
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.SecurityTokenNotFoundException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
