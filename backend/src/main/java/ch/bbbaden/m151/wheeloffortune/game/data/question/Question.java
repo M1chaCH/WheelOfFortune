@@ -41,6 +41,6 @@ public class Question implements WebEntity<Integer, QuestionDTO> {
 
     @Override
     public QuestionDTO parseToDTO() {
-        return new QuestionDTO(id, question, answerOne, answerTwo, category.parseToDTO());
+        return new QuestionDTO(id, question, answerOne, answerTwo, answerOneCorrect, category.parseToDTO());
     }
 }

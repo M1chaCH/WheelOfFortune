@@ -28,10 +28,4 @@ public class Category implements WebEntity<Integer, CategoryDTO> {
     public CategoryDTO parseToDTO() {
         return new CategoryDTO(id, name);
     }
-
-    public static Category fromDTO(CategoryDTO dto){
-        Category category = new Category(dto.getName());
-        category.setId(dto.getId());
-        return category;
-    }
 }

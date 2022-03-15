@@ -42,7 +42,7 @@ public class DefaultDataloader {
             AdminUser admin = new AdminUser("admin", EncodingUtil.hashString("admin", salt), salt);
             adminRepo.save(admin);
 
-            Candidate candidate = new Candidate("teste");
+            Candidate candidate = new Candidate("test");
             Candidate candidate1 = new Candidate("candidate");
             candidateRepo.saveAll(List.of(candidate, candidate1));
 
@@ -57,7 +57,7 @@ public class DefaultDataloader {
 
             Sentence s1 = new Sentence("This PC is cool.", categoryPc);
             Sentence s2 = new Sentence("Asus is a company.", categoryPc);
-            Sentence s3 = new Sentence("Orbea is a company.", categoryPc);
+            Sentence s3 = new Sentence("Orbea is a company.", categoryMtb);
             sentenceRepo.saveAll(List.of(s1,s2,s3));
 
             HighScore highScore = new HighScore(5500, LocalDateTime.now(), candidate);

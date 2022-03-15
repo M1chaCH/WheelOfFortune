@@ -1,4 +1,4 @@
-package ch.bbbaden.m151.wheeloffortune.game.data.category;
+package ch.bbbaden.m151.wheeloffortune.game.data.sentence;
 
 import ch.bbbaden.m151.wheeloffortune.config.CustomHTTPHeaders;
 import ch.bbbaden.m151.wheeloffortune.util.BasicResponseDTO;
@@ -11,36 +11,41 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/game/data/category")
-public class CategoryController {
+@RequestMapping("/game/data/sentence")
+public class SentenceController {
 
-    private final CategoryService service;
+    private final SentenceService service;
 
     @GetMapping()
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(){
+    public ResponseEntity<List<SentenceDTO>> getAllSentences(){
         return ResponseEntity.ok(service.getAllAsDto());
     }
 
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<List<SentenceDTO>> getAllByCategories(@PathVariable(name = "categoryId") Integer categoryId){
+        return ResponseEntity.ok(service.getAllAsDtoByCategory(categoryId));
+    }
+
     @PostMapping()
-    public ResponseEntity<CategoryDTO> createCategory(
+    public ResponseEntity<SentenceDTO> createSentences(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody CategoryDTO dto){
+            @RequestBody SentenceDTO dto){
         return ResponseEntity.ok(service.addNew(st, dto));
     }
 
     @PutMapping()
-    public ResponseEntity<CategoryDTO> updateCategory(
+    public ResponseEntity<SentenceDTO> updateSentences(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody CategoryDTO dto){
+            @RequestBody SentenceDTO dto){
         return ResponseEntity.ok(service.edit(st, dto));
     }
 
     @DeleteMapping()
-    public ResponseEntity<BasicResponseDTO> deleteCategory(
+    public ResponseEntity<BasicResponseDTO> deleteSentences(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody CategoryDTO dto){
+            @RequestBody SentenceDTO dto){
         service.delete(st, dto);
-        return ResponseEntity.ok(new BasicResponseDTO("successfully deleted category ["
+        return ResponseEntity.ok(new BasicResponseDTO("successfully deleted sentence ["
                 + dto.getId() + "]"));
     }
 }

@@ -1,4 +1,4 @@
-package ch.bbbaden.m151.wheeloffortune.game.data.category;
+package ch.bbbaden.m151.wheeloffortune.game.data.question;
 
 import ch.bbbaden.m151.wheeloffortune.config.CustomHTTPHeaders;
 import ch.bbbaden.m151.wheeloffortune.util.BasicResponseDTO;
@@ -11,36 +11,41 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/game/data/category")
-public class CategoryController {
+@RequestMapping("/game/data/question")
+public class QuestionController {
 
-    private final CategoryService service;
+    private final QuestionService service;
 
     @GetMapping()
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(){
+    public ResponseEntity<List<QuestionDTO>> getAllQuestions(){
         return ResponseEntity.ok(service.getAllAsDto());
     }
 
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<List<QuestionDTO>> getAllByCategories(@PathVariable(name = "categoryId") Integer categoryId){
+        return ResponseEntity.ok(service.getAllAsDtoByCategory(categoryId));
+    }
+
     @PostMapping()
-    public ResponseEntity<CategoryDTO> createCategory(
+    public ResponseEntity<QuestionDTO> createQuestion(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody CategoryDTO dto){
+            @RequestBody QuestionDTO dto){
         return ResponseEntity.ok(service.addNew(st, dto));
     }
 
     @PutMapping()
-    public ResponseEntity<CategoryDTO> updateCategory(
+    public ResponseEntity<QuestionDTO> updateQuestion(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody CategoryDTO dto){
+            @RequestBody QuestionDTO dto){
         return ResponseEntity.ok(service.edit(st, dto));
     }
 
     @DeleteMapping()
-    public ResponseEntity<BasicResponseDTO> deleteCategory(
+    public ResponseEntity<BasicResponseDTO> deleteQuestion(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody CategoryDTO dto){
+            @RequestBody QuestionDTO dto){
         service.delete(st, dto);
-        return ResponseEntity.ok(new BasicResponseDTO("successfully deleted category ["
+        return ResponseEntity.ok(new BasicResponseDTO("successfully deleted question ["
                 + dto.getId() + "]"));
     }
 }
