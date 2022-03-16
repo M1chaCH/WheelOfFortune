@@ -88,6 +88,7 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
      * like {@link #addNew(String, WebEntity)} but parses result to DTO
      */
     public D addNew(String securityTokenString, D dtoToAdd){
+        System.out.println(dtoToAdd.parseToEntity());
         return addNew(securityTokenString, dtoToAdd.parseToEntity()).parseToDTO();
     }
 
@@ -141,6 +142,12 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
         delete(securityTokenString, dtoToDelete.parseToEntity());
     }
 
+    /**
+     * if nothing is thrown then to token is valid and authorized
+     * @param securityTokenString the security token that should be checked
+     * @throws SecurityTokenNotFoundException when token does not exist
+     * @throws InvalidatedSecurityTokenException when token is invalidated
+     */
     private void checkToken(String securityTokenString){
         if(!securityTokenService.isTokenValid(securityTokenString))
             throw new InvalidatedSecurityTokenException(securityTokenString);

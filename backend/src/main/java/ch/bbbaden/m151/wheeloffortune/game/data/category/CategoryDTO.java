@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class CategoryDTO implements WebDto<Integer, Category> {
     private Integer id;
     private String name;

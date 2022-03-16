@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class QuestionDTO implements WebDto<Integer, Question> {
     private Integer id;
     private String question;

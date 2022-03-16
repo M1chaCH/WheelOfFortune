@@ -47,6 +47,7 @@ public class SecurityTokenService {
      * @param tokenString the token to check
      * @return true: token is not expired & is newest of associated admin
      * @throws SecurityTokenNotFoundException when token does not exist
+     * @throws InvalidatedSecurityTokenException when token is invalidated
      */
     public boolean isTokenValid(String tokenString){
         SecurityToken securityToken = getByToken(tokenString);

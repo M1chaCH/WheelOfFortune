@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class SentenceDTO implements WebDto<Integer, Sentence> {
     private Integer id;
     private String sentence;
