@@ -25,6 +25,8 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
     protected final SecurityTokenService securityTokenService;
     protected final R repo;
 
+    //works because is not generically autowired & intellij does not recognise that(check inheritance)
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     protected GenericAuthenticatedEntityService(SecurityTokenService securityTokenService, R repo) {
         this.securityTokenService = securityTokenService;
         this.repo = repo;
@@ -54,7 +56,7 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
      * @throws EntityNotFoundException when no entity with the given id was found
      */
     public E getById(I id){
-        return repo.findById(id).orElseThrow(() -> new EntityNotFoundException("unknown", id.toString()));
+        return repo.findById(id).orElseThrow(() -> new EntityNotFoundException("unknown", id));
     }
 
     /**
@@ -77,7 +79,7 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
         checkToken(securityTokenString);
 
         if(repo.findById(toAdd.getId()).isPresent())
-            throw new EntityAlreadyExistsException(toAdd.getClass().getName(), toAdd.getId().toString());
+            throw new EntityAlreadyExistsException(toAdd.getClass().getName(), toAdd.getId());
 
         return repo.save(toAdd);
     }
@@ -102,7 +104,7 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
         checkToken(securityTokenString);
 
         if(repo.findById(toEdit.getId()).isEmpty())
-            throw new EntityNotFoundException(toEdit.getClass().getName(), toEdit.getId().toString());
+            throw new EntityNotFoundException(toEdit.getClass().getName(), toEdit.getId());
 
         return repo.save(toEdit);
     }
@@ -127,7 +129,7 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
         checkToken(securityTokenString);
 
         if(repo.findById(toDelete.getId()).isEmpty())
-            throw new EntityNotFoundException(toDelete.getClass().getName(), toDelete.getId().toString());
+            throw new EntityNotFoundException(toDelete.getClass().getName(), toDelete.getId());
 
         repo.delete(toDelete);
     }
