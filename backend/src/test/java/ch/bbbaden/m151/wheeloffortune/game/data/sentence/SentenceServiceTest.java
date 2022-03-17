@@ -1,4 +1,4 @@
-package ch.bbbaden.m151.wheeloffortune.game.data.question;
+package ch.bbbaden.m151.wheeloffortune.game.data.sentence;
 
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityNotFoundException;
 import ch.bbbaden.m151.wheeloffortune.game.data.GenericAuthenticatedEntityService;
@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer, QuestionDTO, Question, QuestionRepo> {
+class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer, SentenceDTO, Sentence, SentenceRepo>{
 
     @Autowired
-    QuestionService service;
+    SentenceService service;
 
     @MockBean
-    QuestionRepo repoMock;
+    SentenceRepo repoMock;
 
     @MockBean
     CategoryService categoryServiceMock;
@@ -32,12 +32,12 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     @Test
     void getAllAsDtoByCategory_successTest() {
         final Integer categoryId = 1;
-        List<Question> entities = generateSomeEntities();
+        List<Sentence> entities = generateSomeEntities();
         Category category = new CategoryDTO(categoryId, "random").parseToEntity();
         when(categoryServiceMock.getById(categoryId)).thenReturn(category);
-        when(repoMock.findQuestionsByCategory(category)).thenReturn(entities);
+        when(repoMock.findSentencesByCategory(category)).thenReturn(entities);
 
-        List<QuestionDTO> returnedDTOs = service.getAllAsDtoByCategory(categoryId);
+        List<SentenceDTO> returnedDTOs = service.getAllAsDtoByCategory(categoryId);
         assertEquals(entities.size(), returnedDTOs.size());
         for (int i = 0; i < entities.size(); i++) {
             assertTrue(doesDTOEqualEntity(returnedDTOs.get(i), entities.get(i)));
@@ -47,69 +47,56 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     @Test
     void getAllAsDtoByCategory_deletedCategoryTest() {
         final Integer categoryId = 2;
-        List<Question> entities = generateSomeEntities();
+        List<Sentence> entities = generateSomeEntities();
         Category category = new CategoryDTO(categoryId, "random").parseToEntity();
         when(categoryServiceMock.getById(categoryId)).thenThrow(EntityNotFoundException.class);
-        when(repoMock.findQuestionsByCategory(category)).thenReturn(entities);
+        when(repoMock.findSentencesByCategory(category)).thenReturn(entities);
 
         assertThrows(EntityNotFoundException.class, () -> service.getAllAsDtoByCategory(categoryId));
     }
 
     @Override
-    protected QuestionRepo getRepoMock() {
+    protected SentenceRepo getRepoMock() {
         return repoMock;
     }
 
     @Override
-    protected GenericAuthenticatedEntityService<Integer, QuestionDTO, Question, QuestionRepo> getService() {
+    protected GenericAuthenticatedEntityService<Integer, SentenceDTO, Sentence, SentenceRepo> getService() {
         return service;
     }
 
     @Override
-    protected Question generateEntity() {
+    protected Sentence generateEntity() {
         return generateEntity(1);
     }
 
-    private Question generateEntity(Integer id){
-        Question question = new Question(
-                "question" + id,
-                "answerOne",
-                "answerTwo",
-                true,
-                new Category("category")
+    protected Sentence generateEntity(Integer id) {
+        Sentence sentence = new Sentence(
+                "sentence" + id,
+                new CategoryDTO(1, "random").parseToEntity()
         );
-        question.setId(id);
-        return question;
+        sentence.setId(id);
+        return sentence;
     }
 
     @Override
-    protected List<Question> generateSomeEntities() {
-        List<Question> questions = new ArrayList<>();
+    protected List<Sentence> generateSomeEntities() {
+        List<Sentence> sentences = new ArrayList<>();
         for (int i = 1; i < 5; i++) {
-            questions.add(generateEntity(i));
+            sentences.add(generateEntity(i));
         }
-        return questions;
+        return sentences;
     }
 
     @Override
-    protected QuestionDTO generateDTO() {
-        return new QuestionDTO(
-                1,
-                "question1",
-                "answerOne",
-                "answerTwo",
-                true,
-                new CategoryDTO(1, "category")
-        );
+    protected SentenceDTO generateDTO() {
+        return new SentenceDTO(1, "sentence1", new CategoryDTO(1, "random"));
     }
 
     @Override
-    protected boolean doesDTOEqualEntity(QuestionDTO dto, Question entity) {
+    protected boolean doesDTOEqualEntity(SentenceDTO dto, Sentence entity) {
         return dto.getId().equals(entity.getId()) &&
-                dto.getQuestion().equals(entity.getQuestion()) &&
-                dto.getAnswerOne().equals(entity.getAnswerOne()) &&
-                dto.getAnswerTwo().equals(entity.getAnswerTwo()) &&
-                dto.isAnswerOneCorrect() == entity.isAnswerOneCorrect() &&
+                dto.getSentence().equals(entity.getSentence()) &&
                 dto.getCategoryDTO().equals(entity.getCategory().parseToDTO());
     }
 }
