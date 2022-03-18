@@ -28,11 +28,11 @@ public class HighScoreController {
         return ResponseEntity.ok(service.edit(auth, editedDTO));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<BasicResponseDTO> deleteHighScore(
             @RequestHeader(name = CustomHTTPHeaders.AUTH) String auth,
-            @RequestBody HighScoreDTO dtoToDelete){
-        service.delete(auth, dtoToDelete);
-        return ResponseEntity.ok(new BasicResponseDTO("successfully deleted " + dtoToDelete));
+            @PathVariable Integer id){
+        service.delete(auth, id);
+        return ResponseEntity.ok(new BasicResponseDTO("successfully deleted HighScore with id: " + id));
     }
 }

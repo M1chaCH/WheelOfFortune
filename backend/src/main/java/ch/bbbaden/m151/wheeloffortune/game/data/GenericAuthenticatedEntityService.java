@@ -56,7 +56,8 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
      * @throws EntityNotFoundException when no entity with the given id was found
      */
     public E getById(I id){
-        return repo.findById(id).orElseThrow(() -> new EntityNotFoundException("unknown", id));
+        return repo.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(WebEntity.class.getSimpleName(), id));
     }
 
     /**
@@ -125,20 +126,12 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
      * @throws InvalidatedSecurityTokenException when securityTokenString is not valid
      * @throws EntityNotFoundException when entity does not exist in the db
      */
-    public void delete(String securityTokenString, E toDelete){
+    public void delete(String securityTokenString, I toDelete){
         checkToken(securityTokenString);
 
-        if(repo.findById(toDelete.getId()).isEmpty())
-            throw new EntityNotFoundException(toDelete.getClass().getName(), toDelete.getId());
-
-        repo.delete(toDelete);
-    }
-
-    /**
-     * like {@link #delete(String, WebEntity)} but parses result to DTO
-     */
-    public void delete(String securityTokenString, D dtoToDelete){
-        delete(securityTokenString, dtoToDelete.parseToEntity());
+        E entityToDelete = repo.findById(toDelete).orElseThrow(() ->
+                new EntityNotFoundException(WebEntity.class.getSimpleName(), toDelete));
+        repo.delete(entityToDelete);
     }
 
     /**

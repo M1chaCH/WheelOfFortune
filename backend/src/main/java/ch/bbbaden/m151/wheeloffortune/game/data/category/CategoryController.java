@@ -35,12 +35,12 @@ public class CategoryController {
         return ResponseEntity.ok(service.edit(st, dto));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<BasicResponseDTO> deleteCategory(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody CategoryDTO dto){
-        service.delete(st, dto);
+            @PathVariable Integer id){
+        service.delete(st, id);
         return ResponseEntity.ok(new BasicResponseDTO("successfully deleted category ["
-                + dto.getId() + "]"));
+                + id + "]"));
     }
 }

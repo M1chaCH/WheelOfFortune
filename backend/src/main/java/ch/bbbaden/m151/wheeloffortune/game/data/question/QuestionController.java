@@ -40,12 +40,12 @@ public class QuestionController {
         return ResponseEntity.ok(service.edit(st, dto));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<BasicResponseDTO> deleteQuestion(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody QuestionDTO dto){
-        service.delete(st, dto);
+            @PathVariable Integer id){
+        service.delete(st, id);
         return ResponseEntity.ok(new BasicResponseDTO("successfully deleted question ["
-                + dto.getId() + "]"));
+                + id + "]"));
     }
 }

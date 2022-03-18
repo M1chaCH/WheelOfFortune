@@ -270,7 +270,7 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
 
         try{
-            getService().delete("someexistingtoken", entity);
+            getService().delete("someexistingtoken", entity.getId());
         }catch (Exception e){
             fail(e);
         }
@@ -283,7 +283,8 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.empty());
 
         GenericAuthenticatedEntityService<I, D, E, R> service = getService();
-        assertThrows(EntityNotFoundException.class, () -> service.delete("someexistingtoken", entity));
+        I id = entity.getId();
+        assertThrows(EntityNotFoundException.class, () -> service.delete("someexistingtoken", id));
     }
 
     @Test
@@ -294,7 +295,8 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
 
         GenericAuthenticatedEntityService<I, D, E, R> service = getService();
-        assertThrows(InvalidatedSecurityTokenException.class, () -> service.delete(tokenString, entity));
+        I id = entity.getId();
+        assertThrows(InvalidatedSecurityTokenException.class, () -> service.delete(tokenString, id));
     }
 
     @Test
@@ -305,7 +307,8 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
 
         GenericAuthenticatedEntityService<I, D, E, R> service = getService();
-        assertThrows(SecurityTokenNotFoundException.class, () -> service.delete(tokenString, entity));
+        I id = entity.getId();
+        assertThrows(SecurityTokenNotFoundException.class, () -> service.delete(tokenString, id));
     }
 
     @Test
@@ -316,7 +319,7 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
 
         try{
-            getService().delete("someexistingtoken", dto);
+            getService().delete("someexistingtoken", dto.getId());
         }catch (Exception e){
             fail(e);
         }
@@ -329,7 +332,8 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.empty());
 
         GenericAuthenticatedEntityService<I, D, E, R> service = getService();
-        assertThrows(EntityNotFoundException.class, () -> service.delete("someexistingtoken", dto));
+        I id = dto.getId();
+        assertThrows(EntityNotFoundException.class, () -> service.delete("someexistingtoken", id));
     }
 
     @Test
@@ -341,7 +345,8 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
 
         GenericAuthenticatedEntityService<I, D, E, R> service = getService();
-        assertThrows(InvalidatedSecurityTokenException.class, () -> service.delete(tokenString, dto));
+        I id = dto.getId();
+        assertThrows(InvalidatedSecurityTokenException.class, () -> service.delete(tokenString, id));
     }
 
     @Test
@@ -353,6 +358,7 @@ public abstract class GenericAuthenticatedEntityServiceTest<I, D extends WebDto<
         when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
 
         GenericAuthenticatedEntityService<I, D, E, R> service = getService();
-        assertThrows(SecurityTokenNotFoundException.class, () -> service.delete(tokenString, dto));
+        I id = dto.getId();
+        assertThrows(SecurityTokenNotFoundException.class, () -> service.delete(tokenString, id));
     }
 }

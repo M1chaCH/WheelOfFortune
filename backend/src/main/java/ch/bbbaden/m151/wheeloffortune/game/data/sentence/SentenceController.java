@@ -40,12 +40,12 @@ public class SentenceController {
         return ResponseEntity.ok(service.edit(st, dto));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<BasicResponseDTO> deleteSentences(
             @RequestHeader(CustomHTTPHeaders.AUTH) String st,
-            @RequestBody SentenceDTO dto){
-        service.delete(st, dto);
+            @PathVariable Integer id){
+        service.delete(st, id);
         return ResponseEntity.ok(new BasicResponseDTO("successfully deleted sentence ["
-                + dto.getId() + "]"));
+                + id + "]"));
     }
 }
