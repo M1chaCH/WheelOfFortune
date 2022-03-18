@@ -88,7 +88,6 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
      * like {@link #addNew(String, WebEntity)} but parses result to DTO
      */
     public D addNew(String securityTokenString, D dtoToAdd){
-        System.out.println(dtoToAdd.parseToEntity());
         return addNew(securityTokenString, dtoToAdd.parseToEntity()).parseToDTO();
     }
 

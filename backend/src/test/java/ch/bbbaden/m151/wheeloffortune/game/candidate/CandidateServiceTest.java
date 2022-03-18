@@ -24,6 +24,23 @@ class CandidateServiceTest {
     CandidateRepo repoMock;
 
     @Test
+    void getById_foundTest(){
+        Candidate candidate = new Candidate("username");
+        candidate.setId(1);
+
+        when(repoMock.findById(1)).thenReturn(Optional.of(candidate));
+
+        assertEquals(candidate, service.getById(1));
+    }
+
+    @Test
+    void getById_notFoundTest(){
+        when(repoMock.findById(any())).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> service.getById(1));
+    }
+
+    @Test
     void getByUsername_foundTest() {
         String username = "username";
         Candidate c = new Candidate(username);

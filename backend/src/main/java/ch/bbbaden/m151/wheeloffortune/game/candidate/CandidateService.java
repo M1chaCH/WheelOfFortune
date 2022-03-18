@@ -14,6 +14,15 @@ public class CandidateService {
     private final CandidateRepo repo;
 
     /**
+     * @param id the id to search the candidate by
+     * @return the found candidate
+     * @throws EntityNotFoundException when no entity with this id exists
+     */
+    public Candidate getById(Integer id){
+        return repo.findById(id).orElseThrow(() -> new EntityNotFoundException(Candidate.class.getSimpleName(), id));
+    }
+
+    /**
      * @param username the username to search the candidate by.
      * @return a {@link Candidate} with the given username
      * @throws EntityNotFoundException when no Candidate with given username was found.
