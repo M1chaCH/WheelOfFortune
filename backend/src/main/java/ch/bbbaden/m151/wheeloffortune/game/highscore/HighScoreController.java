@@ -18,14 +18,15 @@ public class HighScoreController {
 
     @GetMapping()
     public ResponseEntity<List<HighScoreDTO>> readAll(){
-        return ResponseEntity.ok(service.getAllAsDto());
+        return ResponseEntity.ok(service.getAllSortedByDateAsDto());
     }
 
     @PutMapping()
-    public ResponseEntity<HighScoreDTO> editHighScore(
+    public ResponseEntity<BasicResponseDTO> editHighScore(
             @RequestHeader(name = CustomHTTPHeaders.AUTH) String auth,
             @RequestBody HighScoreDTO editedDTO){
-        return ResponseEntity.ok(service.edit(auth, editedDTO));
+        service.edit(auth, editedDTO);
+        return ResponseEntity.ok(new BasicResponseDTO("successfully applied changed so HighScore"));
     }
 
     @DeleteMapping("/{id}")

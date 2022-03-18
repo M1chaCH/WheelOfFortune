@@ -1,51 +1,93 @@
 package ch.bbbaden.m151.wheeloffortune.game.highscore;
 
 import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenService;
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityAlreadyExistsException;
-import ch.bbbaden.m151.wheeloffortune.game.candidate.CandidateService;
-import ch.bbbaden.m151.wheeloffortune.game.data.GenericAuthenticatedEntityService;
-import org.springframework.beans.factory.annotation.Autowired;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityNotFoundException;
+import ch.bbbaden.m151.wheeloffortune.util.LocalDateTimeParser;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
-public class HighScoreService extends GenericAuthenticatedEntityService<Integer, HighScoreDTO, HighScore, HighScoreRepo> {
+@AllArgsConstructor
+public class HighScoreService {
 
-    private final CandidateService candidateService;
-
-    @Autowired
-    public HighScoreService(SecurityTokenService securityTokenService, HighScoreRepo repo, CandidateService candidateService) {
-        super(securityTokenService, repo);
-        this.candidateService = candidateService;
-    }
+    private final SecurityTokenService securityTokenService;
+    private final HighScoreRepo repo;
 
     /**
-     * @param candidateId the id of the candidate in search
-     * @return a list of SighScores for a candidate
-     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityNotFoundException when candidate
-     * does not exist
+     * @return a list of all the {@link HighScoreDTO}s in the DB, sorted decreasing by achievedAt.
      */
-    public List<HighScore> getByCandidateSortedByDate(Integer candidateId){
-        return repo.findHighScoresByCandidateOrderByAchievedAt(candidateService.getById(candidateId));
+    public List<HighScoreDTO> getAllSortedByDateAsDto(){
+        return StreamSupport.stream(repo.findAllByOrderByAchievedAtDesc().spliterator(), false)
+                .map(highScore -> new HighScoreDTO(
+                        highScore.getId(),
+                        highScore.getScore(),
+                        highScore.getUsername(),
+                        LocalDateTimeParser.dateToString(highScore.getAchievedAt())))
+                .collect(Collectors.toList());
     }
 
     /**
-     * checks if entity id is new and saves in db
-     * @param toAdd the {@link HighScore} to save in the database
-     * @throws EntityAlreadyExistsException when entity already exists in the db
-     */
-    public HighScore addNew(HighScore toAdd) {
-        if(repo.findById(toAdd.getId()).isPresent())
-            throw new EntityAlreadyExistsException(toAdd.getClass().getName(), toAdd.getId());
-
-        return repo.save(toAdd);
-    }
-
-    /**
-     * like {@link #addNew(HighScore)} but parses result to DTO
+     * Only cares about the username and the score in the {@link HighScoreDTO}. The other values are generated.
+     * (id -> JPA, <strong>achievedAt -> NOW</strong>)
+     * @param toAdd the DTO to read the values from
+     * @return the DTO representing the entity created in the database
      */
     public HighScoreDTO addNew(HighScoreDTO toAdd){
-        return this.addNew(toAdd.parseToEntity()).parseToDTO();
+        HighScore highScoreToAdd = new HighScore();
+        highScoreToAdd.setScore(toAdd.getScore());
+        highScoreToAdd.setUsername(toAdd.getUsername());
+        highScoreToAdd.setAchievedAt(LocalDateTime.now());
+
+        HighScore createdHighScore = repo.save(highScoreToAdd);
+        return new HighScoreDTO(createdHighScore.getId(),
+                createdHighScore.getScore(),
+                createdHighScore.getUsername(),
+                LocalDateTimeParser.dateToString(createdHighScore.getAchievedAt()));
+    }
+
+    /**
+     * @param securityTokenString the {@link ch.bbbaden.m151.wheeloffortune.auth.token.SecurityToken} token that is
+     *                            used to authenticate the request
+     * @param dtoToEdit the DTO to edit (all values, except the id, will be applied in the DB)
+     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException when the
+     * given token is invalid
+     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException when the given
+     * token doesn't exist.
+     * @throws EntityNotFoundException when no entity with the id in the DTO exists
+     */
+    public void edit(String securityTokenString, HighScoreDTO dtoToEdit){
+        if(securityTokenService.isTokenValid(securityTokenString)){
+            HighScore highScore = repo.findById(dtoToEdit.getId()).orElseThrow(() ->
+                    new EntityNotFoundException(HighScore.class.getSimpleName(), dtoToEdit.getId()));
+
+            highScore.setScore(dtoToEdit.getScore());
+            highScore.setUsername(dtoToEdit.getUsername());
+            highScore.setAchievedAt(LocalDateTimeParser.stringToDate(dtoToEdit.getAchievedAt()));
+
+            repo.save(highScore);
+        }
+    }
+
+    /**
+     * @param securityTokenString the {@link ch.bbbaden.m151.wheeloffortune.auth.token.SecurityToken} token that is
+     *                            used to authenticate the request
+     * @param id the id of the {@link HighScore} to delete
+     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException when the
+     * given token is invalid
+     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException when the given
+     * token doesn't exist.
+     * @throws EntityNotFoundException when no entity with the id in the DTO exists
+     */
+    public void delete(String securityTokenString, int id){
+        if(securityTokenService.isTokenValid(securityTokenString)) {
+            HighScore highScore = repo.findById(id).orElseThrow(() ->
+                    new EntityNotFoundException(HighScore.class.getSimpleName(), id));
+            repo.delete(highScore);
+        }
     }
 }

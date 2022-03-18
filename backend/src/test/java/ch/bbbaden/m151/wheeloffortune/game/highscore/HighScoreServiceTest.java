@@ -1,29 +1,25 @@
 package ch.bbbaden.m151.wheeloffortune.game.highscore;
 
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityAlreadyExistsException;
+import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenService;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityNotFoundException;
-import ch.bbbaden.m151.wheeloffortune.game.candidate.Candidate;
-import ch.bbbaden.m151.wheeloffortune.game.candidate.CandidateDTO;
 import ch.bbbaden.m151.wheeloffortune.game.candidate.CandidateService;
-import ch.bbbaden.m151.wheeloffortune.game.data.GenericAuthenticatedEntityService;
-import ch.bbbaden.m151.wheeloffortune.game.data.GenericAuthenticatedEntityServiceTest;
+import ch.bbbaden.m151.wheeloffortune.util.LocalDateTimeParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class HighScoreServiceTest extends GenericAuthenticatedEntityServiceTest<Integer, HighScoreDTO, HighScore, HighScoreRepo> {
+class HighScoreServiceTest {
 
     @Autowired
     HighScoreService service;
@@ -31,142 +27,80 @@ class HighScoreServiceTest extends GenericAuthenticatedEntityServiceTest<Integer
     @MockBean
     HighScoreRepo repoMock;
     @MockBean
-    CandidateService candidateServiceMock;
+    SecurityTokenService securityTokenServiceMock;
 
     @Test
-    void getByCandidateSortedByDate_successTest(){
-        List<HighScore> highScores = generateSomeEntities();
-        Candidate c = new Candidate("username");
+    void addNew_successTest(){
+        LocalDateTime achievedAt = LocalDateTime.now();
+        HighScoreDTO toAdd = new HighScoreDTO(1, 1123, "test", "1");
+        HighScore expected = new HighScore(1123, "test", achievedAt);
+        expected.setId(45);
 
-        when(candidateServiceMock.getById(1)).thenReturn(c);
-        when(repoMock.findHighScoresByCandidateOrderByAchievedAt(c)).thenReturn(highScores);
+        when(repoMock.save(any())).thenReturn(expected);
 
-        assertEquals(highScores, service.getByCandidateSortedByDate(1));
-    }
-
-    @Test
-    void getByCandidateSortedByDate_deletedCandidateTest(){
-        List<HighScore> highScores = generateSomeEntities();
-        Candidate c = new Candidate("username");
-
-        when(candidateServiceMock.getById(1)).thenThrow(EntityNotFoundException.class);
-        when(repoMock.findHighScoresByCandidateOrderByAchievedAt(c)).thenReturn(highScores);
-
-        assertThrows(EntityNotFoundException.class, () -> service.getByCandidateSortedByDate(1));
+        HighScoreDTO expectedDTO = new HighScoreDTO(expected.getId(),
+                expected.getScore(),
+                expected.getUsername(),
+                LocalDateTimeParser.dateToString(expected.getAchievedAt()));
+        assertEquals(expectedDTO, service.addNew(toAdd));
     }
 
     @Test
-    void addNewEntityNoAuth_successTest() {
-        HighScore entity = generateEntity();
-        when(getRepoMock().findById(any())).thenReturn(Optional.empty());
-        when(getRepoMock().save(entity)).thenReturn(entity);
+    void edit_successTest(){
+        String token = "somevalidtoken";
+        int id = 12;
+        when(securityTokenServiceMock.isTokenValid(token)).thenReturn(true);
+        when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
 
-        assertEquals(entity, service.addNew(entity));
+        service.edit(token, new HighScoreDTO(id, 0, "",
+                LocalDateTimeParser.dateToString(LocalDateTime.now())));
+        assertTrue(true);
     }
 
     @Test
-    void addNewEntityNoAuth_alreadyExistsTest() {
-        HighScore entity = generateEntity();
-        when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
-        when(getRepoMock().save(entity)).thenReturn(entity);
+    void edit_deletedEntityTest(){
+        String token = "someinvalidtoken";
+        int id = 12;
+        when(securityTokenServiceMock.isTokenValid(token)).thenReturn(true);
+        when(repoMock.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(EntityAlreadyExistsException.class, () -> service.addNew(entity));
+        HighScoreDTO toEdit =
+                new HighScoreDTO(id, 0, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
+        assertThrows(EntityNotFoundException.class, () -> service.edit(token, toEdit));
     }
 
     @Test
-    void addNewDTONoAuth_successTest() {
-        HighScoreDTO dto = generateDTO();
-        HighScore entity = parseToEntity(dto);
-        when(getRepoMock().findById(any())).thenReturn(Optional.empty());
-        when(getRepoMock().save(any())).thenReturn(entity);
+    void edit_invalidTokenTest(){
+        String token = "someinvalidtoken";
+        int id = 12;
+        when(securityTokenServiceMock.isTokenValid(token)).thenThrow(InvalidatedSecurityTokenException.class);
+        when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
 
-        assertEquals(dto, service.addNew(dto));
+        HighScoreDTO toEdit =
+                new HighScoreDTO(id, 0, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
+        assertThrows(InvalidatedSecurityTokenException.class, () -> service.edit(token, toEdit));
     }
 
     @Test
-    void addNewDTONoAuth_alreadyExistsTest() {
-        HighScoreDTO dto = generateDTO();
-        HighScore entity = dto.parseToEntity();
-        when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
-        when(getRepoMock().save(any())).thenReturn(entity);
+    void edit_deletedTokenTest(){
+        String token = "somedeletedtoken";
+        int id = 12;
+        when(securityTokenServiceMock.isTokenValid(token)).thenThrow(SecurityTokenNotFoundException.class);
+        when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
 
-        assertThrows(EntityAlreadyExistsException.class, () -> service.addNew(dto));
+        HighScoreDTO toEdit =
+                new HighScoreDTO(id, 0, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
+        assertThrows(SecurityTokenNotFoundException.class, () -> service.edit(token, toEdit));
     }
 
-    @Test //Override because parseEntity in Candidate ignores id -> leads to fail here
-    void addNewDTO_successTest() {
-        HighScoreDTO dto = generateDTO();
-        HighScore entity = parseToEntity(dto);
-        when(tokenServiceMock.isTokenValid(anyString())).thenReturn(true);
-        when(getRepoMock().findById(any())).thenReturn(Optional.empty());
-        when(getRepoMock().save(any())).thenReturn(entity);
+    @Test
+    void delete_successTest(){
+        String token = "somevalidtoken";
+        int id = 12;
+        when(securityTokenServiceMock.isTokenValid(token)).thenReturn(true);
+        when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
 
-        assertEquals(dto, getService().addNew("someexistingtoken", dto));
-    }
-
-    @Test //Override because parseEntity in Candidate ignores id -> leads to fail here
-    void editDTO_successTest() {
-        HighScoreDTO dto = generateDTO();
-        HighScore entity = parseToEntity(dto);
-        when(tokenServiceMock.isTokenValid(anyString())).thenReturn(true);
-        when(getRepoMock().findById(any())).thenReturn(Optional.of(entity));
-        when(getRepoMock().save(any())).thenReturn(entity);
-
-        assertEquals(dto, getService().edit("someexistingtoken", dto));
-    }
-
-    @Override
-    protected HighScoreRepo getRepoMock() {
-        return repoMock;
-    }
-
-    @Override
-    protected GenericAuthenticatedEntityService<Integer, HighScoreDTO, HighScore, HighScoreRepo> getService() {
-        return service;
-    }
-
-    @Override
-    protected HighScore generateEntity() {
-        return generateEntity(1);
-    }
-
-    private HighScore generateEntity(Integer id) {
-        HighScore h = new HighScore(100, LocalDateTime.now(), new Candidate("candidate"));
-        h.setId(id);
-        return h;
-    }
-
-    @Override
-    protected List<HighScore> generateSomeEntities() {
-        List<HighScore> highScores = new ArrayList<>();
-        for (int i = 1; i < 5; i++)
-            highScores.add(generateEntity(i));
-        return highScores;
-    }
-
-    @Override
-    protected HighScoreDTO generateDTO() {
-        return new HighScoreDTO(1, 100, LocalDateTime.now(), new CandidateDTO(1, "candidate"));
-    }
-
-    @Override
-    protected boolean doesDTOEqualEntity(HighScoreDTO dto, HighScore entity) {
-        return dto.getId().equals(entity.getId()) &&
-                dto.getScore() == entity.getScore() &&
-                dto.getAchievedAt().equals(entity.getAchievedAt()) &&
-                dto.getCandidateDTO().equals(entity.getCandidate().parseToDTO());
-    }
-
-    /**
-     * not using WebDto.parseEntity() because parseEntity in Candidate ignores id -> leads to fail here
-     * @param dto the dto to parse
-     * @return the parsed entity
-     */
-    private HighScore parseToEntity(HighScoreDTO dto){
-        HighScore h = dto.parseToEntity();
-        Candidate c = new Candidate(dto.getCandidateDTO().getUsername());
-        c.setId(dto.getCandidateDTO().getId());
-        h.setCandidate(c);
-        return h;
+        service.delete(token, id);
+        assertTrue(true);
     }
 }

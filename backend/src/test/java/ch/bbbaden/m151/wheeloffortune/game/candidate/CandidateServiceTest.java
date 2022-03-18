@@ -43,10 +43,9 @@ class CandidateServiceTest {
     @Test
     void getByUsername_foundTest() {
         String username = "username";
-        Candidate c = new Candidate(username);
-        when(repoMock.findCandidateByUsername(username)).thenReturn(Optional.of(c));
+        when(repoMock.findCandidateByUsername(username)).thenReturn(Optional.of(new Candidate(username)));
 
-        assertEquals(c, service.getByUsername(username));
+        assertEquals(new CandidateDTO(username), service.getByUsername(username));
     }
 
     @Test
@@ -59,21 +58,19 @@ class CandidateServiceTest {
 
     @Test
     void saveCandidate_successTest() {
-        CandidateDTO dto = new CandidateDTO(1, "username");
-        Candidate entity = dto.parseToEntity(); //ignores id because is intended to be set by repo
-        entity.setId(dto.getId());
+        CandidateDTO dto = new CandidateDTO("username");
+        Candidate entity = new Candidate(dto.getUsername());
 
         when(repoMock.findCandidateByUsername(dto.getUsername())).thenReturn(Optional.empty());
         when(repoMock.save(any())).thenReturn(entity);
 
-        Candidate savedCandidate = service.saveCandidate(dto);
-        assertEquals(dto, savedCandidate.parseToDTO());
+        assertEquals(dto.getUsername(), service.saveCandidate(dto).getUsername());
     }
 
     @Test
     void saveCandidate_existsTest() {
-        CandidateDTO dto = new CandidateDTO(1, "username");
-        Candidate entity = dto.parseToEntity();
+        CandidateDTO dto = new CandidateDTO("username");
+        Candidate entity = new Candidate(dto.getUsername());
 
         when(repoMock.save(entity)).thenReturn(entity);
         when(repoMock.findCandidateByUsername(dto.getUsername())).thenReturn(Optional.of(entity));

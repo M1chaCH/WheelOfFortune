@@ -27,9 +27,10 @@ public class CandidateService {
      * @return a {@link Candidate} with the given username
      * @throws EntityNotFoundException when no Candidate with given username was found.
      */
-    public Candidate getByUsername(String username){
-        return repo.findCandidateByUsername(username).orElseThrow(() ->
+    public CandidateDTO getByUsername(String username){
+        Candidate foundCandidate = repo.findCandidateByUsername(username).orElseThrow(() ->
                 new EntityNotFoundException(Candidate.class.getSimpleName(), username));
+        return new CandidateDTO(foundCandidate.getUsername());
     }
 
     /**
@@ -39,11 +40,12 @@ public class CandidateService {
      * @return the saved {@link Candidate}
      * @throws EntityAlreadyExistsException when the username is already in use
      */
-    public Candidate saveCandidate(CandidateDTO candidate){
+    public CandidateDTO saveCandidate(CandidateDTO candidate){
         Optional<Candidate> c = repo.findCandidateByUsername(candidate.getUsername());
         if(c.isPresent())
             throw new EntityAlreadyExistsException(Candidate.class.getSimpleName(), c.get().getId());
 
-        return repo.save(candidate.parseToEntity());
+        Candidate savedCandidate = repo.save(new Candidate(candidate.getUsername()));
+        return new CandidateDTO(savedCandidate.getUsername());
     }
 }

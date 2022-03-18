@@ -60,9 +60,9 @@ public class DefaultDataloader {
             Sentence s3 = new Sentence("Orbea is a company.", categoryMtb);
             sentenceRepo.saveAll(List.of(s1,s2,s3));
 
-            HighScore highScore = new HighScore(5500, LocalDateTime.now(), candidate);
-            HighScore highScore1 = new HighScore(7000, LocalDateTime.now().plusHours(1), candidate);
-            HighScore highScore2 = new HighScore(7050, LocalDateTime.now().plusMinutes(90), candidate1);
+            HighScore highScore = new HighScore(5500, "test", LocalDateTime.now());
+            HighScore highScore1 = new HighScore(7000, "test1", LocalDateTime.now().plusHours(1));
+            HighScore highScore2 = new HighScore(7050, "test2", LocalDateTime.now().plusMinutes(90));
             highScoreRepo.saveAll(List.of(highScore, highScore1, highScore2));
 
             LOGGER.warn("data loaded");
