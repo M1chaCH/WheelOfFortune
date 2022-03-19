@@ -4,7 +4,6 @@ import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenService;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityNotFoundException;
-import ch.bbbaden.m151.wheeloffortune.game.candidate.CandidateService;
 import ch.bbbaden.m151.wheeloffortune.util.LocalDateTimeParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,5 +101,38 @@ class HighScoreServiceTest {
 
         service.delete(token, id);
         assertTrue(true);
+    }
+
+    @Test
+    void delete_deletedEntityTest(){
+        String token = "somevalidtoken";
+        int id = 12;
+
+        when(securityTokenServiceMock.isTokenValid(token)).thenReturn(true);
+        when(repoMock.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> service.delete(token, id));
+    }
+
+    @Test
+    void delete_invalidTokenTest(){
+        String token = "somewrongtoken";
+        int id = 12;
+
+        when(securityTokenServiceMock.isTokenValid(token)).thenThrow(InvalidatedSecurityTokenException.class);
+        when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
+
+        assertThrows(InvalidatedSecurityTokenException.class, () -> service.delete(token, id));
+    }
+
+    @Test
+    void delete_deletedTokenTest(){
+        String token = "somewrongtoken";
+        int id = 12;
+
+        when(securityTokenServiceMock.isTokenValid(token)).thenThrow(SecurityTokenNotFoundException.class);
+        when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
+
+        assertThrows(SecurityTokenNotFoundException.class, () -> service.delete(token, id));
     }
 }
