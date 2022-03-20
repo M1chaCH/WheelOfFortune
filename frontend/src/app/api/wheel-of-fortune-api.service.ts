@@ -93,7 +93,7 @@ export class WheelOfFortuneApiService {
     console.log("checking if SecurityToken expired");
     const expired = this.localStorageAccess.getSecurityExpired();
     const token = this.localStorageAccess.getSecurityToken();
-    if(!!expired && parseInt(expired) < Date.now()){
+    if(!!expired && Date.parse(expired) < Date.now()){
       console.warn("token expired")
       //check if token valid -> false: login, true: update
       this.post(ApiEndpoint.TOKEN, token).subscribe(() => {

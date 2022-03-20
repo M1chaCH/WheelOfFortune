@@ -13,7 +13,7 @@ export class LocalStorageAccessService {
    */
   setSecurityToken(securityToken: any){
     localStorage.setItem(this.SEC_TOKEN, securityToken.token);
-    localStorage.setItem(this.SEC_TOKEN_EXPIRED, securityToken.expired);
+    localStorage.setItem(this.SEC_TOKEN_EXPIRED, securityToken.expiresAt);
   }
 
   removeSecurityToken(){

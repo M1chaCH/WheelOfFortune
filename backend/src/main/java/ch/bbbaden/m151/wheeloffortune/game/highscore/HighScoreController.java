@@ -26,7 +26,7 @@ public class HighScoreController {
             @RequestHeader(name = CustomHTTPHeaders.AUTH) String auth,
             @RequestBody HighScoreDTO editedDTO){
         service.edit(auth, editedDTO);
-        return ResponseEntity.ok(new BasicResponseDTO("successfully applied changed so HighScore"));
+        return ResponseEntity.ok(new BasicResponseDTO("successfully applied changes so HighScore"));
     }
 
     @DeleteMapping("/{id}")

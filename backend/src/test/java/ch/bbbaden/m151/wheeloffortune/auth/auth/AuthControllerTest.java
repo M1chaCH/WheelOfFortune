@@ -2,13 +2,14 @@ package ch.bbbaden.m151.wheeloffortune.auth.auth;
 
 import ch.bbbaden.m151.wheeloffortune.auth.api.AuthController;
 import ch.bbbaden.m151.wheeloffortune.auth.api.AuthService;
+import ch.bbbaden.m151.wheeloffortune.auth.api.LoginRequestDTO;
 import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenDTO;
 import ch.bbbaden.m151.wheeloffortune.config.CustomHTTPHeaders;
-import ch.bbbaden.m151.wheeloffortune.util.BasicResponseDTO;
-import ch.bbbaden.m151.wheeloffortune.auth.api.LoginRequestDTO;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.BadCredentialsException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException;
+import ch.bbbaden.m151.wheeloffortune.util.BasicResponseDTO;
+import ch.bbbaden.m151.wheeloffortune.util.LocalDateTimeParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -23,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -103,13 +103,11 @@ class AuthControllerTest {
         String username = "admin";
         String password = "admin";
         String expectedToken = UUID.randomUUID().toString();
-        LocalDateTime expectedExpiryDate = LocalDateTime.now();
-        String expectedExpiryDateString =
-                expectedExpiryDate.format(DateTimeFormatter.ofPattern(SecurityTokenDTO.DATE_FORMAT_PATTERN));
+        String expectedExpiryDate = LocalDateTimeParser.dateToString(LocalDateTime.now());
 
         String loginRequestDTOJson = writer.writeValueAsString(new LoginRequestDTO(username, password));
         String secTokenResponseDTO =
-                "{\"token\": \"" + expectedToken + "\", \"expiresAt\": \"" + expectedExpiryDateString + "\"}";
+                "{\"token\": \"" + expectedToken + "\", \"expiresAt\": \"" + expectedExpiryDate + "\"}";
 
         when(service.loginAdmin(username, password)).thenReturn(ResponseEntity.ok(
                 new SecurityTokenDTO(expectedToken, expectedExpiryDate)));
@@ -135,11 +133,9 @@ class AuthControllerTest {
     @Test //token can be valid or expired (the API handles it the same way)
     void refreshToken_validTokenTest() throws Exception {
         String expectedToken = UUID.randomUUID().toString();
-        LocalDateTime expectedExpiryDate = LocalDateTime.now();
-        String expectedExpiryDateString = LocalDateTime.now().format(
-                DateTimeFormatter.ofPattern(SecurityTokenDTO.DATE_FORMAT_PATTERN));
+        String expectedExpiryDate = LocalDateTimeParser.dateToString(LocalDateTime.now());
         String secTokenResponseDTO =
-                "{\"token\": \"" + expectedToken + "\", \"expiresAt\": \"" + expectedExpiryDateString + "\"}";
+                "{\"token\": \"" + expectedToken + "\", \"expiresAt\": \"" + expectedExpiryDate + "\"}";
 
         when(service.refreshToken(expectedToken)).thenReturn(ResponseEntity.ok(
                 new SecurityTokenDTO(expectedToken, expectedExpiryDate)));
