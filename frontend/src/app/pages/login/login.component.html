@@ -1,0 +1,22 @@
+<main class="login-main">
+  <div class="login-card">
+    <h1>Login</h1>
+    <form [formGroup]="loginForm">
+
+      <mat-form-field class="text-field" appearance="fill">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username">
+      </mat-form-field>
+
+      <mat-form-field class="text-field" appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password">
+      </mat-form-field>
+
+      <div class="login-controls">
+        <button mat-raised-button color="primary" (click)="login()">Login</button>
+        <button mat-raised-button (click)="redirectHome()">Home</button>
+      </div>
+    </form>
+  </div>
+</main>

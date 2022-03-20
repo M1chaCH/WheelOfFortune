@@ -5,14 +5,23 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {MaterialModule} from "./material.module";
-import {HomeComponent} from "./pages.home/home.component";
+import {AdminComponent} from "./pages/admin/admin.component";
+import {LoginComponent} from "./pages/login/login.component";
+import {HomeComponent} from "./pages/home/home.component";
+import {AuthInterceptor} from "./api/auth-interceptor";
+import {ErrorComponent} from "./pages/error/error.component";
+import {ErrorSnackComponent} from "./components/error-snack.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    AdminComponent,
+    LoginComponent,
+    ErrorComponent,
+    ErrorSnackComponent,
   ],
   imports: [
     BrowserModule,
@@ -23,7 +32,13 @@ import {HomeComponent} from "./pages.home/home.component";
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
