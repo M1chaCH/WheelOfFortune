@@ -1,7 +1,8 @@
 <div class="home-body">
   <nav class="home-header">
     <form>
-      <button mat-raised-button color="primary" (click)="login()">Login</button>
+      <button mat-raised-button color="primary" (click)="login()" *ngIf="!isLoggedIn">Login</button>
+      <button mat-raised-button color="primary" (click)="goToAdmin()" *ngIf="isLoggedIn">Admin</button>
     </form>
   </nav>
 

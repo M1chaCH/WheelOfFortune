@@ -13,6 +13,8 @@ import {HomeComponent} from "./pages/home/home.component";
 import {AuthInterceptor} from "./api/auth-interceptor";
 import {ErrorComponent} from "./pages/error/error.component";
 import {ErrorSnackComponent} from "./components/error-snack.component";
+import {HighScoreListComponent} from "./components/high-score/high-score-list.component";
+import {DeletedSnackComponent} from "./components/deleted-snack.component";
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import {ErrorSnackComponent} from "./components/error-snack.component";
     LoginComponent,
     ErrorComponent,
     ErrorSnackComponent,
+    DeletedSnackComponent,
+    HighScoreListComponent,
   ],
   imports: [
     BrowserModule,

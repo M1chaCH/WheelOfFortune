@@ -1,12 +1,36 @@
 <div class="admin-body">
 
   <nav class="admin-header">
-    <button mat-raised-button color="primary" (click)="goHome()">Home</button>
-    <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+      <div class="left">
+        <div class="side">
+          <h2>Hello Username</h2>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="side">
+          <button mat-raised-button color="primary" (click)="goHome()">Home</button>
+          <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+        </div>
+      </div>
   </nav>
 
   <main class="admin-main">
-    <h1>Hello Mate</h1>
+    <div>
+      <high-score-list [admin]=true></high-score-list>
+    </div>
+
+    <div>
+      <div style="height: 300px">
+        <h1>Hello 2</h1>
+      </div>
+    </div>
+
+    <div>
+      <div style="height: 800px">
+        <h1>Hello 3</h1>
+      </div>
+    </div>
   </main>
 
 </div>

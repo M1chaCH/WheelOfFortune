@@ -1,0 +1,58 @@
+.parent{
+  display: contents;
+  margin: 10px;
+}
+
+.record-container{
+  max-height: 750px;
+  //min-height: 300px;
+  overflow-y: auto;
+}
+
+.record{
+  animation: on-hover-leave .3s ease-out;
+
+  display: grid;
+  grid-template-columns: auto auto 60px;
+  grid-template-rows: auto;
+
+  margin: 10px;
+  padding: 10px 10px;
+  height: 40px;
+  background-color: #333333;
+  border-radius: 20px;
+
+  * {
+    display: flex;
+    align-items: center;
+  }
+
+  #username{
+    padding-left: 20px;
+    font-weight: bold;
+  }
+
+  span {
+    font-size: 20px;
+  }
+
+  form{
+    justify-content: flex-end;
+  }
+}
+
+.record:hover{
+  animation: on-hover-enter .3s ease-out;
+  background-color: #404040
+
+}
+
+@keyframes on-hover-enter {
+  0% { background-color: #333333 }
+  100% { background-color: #404040 }
+}
+
+@keyframes on-hover-leave {
+  0% { background-color: #404040 }
+  100% { background-color: #333333 }
+}

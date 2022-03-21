@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {CanActivate, Router} from "@angular/router";
 import {AuthService} from "../auth.service";
-import {Observable, tap} from "rxjs";
+import {Observable, of, tap} from "rxjs";
 import {AppRout} from "../../config/appRout";
 
 @Injectable({ providedIn: "root" })
@@ -16,12 +16,12 @@ export class AdminGuard implements CanActivate {
    * @returns true: when the client is logged in and has a valid toke
    */
   canActivate(): Observable<boolean>{
-    const authenticated = this.auth.isLoggedIn();
-    return authenticated.pipe(
-      tap(authenticated => {
-        if(!authenticated)
-          this.router.navigate([AppRout.LOGIN]);
-      }),
-    );
+    let request = this.auth.isLoggedIn();
+    return new Observable<boolean>(observer => {
+      request.then(value => observer.next(value)).catch(() => {
+        observer.next(false);
+        this.router.navigate([AppRout.LOGIN]);
+      });
+    });
   }
 }

@@ -4,7 +4,6 @@ import {LocalStorageAccessService} from "../api/local-storage-access.service";
 import {Router} from "@angular/router";
 import {AppRout} from "../config/appRout";
 import {ApiHttpMethods} from "../config/apiHttpMethods";
-import {Observable, of} from "rxjs";
 import {WheelOfFortuneApiService} from "../api/wheel-of-fortune-api.service";
 
 @Injectable({ providedIn: "root" })
@@ -34,14 +33,15 @@ export class AuthService{
     });
   }
 
-  isLoggedIn(): Observable<boolean>{
+  async isLoggedIn(): Promise<boolean> {
     let token = this.localStorageAccess.getSecurityToken();
     if(!token)
-      return of(false);
+      return new Promise<boolean>((resolve, reject) => reject("security token not found"));
 
-    const response = this.api.post(ApiEndpoint.TOKEN, token);
-    return new Observable<boolean>(observer =>
-      response.subscribe(() => observer.next(true),
-        () => observer.next(false)));
+    const response = this.api.callHandled(ApiEndpoint.TOKEN, token, ApiHttpMethods.POST, true);
+    return new Promise<boolean>((resolve, reject) => {
+      response.subscribe(() => resolve(true),
+        () => reject("invalid token"));
+    });
   }
 }

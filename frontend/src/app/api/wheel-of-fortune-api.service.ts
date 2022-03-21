@@ -6,7 +6,7 @@ import {LocalStorageAccessService} from "./local-storage-access.service";
 import {AppRout} from "../config/appRout";
 import {Router} from "@angular/router";
 import {ApiHttpMethods} from "../config/apiHttpMethods";
-import {catchError, throwError} from "rxjs";
+import {catchError, Observable, throwError} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
 
 @Injectable({providedIn: "root"})
@@ -24,7 +24,7 @@ export class WheelOfFortuneApiService {
    * @param payload any object to be sent in the request body
    * @returns the response
    */
-  get(endpoint: ApiEndpoint, payload: any) {
+  get(endpoint: string, payload: any) {
     return this.http.get<any>(`${appConfig.api_url}${endpoint}`, payload);
   }
 
@@ -34,7 +34,7 @@ export class WheelOfFortuneApiService {
    * @param payload any object to be sent in the request body
    * @returns the response
    */
-  post(endpoint: ApiEndpoint, payload: any) {
+  post(endpoint: string, payload: any) {
     return this.http.post<any>(`${appConfig.api_url}${endpoint}`, payload);
   }
 
@@ -44,7 +44,7 @@ export class WheelOfFortuneApiService {
    * @param payload any object to be sent in the request body
    * @returns the response
    */
-  put(endpoint: ApiEndpoint, payload: any) {
+  put(endpoint: string, payload: any) {
     return this.http.put<any>(`${appConfig.api_url}${endpoint}`, payload);
   }
 
@@ -54,7 +54,7 @@ export class WheelOfFortuneApiService {
    * @param payload any object to be sent in the request body
    * @returns the response
    */
-  delete(endpoint: ApiEndpoint, payload: any) {
+  delete(endpoint: string, payload: any) {
     return this.http.delete<any>(`${appConfig.api_url}${endpoint}`, { body: payload });
   }
 
@@ -63,13 +63,24 @@ export class WheelOfFortuneApiService {
    * & handles the error if one occurs
    * @param endpoint the endpoint to send the request to
    * @param payload any object to be sent in the request body
-   * @param method the HTTP method by witch to send the request
-   * @param authorize true: refresh token if needed
+   * @param method the HTTP method by which to send the request
+   * @param checkToken true: refresh token if needed
    */
-  callHandled(endpoint: ApiEndpoint, payload: any, method: ApiHttpMethods, authorize: boolean){
-    if(authorize)
-      this.refreshSecurityTokenIfExpired();
+  callHandled(endpoint: string, payload: any, method: ApiHttpMethods, checkToken: boolean){
+    if(checkToken) {
+      return new Observable<any>(observer => {
+        this.refreshSecurityTokenIfExpired().subscribe(success => {
+          if(success)
+            this.sendAndHandleRequest(endpoint, payload, method).subscribe((response: any) => observer.next(response));
+          else this.router.navigate([AppRout.LOGIN]);
+        },() => this.router.navigate([AppRout.LOGIN]));
+      })
+    }else{
+      return this.sendAndHandleRequest(endpoint, payload, method);
+    }
+  }
 
+  private sendAndHandleRequest(endpoint: string, payload: any, method: ApiHttpMethods){
     let request: any;
     switch (method){
       case ApiHttpMethods.GET:
@@ -89,25 +100,23 @@ export class WheelOfFortuneApiService {
     return this.handleError(request, payload);
   }
 
-  private refreshSecurityTokenIfExpired() {
-    console.log("checking if SecurityToken expired");
+  private refreshSecurityTokenIfExpired(): Observable<boolean>{
     const expired = this.localStorageAccess.getSecurityExpired();
     const token = this.localStorageAccess.getSecurityToken();
-    if(!!expired && Date.parse(expired) < Date.now()){
-      console.warn("token expired")
-      //check if token valid -> false: login, true: update
-      this.post(ApiEndpoint.TOKEN, token).subscribe(() => {
-        console.log("token hasn't yet invalidated -> refreshing");
+
+    return new Observable<boolean>(observer => {
+      if(!!expired && Date.parse(expired) < Date.now()){
+        console.warn("token expired")
+
         this.put(ApiEndpoint.TOKEN, token).subscribe(secToken => {
           this.localStorageAccess.setSecurityToken(secToken);
-        }, () => this.router.navigate([AppRout.LOGIN]),
-          () => console.log("completed refreshing token"));
+          observer.next(true);
+        }, () => observer.next(false))
 
-      }, () => this.router.navigate([AppRout.LOGIN]),
-        () => console.log("completed token check"));
-    }else {
-      console.log("token NOT expired")
-    }
+      }else {
+        observer.next(true);
+      }
+    });
   }
 
   private handleError(request: any, payload: any){
