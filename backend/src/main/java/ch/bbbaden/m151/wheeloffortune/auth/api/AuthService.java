@@ -74,6 +74,7 @@ public class AuthService {
                 securityTokenToRefresh))
             throw new InvalidatedSecurityTokenException(tokenString);
 
+        securityTokenService.deleteToken(securityTokenToRefresh);
         SecurityToken securityToken = securityTokenService.generateTokenForAdmin(securityTokenToRefresh.getAdmin());
         return ResponseEntity.ok(SecurityTokenDTO.fromToken(securityToken));
     }
