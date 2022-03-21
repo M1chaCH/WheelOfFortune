@@ -21,8 +21,8 @@ public class HighScoreService {
     /**
      * @return a list of all the {@link HighScoreDTO}s in the DB, sorted decreasing by achievedAt.
      */
-    public List<HighScoreDTO> getAllSortedByDateAsDto(){
-        return StreamSupport.stream(repo.findAllByOrderByAchievedAtDesc().spliterator(), false)
+    public List<HighScoreDTO> getAllSortedByScoreAsDto(){
+        return StreamSupport.stream(repo.findAllByOrderByScoreDesc().spliterator(), false)
                 .map(highScore -> new HighScoreDTO(
                         highScore.getId(),
                         highScore.getScore(),

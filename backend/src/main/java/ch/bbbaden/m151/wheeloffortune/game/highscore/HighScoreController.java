@@ -18,7 +18,7 @@ public class HighScoreController {
 
     @GetMapping()
     public ResponseEntity<List<HighScoreDTO>> readAll(){
-        return ResponseEntity.ok(service.getAllSortedByDateAsDto());
+        return ResponseEntity.ok(service.getAllSortedByScoreAsDto());
     }
 
     @PutMapping()
