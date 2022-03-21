@@ -4,7 +4,10 @@
   <div class="record-container">
     <div *ngFor="let highScore of highScores">
       <div class="record">
-        <span id="username">{{highScore.username}}</span>
+        <div style="display: block">
+          <span id="username">{{highScore.username}}</span>
+          <span id="date">{{highScore.achievedAt}}</span>
+        </div>
         <span>{{highScore.score}}</span>
         <form *ngIf="admin">
           <button mat-icon-button color="warn" type="submit" (click)="delete(highScore)">

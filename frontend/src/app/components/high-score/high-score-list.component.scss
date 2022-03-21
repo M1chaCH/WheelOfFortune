@@ -5,7 +5,6 @@
 
 .record-container{
   max-height: 750px;
-  //min-height: 300px;
   overflow-y: auto;
 }
 
@@ -30,6 +29,12 @@
   #username{
     padding-left: 20px;
     font-weight: bold;
+  }
+
+  #date{
+    padding-left: 20px;
+    font-size: 14px;
+    font-weight: normal;
   }
 
   span {
