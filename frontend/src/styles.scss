@@ -33,6 +33,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+.flex-center-content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+
 /* -- SCROLLBAR -- */
 ::-webkit-scrollbar {
   width: 10px;

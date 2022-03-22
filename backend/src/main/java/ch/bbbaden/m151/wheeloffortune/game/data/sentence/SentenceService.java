@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class SentenceService extends GenericAuthenticatedEntityService<Integer, SentenceDTO, Sentence, SentenceRepo> {
 
-    public static final int MAX_SENTENCE_LENGTH = 50;
+    public static final int MAX_SENTENCE_LENGTH = 35;
     public static final int MIN_SENTENCE_LENGTH = 10;
 
     private final CategoryService categoryService;

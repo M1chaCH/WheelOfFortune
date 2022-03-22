@@ -57,6 +57,12 @@ public class DefaultDataloader {
             Question q3 = new Question("Which component is more expensive?", "Sram Code RSC", "Sram XX1-Eagle AXS", false, categoryMtb);
             questionRepo.saveAll(List.of(q1,q2,q3));
 
+            List<Question> questions = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                questions.add(new Question("This is a question: " + i, "A1", "A2", true, testCategory));
+            }
+            questionRepo.saveAll(questions);
+
             Sentence s1 = new Sentence("This PC is cool.", categoryPc);
             Sentence s2 = new Sentence("Asus is a company.", categoryPc);
             Sentence s3 = new Sentence("Orbea is a company.", categoryMtb);

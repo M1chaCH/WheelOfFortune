@@ -40,7 +40,10 @@ export class CategoryEditorComponent{
     if(this.editForm.valid){
       this.category.name = this.editForm.value.newName;
       this.api.callHandled(ApiEndpoint.CATEGORY, this.category, ApiHttpMethods.PUT, true)
-        .subscribe(() => this.editMode = false);
+        .subscribe(() => {
+          this.editMode = false;
+          location.reload();
+        });
     }
   }
 
