@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionService extends GenericAuthenticatedEntityService<Integer, QuestionDTO, Question, QuestionRepo> {
 
-    public static final int MAX_QUESTION_LENGTH = 50;
+    public static final int MAX_QUESTION_LENGTH = 60;
     public static final int MIN_QUESTION_LENGTH = 10;
-    public static final int MAX_QUESTION_ANSWER_LENGTH = 20;
+    public static final int MAX_QUESTION_ANSWER_LENGTH = 30;
     public static final int MIN_QUESTION_ANSWER_LENGTH = 2;
 
     private final CategoryService categoryService;

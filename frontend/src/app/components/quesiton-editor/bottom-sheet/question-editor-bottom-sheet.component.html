@@ -1,0 +1,64 @@
+<div class="root">
+  <form [formGroup]="questionForm">
+    <div class="split-header">
+      <div class="left">
+        <div class="side">
+          <h1 *ngIf="editMode">Edit Question</h1>
+          <h1 *ngIf="!editMode">Add new Question</h1>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="side">
+          <button mat-raised-button color="primary" class="side" (click)="cancel()" matTooltip="Cancel">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <mat-form-field class="double-column" appearance="fill">
+        <mat-label>Question</mat-label>
+        <input matInput formControlName="question" placeholder="{{question.question}}">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Answer 1</mat-label>
+        <input matInput formControlName="answerOne" placeholder="{{question.answerOne}}">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Answer 2</mat-label>
+        <input matInput formControlName="answerTwo" placeholder="{{question.answerTwo}}">
+      </mat-form-field>
+
+      <div class="flex-center-content">
+        <mat-form-field class="double-column" appearance="fill">
+          <mat-label>Category</mat-label>
+          <mat-select [(value)]="selectedCategoryId" required>
+            <mat-option *ngFor="let category of categories" [value]="category.id">
+              {{category.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="flex-center-content">
+        <mat-button-toggle-group value="{{selectedAnswerOneCorrect}}">
+          <mat-button-toggle value=true (click)="selectedAnswerOneCorrect = true">Answer 1</mat-button-toggle>
+          <mat-button-toggle value=false (click)="selectedAnswerOneCorrect = false">Answer 2</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <button mat-raised-button color="accent" type="submit" [disabled]="!questionForm.valid" (click)="save()">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+      <button mat-raised-button color="warn" (click)="delete()" *ngIf="editMode">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+    </div>
+  </form>
+</div>

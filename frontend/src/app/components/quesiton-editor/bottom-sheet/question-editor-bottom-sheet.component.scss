@@ -1,0 +1,25 @@
+.root{
+  display: block;
+  height: fit-content;
+
+  .content{
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 50% 50%;
+
+    button{
+      margin: 20px;
+    }
+
+    mat-form-field{
+      height: 60px;
+      margin: 0 5px;
+    }
+
+    .double-column{
+      grid-column: 1 / span 2;
+    }
+  }
+}

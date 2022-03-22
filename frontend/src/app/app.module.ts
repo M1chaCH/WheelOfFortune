@@ -22,6 +22,10 @@ import {
 } from "./components/sentence-editor/bottom-sheet/sentence-editor-bottom-sheet.component";
 import {CategoryAdderComponent} from "./components/categroy-editor/adder/category-adder.component";
 import {CategoryAdderDialogComponent} from "./components/categroy-editor/adder/category-adder-dialog.component";
+import {QuestionEditorComponent} from "./components/quesiton-editor/question-editor.component";
+import {
+  QuestionEditorBottomSheetComponent
+} from "./components/quesiton-editor/bottom-sheet/question-editor-bottom-sheet.component";
 
 @NgModule({
   declarations: [
@@ -38,6 +42,8 @@ import {CategoryAdderDialogComponent} from "./components/categroy-editor/adder/c
     SentenceEditorBottomSheetComponent,
     CategoryAdderComponent,
     CategoryAdderDialogComponent,
+    QuestionEditorComponent,
+    QuestionEditorBottomSheetComponent,
   ],
   imports: [
     BrowserModule,

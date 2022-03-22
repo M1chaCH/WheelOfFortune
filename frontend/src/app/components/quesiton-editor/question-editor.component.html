@@ -1,0 +1,38 @@
+<div class="parent">
+  <div class="split-header">
+    <div class="left">
+      <div class="side">
+        <h1>Questions</h1>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="side">
+        <button class="header-button" mat-mini-fab color="primary" (click)="create()">
+          <mat-icon>add</mat-icon>
+        </button>
+
+        <category-adder></category-adder>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div *ngFor="let entry of questions | keyvalue">
+      <category-editor [category]="entry.key"></category-editor>
+      <div class="question-box">
+        <div *ngFor="let question of entry.value" class="question" (click)="edit(question)">
+          <span id="question">{{question.question}}</span>
+          <div class="answers">
+            <div class="answer" [ngClass]="{'correct': question.answerOneCorrect, 'false': !question.answerOneCorrect}">
+              <span>{{question.answerOne}}</span>
+            </div>
+            <div class="answer" [ngClass]="{'correct': !question.answerOneCorrect, 'false': question.answerOneCorrect}">
+              <span>{{question.answerTwo}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
