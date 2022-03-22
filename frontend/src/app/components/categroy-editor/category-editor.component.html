@@ -1,0 +1,25 @@
+<div class="container" *ngIf="!editMode">
+  <form>
+    <button mat-icon-button color="accent" type="submit" (click)="editMode = true">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <span>{{category.name}}</span>
+  </form>
+</div>
+<div class="container" *ngIf="editMode">
+  <form [formGroup]="editForm">
+    <button mat-icon-button color="accent" type="submit" (click)="save()" [disabled]="!editForm.valid">
+      <mat-icon>check</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" type="submit" (click)="cancel()">
+      <mat-icon>cancel</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" type="submit" (click)="delete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <mat-form-field class="input-field">
+      <mat-label>Rename</mat-label>
+      <input matInput formControlName="newName" placeholder="{{category.name}}" value="{{category.name}}" required>
+    </mat-form-field>
+  </form>
+</div>

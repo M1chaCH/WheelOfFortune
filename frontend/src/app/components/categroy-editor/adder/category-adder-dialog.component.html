@@ -1,0 +1,18 @@
+<div style="width: 300px; ">
+  <h1>Add Category</h1>
+  <form [formGroup]="categoryForm" style="display: grid; grid-template-rows: auto auto; grid-template-columns: auto auto;">
+    <mat-form-field appearance="fill" style="grid-column: 1 / span 2">
+      <mat-label>Category name</mat-label>
+      <input matInput formControlName="categoryName" placeholder="Category">
+    </mat-form-field>
+
+    <button mat-raised-button color="accent" style="margin: 20px;" (click)="create()" [disabled]="!categoryForm.valid">
+      <mat-icon>save</mat-icon>
+      Save
+    </button>
+    <button mat-raised-button color="warn" style="margin: 20px;" (click)="cancel()">
+      <mat-icon>cancel</mat-icon>
+      Cancel
+    </button>
+  </form>
+</div>

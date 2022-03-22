@@ -2,12 +2,16 @@ package ch.bbbaden.m151.wheeloffortune.game.data.category;
 
 import ch.bbbaden.m151.wheeloffortune.game.data.GenericAuthenticatedEntityService;
 import ch.bbbaden.m151.wheeloffortune.game.data.GenericAuthenticatedEntityServiceTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class CategoryServiceTest extends GenericAuthenticatedEntityServiceTest<Integer, CategoryDTO, Category, CategoryRepo> {
@@ -18,13 +22,31 @@ class CategoryServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     @MockBean
     CategoryRepo repoMock;
 
+    @Test
+    void isEntityValid_trueTest(){
+        Category category = new Category("Categroy");
+        assertTrue(service.isEntityValid(category));
+    }
+
+    @Test
+    void isEntityValid_nameShortTest(){
+        Category category = new Category("1");
+        assertFalse(service.isEntityValid(category));
+    }
+
+    @Test
+    void isEntityValid_nameLongTest(){
+        Category category = new Category("This is a way to long category name.");
+        assertFalse(service.isEntityValid(category));
+    }
+
     @Override
     protected CategoryRepo getRepoMock() {
         return repoMock;
     }
 
     @Override
-    protected GenericAuthenticatedEntityService<Integer, CategoryDTO, Category, CategoryRepo> getService() {
+    protected GenericAuthenticatedEntityService<Integer, CategoryDTO, Category, CategoryRepo> getGenericService() {
         return service;
     }
 

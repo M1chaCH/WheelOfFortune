@@ -4,6 +4,7 @@ import ch.bbbaden.m151.wheeloffortune.auth.token.SecurityTokenService;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.InvalidatedSecurityTokenException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.auth.SecurityTokenNotFoundException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityAlreadyExistsException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityInvalidException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityNotFoundException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,13 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
 
     protected final SecurityTokenService securityTokenService;
     protected final R repo;
+
+    /**
+     * !NOTE does not check if exists!
+     * @param entity the entity to check
+     * @return true: the entity is valid and can be saved / modified with 0 concern.
+     */
+    protected abstract boolean isEntityValid(E entity);
 
     //works because is not generically autowired & intellij does not recognise that(check inheritance)
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -75,9 +83,13 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
      * when securityTokenString does not exist
      * @throws InvalidatedSecurityTokenException when securityTokenString is not valid
      * @throws EntityAlreadyExistsException when entity already exists in the db
+     * @throws EntityInvalidException when the entity has invalid fields
      */
     public E addNew(String securityTokenString, E toAdd){
         checkToken(securityTokenString);
+
+        if(!isEntityValid(toAdd))
+            throw new EntityInvalidException(toAdd.getClass().getSimpleName(), toAdd.getId());
 
         if(repo.findById(toAdd.getId()).isPresent())
             throw new EntityAlreadyExistsException(toAdd.getClass().getName(), toAdd.getId());
@@ -100,9 +112,13 @@ public abstract class GenericAuthenticatedEntityService<I, D extends WebDto<I, E
      * when securityTokenString does not exist
      * @throws InvalidatedSecurityTokenException when securityTokenString is not valid
      * @throws EntityNotFoundException when entity does not exist in the db
+     * @throws EntityInvalidException when the entity has invalid fields
      */
     public E edit(String securityTokenString, E toEdit){
         checkToken(securityTokenString);
+
+        if(!isEntityValid(toEdit))
+            throw new EntityInvalidException(toEdit.getClass().getSimpleName(), toEdit.getId());
 
         if(repo.findById(toEdit.getId()).isEmpty())
             throw new EntityNotFoundException(toEdit.getClass().getName(), toEdit.getId());

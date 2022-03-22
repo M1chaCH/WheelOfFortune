@@ -23,7 +23,8 @@ export class ErrorHandlingService {
     }
     //else if ("other error code that has special handling")
     else {
-      console.log("caught unexpected -> redirecting to error-page");
+      console.warn("caught unexpected -> redirecting to error-page");
+      console.log(JSON.stringify(error));
       this.router.navigate([AppRout.ERROR], { queryParams: {
           code: error.status,
           message: error.message,

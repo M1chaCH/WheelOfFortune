@@ -21,6 +21,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -48,7 +49,8 @@ public class DefaultDataloader {
 
             Category categoryPc = new Category("PC");
             Category categoryMtb = new Category("MTB");
-            categoryRepo.saveAll(List.of(categoryPc, categoryMtb));
+            Category testCategory = new Category("test");
+            categoryRepo.saveAll(List.of(categoryPc, categoryMtb, testCategory));
 
             Question q1 = new Question("Select the newer CPU?", "Intel i7-12700K", "Intel i9-10900K", true, categoryPc);
             Question q2 = new Question("What bike is usually heavier?", "Yeti SB150", "Scott Spark 900", false, categoryMtb);
@@ -59,6 +61,12 @@ public class DefaultDataloader {
             Sentence s2 = new Sentence("Asus is a company.", categoryPc);
             Sentence s3 = new Sentence("Orbea is a company.", categoryMtb);
             sentenceRepo.saveAll(List.of(s1,s2,s3));
+
+            List<Sentence> sentences = new ArrayList<>();
+            for (int i = 0; i < 20; i++) {
+                sentences.add(new Sentence("This is a Test Sentence " + i, testCategory));
+            }
+            sentenceRepo.saveAll(sentences);
 
             HighScore highScore = new HighScore(5500, "test", LocalDateTime.now());
             HighScore highScore1 = new HighScore(7000, "test1", LocalDateTime.now().plusHours(1));

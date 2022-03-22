@@ -1,0 +1,29 @@
+<div class="parent">
+  <form class="split-header">
+    <div class="left">
+      <div class="side">
+        <h1>Sentences</h1>
+      </div>
+    </div>
+    <div class="right">
+      <div class="side">
+        <button class="header-button" mat-mini-fab color="primary" (click)="create()">
+          <mat-icon>add</mat-icon>
+        </button>
+
+        <category-adder></category-adder>
+      </div>
+    </div>
+  </form>
+
+  <div class="container">
+    <div *ngFor="let entry of sentences | keyvalue">
+      <category-editor [category]=entry.key></category-editor>
+      <div class="sentence-box">
+        <div *ngFor="let sentence of entry.value" class="sentence" (click)="edit(sentence)">
+          <span>{{sentence.sentence}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

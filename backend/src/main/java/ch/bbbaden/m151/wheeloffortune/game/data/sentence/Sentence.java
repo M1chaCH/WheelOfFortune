@@ -5,6 +5,8 @@ import ch.bbbaden.m151.wheeloffortune.game.data.category.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -22,6 +24,7 @@ public class Sentence implements WebEntity<Integer, SentenceDTO> {
     private String sentence;
 
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "category", nullable = false)
     private Category category;
 

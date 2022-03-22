@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -55,14 +56,47 @@ class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
         assertThrows(EntityNotFoundException.class, () -> service.getAllAsDtoByCategory(categoryId));
     }
 
+    @Test
+    void isEntityValid_trueTest(){
+        Sentence sentence = generateEntity();
+        assertTrue(service.isEntityValid(sentence));
+    }
+
+    @Test
+    void isEntityValid_sentenceShortTest(){
+        Sentence sentence = generateEntity();
+        sentence.setSentence("123456789");
+        assertFalse(service.isEntityValid(sentence));
+    }
+
+    @Test
+    void isEntityValid_sentenceLongTest(){
+        Sentence sentence = generateEntity();
+        sentence.setSentence("this is a way to long sentence. it cant ever be displayed.");
+        assertFalse(service.isEntityValid(sentence));
+    }
+
+    @Test
+    void isEntityValid_categoryInvalidTest(){
+        Sentence sentence = generateEntity();
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(false);
+        assertFalse(service.isEntityValid(sentence));
+    }
+
     @Override
     protected SentenceRepo getRepoMock() {
         return repoMock;
     }
 
     @Override
-    protected GenericAuthenticatedEntityService<Integer, SentenceDTO, Sentence, SentenceRepo> getService() {
+    protected GenericAuthenticatedEntityService<Integer, SentenceDTO, Sentence, SentenceRepo> getGenericService() {
         return service;
+    }
+
+    @Override
+    protected void mockAdditionalBeans() {
+        super.mockAdditionalBeans();
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
     }
 
     @Override
@@ -72,7 +106,7 @@ class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
 
     protected Sentence generateEntity(Integer id) {
         Sentence sentence = new Sentence(
-                "sentence" + id,
+                "This is a Number: " + id,
                 new CategoryDTO(1, "random").parseToEntity()
         );
         sentence.setId(id);
@@ -90,7 +124,7 @@ class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
 
     @Override
     protected SentenceDTO generateDTO() {
-        return new SentenceDTO(1, "sentence1", new CategoryDTO(1, "random"));
+        return new SentenceDTO(1, "This is a Number: 1", new CategoryDTO(1, "random"));
     }
 
     @Override

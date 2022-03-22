@@ -26,15 +26,12 @@ export class HighScoreListComponent implements OnInit{
   }
 
   delete(highScore: Highscore){
-    this.api.callHandled(`${ApiEndpoint.HIGHSCORE}/${highScore.id}`,
-      {},
-      ApiHttpMethods.DELETE,
-      true)
+    this.api.callHandled(`${ApiEndpoint.HIGHSCORE}/${highScore.id}`, {}, ApiHttpMethods.DELETE, true)
       .subscribe(() => {
         this.loadHighScores();
         this.snackBar.openFromComponent(DeletedSnackComponent, {
           duration: 6 * 1000,
-          data: "Highscore (" + highScore.username + " | " + highScore.score + ")"
+          data: "Highscore"
         });
       });
   }

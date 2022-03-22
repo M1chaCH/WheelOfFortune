@@ -121,7 +121,7 @@ export class WheelOfFortuneApiService {
 
   private handleError(request: any, payload: any){
     return request.pipe(catchError(e => {
-      console.log("caught error: " + JSON.stringify(e));
+      console.log("caught error");
       this.errorHandlingService.handleError(e, payload);
       return throwError(e);
     }));

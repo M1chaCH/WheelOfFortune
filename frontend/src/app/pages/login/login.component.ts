@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit{
     this.route.queryParams.subscribe(params => {
       let errorMessage = params["message"];
       if(!!errorMessage) {
-        this.errorSnackBar.openFromComponent(ErrorSnackComponent, {duration: 10 * 1000, data: errorMessage});
+        this.errorSnackBar.openFromComponent(ErrorSnackComponent, {duration: 5 * 1000, data: errorMessage});
         this.router.navigate([AppRout.LOGIN]); //to reset the url params
       }
     })

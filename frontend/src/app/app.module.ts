@@ -15,6 +15,13 @@ import {ErrorComponent} from "./pages/error/error.component";
 import {ErrorSnackComponent} from "./components/error-snack.component";
 import {HighScoreListComponent} from "./components/high-score/high-score-list.component";
 import {DeletedSnackComponent} from "./components/deleted-snack.component";
+import {CategoryEditorComponent} from "./components/categroy-editor/category-editor.component";
+import {SentenceEditor} from "./components/sentence-editor/sentence-editor";
+import {
+  SentenceEditorBottomSheetComponent
+} from "./components/sentence-editor/bottom-sheet/sentence-editor-bottom-sheet.component";
+import {CategoryAdderComponent} from "./components/categroy-editor/adder/category-adder.component";
+import {CategoryAdderDialogComponent} from "./components/categroy-editor/adder/category-adder-dialog.component";
 
 @NgModule({
   declarations: [
@@ -26,6 +33,11 @@ import {DeletedSnackComponent} from "./components/deleted-snack.component";
     ErrorSnackComponent,
     DeletedSnackComponent,
     HighScoreListComponent,
+    CategoryEditorComponent,
+    SentenceEditor,
+    SentenceEditorBottomSheetComponent,
+    CategoryAdderComponent,
+    CategoryAdderDialogComponent,
   ],
   imports: [
     BrowserModule,

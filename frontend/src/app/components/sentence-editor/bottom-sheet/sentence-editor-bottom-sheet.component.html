@@ -1,0 +1,44 @@
+<div class="root">
+  <form [formGroup]="sentenceForm">
+    <div class="split-header">
+      <div class="left">
+        <div class="side">
+          <h2 *ngIf="editMode" >Edit Sentence</h2>
+          <h2 *ngIf="!editMode" >Add new Sentence</h2>
+        </div>
+      </div>
+      <div class="right">
+        <div class="side">
+          <button mat-raised-button color="primary" class="side" (click)="cancel()" matTooltip="Cancel">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <mat-form-field class="input-field double-column" appearance="fill">
+        <mat-label>Sentence</mat-label>
+        <input matInput formControlName="newSentence" placeholder="{{sentence.sentence}}" value="{{sentence.sentence}}" required>
+      </mat-form-field>
+
+      <mat-form-field class="double-column" appearance="fill">
+        <mat-label>Category</mat-label>
+        <mat-select [(value)]="selectedCategoryId" required>
+          <mat-option *ngFor="let category of categories" [value]="category.id">
+            {{category.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="accent" type="submit" [disabled]="!sentenceForm.valid" (click)="save()">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+      <button mat-raised-button color="warn" (click)="delete()" *ngIf="editMode">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+    </div>
+  </form>
+</div>

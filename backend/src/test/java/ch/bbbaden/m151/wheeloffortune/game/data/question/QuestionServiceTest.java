@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -55,14 +56,94 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
         assertThrows(EntityNotFoundException.class, () -> service.getAllAsDtoByCategory(categoryId));
     }
 
+    @Test
+    void isEntityValid_trueTest(){
+        Category category = new Category("some dud");
+        Question question =
+                new Question("This is a cool Question?", "A1", "A2", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
+        assertTrue(service.isEntityValid(question));
+    }
+
+    @Test
+    void isEntityValid_questionShortTest(){
+        Category category = new Category("some dud");
+        Question question =
+                new Question("Question?", "A1", "A2", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
+        assertFalse(service.isEntityValid(question));
+    }
+
+    @Test
+    void isEntityValid_questionLongTest(){
+        Category category = new Category("some dud");
+        Question question = new Question("This is a way to long Question ey. Would you please help me fix that?",
+                "A1", "A2", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
+        assertFalse(service.isEntityValid(question));
+    }
+
+    @Test
+    void isEntityValid_answerOneToShortTest(){
+        Category category = new Category("some dud");
+        Question question =
+                new Question("This is a cool Question?", "A", "A2", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
+        assertFalse(service.isEntityValid(question));
+    }
+
+    @Test
+    void isEntityValid_answerOneToLongTest(){
+        Category category = new Category("some dud");
+        Question question =
+                new Question("This is a cool Question?", "This is again a way to long answer",
+                        "A2", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
+        assertFalse(service.isEntityValid(question));
+    }
+
+    @Test
+    void isEntityValid_answerTwoToShortTest(){
+        Category category = new Category("some dud");
+        Question question =
+                new Question("This is a cool Question?", "A1", "A", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
+        assertFalse(service.isEntityValid(question));
+    }
+
+    @Test
+    void isEntityValid_answerTwoToLongTest(){
+        Category category = new Category("some dud");
+        Question question =
+                new Question("This is a cool Question?", "A1",
+                        "This is again a way to long answer", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
+        assertFalse(service.isEntityValid(question));
+    }
+
+    @Test
+    void isEntityValid_categoryInvalidTest(){
+        Category category = new Category("some dud");
+        Question question =
+                new Question("This is a cool Question?", "A1", "A2", true, category);
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(false);
+        assertFalse(service.isEntityValid(question));
+    }
+
     @Override
     protected QuestionRepo getRepoMock() {
         return repoMock;
     }
 
     @Override
-    protected GenericAuthenticatedEntityService<Integer, QuestionDTO, Question, QuestionRepo> getService() {
+    protected GenericAuthenticatedEntityService<Integer, QuestionDTO, Question, QuestionRepo> getGenericService() {
         return service;
+    }
+
+    @Override
+    protected void mockAdditionalBeans() {
+        super.mockAdditionalBeans();
+        when(categoryServiceMock.isEntityValid(any())).thenReturn(true);
     }
 
     @Override
@@ -72,7 +153,7 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
 
     private Question generateEntity(Integer id){
         Question question = new Question(
-                "question" + id,
+                "This is question with the number: " + id,
                 "answerOne",
                 "answerTwo",
                 true,
@@ -95,7 +176,7 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     protected QuestionDTO generateDTO() {
         return new QuestionDTO(
                 1,
-                "question1",
+                "This is question with the number: 1",
                 "answerOne",
                 "answerTwo",
                 true,

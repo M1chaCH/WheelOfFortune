@@ -1,0 +1,50 @@
+.parent{
+  display: contents;
+  margin: 10px;
+}
+
+.header-button{
+  margin: 0 10px;
+}
+
+.container{
+  max-height: 750px;
+  overflow-y: auto;
+}
+
+.sentence-box{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+
+  width: inherit;
+}
+
+.sentence{
+  animation: on-hover-leave .3s ease-out;
+  background-color: #333333;
+
+  margin: 5px;
+  padding: 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.sentence:hover{
+  animation: on-hover-enter .3s ease-out;
+  background-color: #404040;
+  cursor: pointer;
+}
+
+@keyframes on-hover-enter {
+  0% { background-color: #333333 }
+  100% { background-color: #404040 }
+}
+
+@keyframes on-hover-leave {
+  0% { background-color: #404040 }
+  100% { background-color: #333333 }
+}
