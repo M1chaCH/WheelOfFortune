@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {LocalStorageAccessService} from "./local-storage-access.service";
+import {SessionStorageAccessService} from "./session-storage-access.service";
 import {Observable} from "rxjs";
 
 /**
@@ -10,7 +10,7 @@ import {Observable} from "rxjs";
 export class AuthInterceptor implements HttpInterceptor{
 
   constructor(
-    private localStorageAccess: LocalStorageAccessService,
+    private localStorageAccess: SessionStorageAccessService,
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

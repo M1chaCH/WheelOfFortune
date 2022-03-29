@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiEndpoint} from "../config/apiEndpoint";
 import {appConfig} from "../config/appConfig";
-import {LocalStorageAccessService} from "./local-storage-access.service";
+import {SessionStorageAccessService} from "./session-storage-access.service";
 import {AppRout} from "../config/appRout";
 import {Router} from "@angular/router";
 import {ApiHttpMethods} from "../config/apiHttpMethods";
@@ -13,7 +13,7 @@ import {ErrorHandlingService} from "./error-handling.service";
 export class WheelOfFortuneApiService {
   constructor(
     private http: HttpClient,
-    private localStorageAccess: LocalStorageAccessService,
+    private localStorageAccess: SessionStorageAccessService,
     private router: Router,
     private errorHandlingService: ErrorHandlingService,
   ) { }

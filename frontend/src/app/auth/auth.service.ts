@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {ApiEndpoint} from "../config/apiEndpoint";
-import {LocalStorageAccessService} from "../api/local-storage-access.service";
+import {SessionStorageAccessService} from "../api/session-storage-access.service";
 import {Router} from "@angular/router";
 import {AppRout} from "../config/appRout";
 import {ApiHttpMethods} from "../config/apiHttpMethods";
@@ -11,7 +11,7 @@ export class AuthService{
 
   constructor(
     private api: WheelOfFortuneApiService,
-    private localStorageAccess: LocalStorageAccessService,
+    private localStorageAccess: SessionStorageAccessService,
     private router: Router,
   ) { }
 
