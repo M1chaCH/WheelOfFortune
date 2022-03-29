@@ -13,4 +13,5 @@ public class HighScoreDTO {
     private int score;
     private String username;
     private String achievedAt;
+    //TODO: add until matches: Rang, Name des Spielers, Zeitpunkt des Spiels, Geldbetrag, Anzahl Spielrunden
 }

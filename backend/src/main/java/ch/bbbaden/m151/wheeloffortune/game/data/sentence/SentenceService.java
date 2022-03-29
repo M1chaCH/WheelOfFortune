@@ -8,6 +8,7 @@ import ch.bbbaden.m151.wheeloffortune.game.data.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,17 @@ public class SentenceService extends GenericAuthenticatedEntityService<Integer, 
         }catch (Exception e){
             return false;
         }
+    }
+
+    /**
+     * @param categoryId the id of the category to search
+     * @return a list of {@link Sentence}s that are in the searched category
+     * @throws ch.bbbaden.m151.wheeloffortune.errorhandling.exception.entity.EntityNotFoundException when category
+     * does not exist
+     */
+    public List<Sentence> getAllByCategory(Integer categoryId){
+        Category category = categoryService.getById(categoryId);
+        return new ArrayList<>(repo.findSentencesByCategory(category));
     }
 
     /**
