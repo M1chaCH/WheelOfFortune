@@ -1,14 +1,28 @@
 <div class="home-body">
-  <nav class="home-header">
-    <form>
-      <button mat-raised-button color="primary" (click)="login()" *ngIf="!isLoggedIn">Login</button>
-      <button mat-raised-button color="primary" (click)="goToAdmin()" *ngIf="isLoggedIn">Admin</button>
-    </form>
+  <nav class="home-header split-header">
+    <div class="left">
+      <div class="side">
+        <h2>{{username}}</h2>
+      </div>
+    </div>
+
+    <div class="right">
+      <form class="side">
+        <button mat-icon-button color="basic" (click)="login()" *ngIf="!isLoggedIn">
+          <mat-icon>login</mat-icon>
+        </button>
+        <button mat-raised-button color="primary" (click)="goToAdmin()" *ngIf="isLoggedIn">Admin</button>
+      </form>
+    </div>
   </nav>
 
-  <main class="home-main">
-    <div class="home-elements">
-      <start-game></start-game>
+  <main class="home-element-container">
+    <div class="home-element game">
+      <start-game [(username)]="username" *ngIf="showStart()" ></start-game>
+      <play-game *ngIf="showPlay()"></play-game>
+    </div>
+    <div class="home-element high-score-list">
+      <high-score-list [admin]=false></high-score-list>
     </div>
   </main>
 </div>

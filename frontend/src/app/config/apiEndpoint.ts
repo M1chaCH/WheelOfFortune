@@ -9,7 +9,7 @@ export const enum ApiEndpoint{
   QUESTION = "/game/data/question",
   SENTENCE = "/game/data/sentence",
   HIGHSCORE = "/game/highscore",
-  START_GAME = "/game",
+  NEW_GAME = "/game",
   GAME = "/game/[!]",
   SPIN = "/game/[!]/spin",
   CONSONANT = "/game/[!]/consonant/[!]",

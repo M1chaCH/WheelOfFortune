@@ -5,6 +5,7 @@ export class LocalStorageAccessService {
 
   SEC_TOKEN: string = "ST";
   SEC_TOKEN_EXPIRED: string = "STE";
+  GAME_ID: string = "GID";
 
   constructor() { }
 
@@ -27,5 +28,13 @@ export class LocalStorageAccessService {
 
   getSecurityExpired() {
     return localStorage.getItem(this.SEC_TOKEN_EXPIRED);
+  }
+
+  setGameId(id: string){
+    localStorage.setItem(this.GAME_ID, id);
+  }
+
+  getGameId(): string{
+    return localStorage.getItem(this.GAME_ID) as string;
   }
 }

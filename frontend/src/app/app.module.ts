@@ -27,6 +27,7 @@ import {
   QuestionEditorBottomSheetComponent
 } from "./components/quesiton-editor/bottom-sheet/question-editor-bottom-sheet.component";
 import {StartGameComponent} from "./components/game/start/start-game.component";
+import {PlayGameComponent} from "./components/game/play/play-game.component";
 
 @NgModule({
   declarations: [
@@ -46,6 +47,8 @@ import {StartGameComponent} from "./components/game/start/start-game.component";
     QuestionEditorComponent,
     QuestionEditorBottomSheetComponent,
     StartGameComponent,
+    PlayGameComponent,
+
   ],
   imports: [
     BrowserModule,

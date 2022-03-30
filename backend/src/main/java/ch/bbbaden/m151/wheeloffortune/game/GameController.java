@@ -18,7 +18,7 @@ public class GameController {
     /**
      * starts a new game with the given username
      */
-    @GetMapping()
+    @PostMapping()
     public ResponseEntity<GameDTO> startGame(@RequestBody StartGameRequest startGameRequest){
         return ResponseEntity.ok(service.startNewGame(startGameRequest));
     }
@@ -34,7 +34,7 @@ public class GameController {
     /**
      * restart a game
      */
-    @PostMapping("/{gameId}")
+    @PutMapping("/{gameId}")
     public ResponseEntity<GameDTO> restartGame(@PathVariable String gameId){
         return ResponseEntity.ok(service.restartGame(gameId));
     }

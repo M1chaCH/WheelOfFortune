@@ -1,3 +1,24 @@
-<div>
+<div class="center-parent">
+  <div class="center-child">
+    <h1>Welcome To Wheel Of Fortune</h1>
+    <h3>Enter a username here and start playing! 🎉</h3>
 
+    <form class="form" [formGroup]="startForm">
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" placeholder="Username (min. 2, max. 20)" value="" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Category</mat-label>
+        <mat-select [(value)]="selectedCategoryId" formControlName="category" required>
+          <mat-option *ngFor="let category of categories" [value]="category.id">
+            {{category.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button type="submit" color="primary" (click)="play()" [disabled]="!startForm.valid">Play 🥳</button>
+    </form>
+  </div>
 </div>

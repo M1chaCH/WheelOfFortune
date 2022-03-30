@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ApiEndpoint} from "../config/apiEndpoint";
 import {appConfig} from "../config/appConfig";
 import {LocalStorageAccessService} from "./local-storage-access.service";
@@ -137,7 +137,7 @@ export class WheelOfFortuneApiService {
   }
 
   private handleError(request: any, bodyPayload: any, pathVariables: any){
-    return request.pipe(catchError(e => {
+    return request.pipe(catchError((e: HttpErrorResponse) => {
       console.log("caught error");
       this.errorHandlingService.handleError(e, bodyPayload, pathVariables);
       return throwError(e);
