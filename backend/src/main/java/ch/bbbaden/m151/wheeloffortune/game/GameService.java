@@ -26,6 +26,8 @@ public class GameService {
 
     public static final List<Character> VOWELS = List.of( 'a', 'e', 'i', 'o', 'u' );
 
+    public static final int VOWEL_PRICE =  400;
+
     public static final WheelOfFortuneField[] WHEEL_OF_FORTUNE = new WheelOfFortuneField[]{
             new WheelOfFortuneField(0, GameState.Task.BANKRUPT, -1),
             new WheelOfFortuneField(1, GameState.Task.GUESS_CONSONANT, 200),
@@ -130,22 +132,22 @@ public class GameService {
         char[] sentenceChars = game.getCurrentSentence().getSentence().toCharArray();
         char[] revealedChars = game.getGameField().getRevealedCharacters();
         for (int i = 0; i < sentenceChars.length; i++) {
-            if(sentenceChars[i] == guessedConsonant){
+            if(Character.toLowerCase(sentenceChars[i]) == Character.toLowerCase(guessedConsonant)){
                 countConsonants++;
                 revealedChars[i] = sentenceChars[i];
             }
         }
 
         GameState.State state = GameState.State.PLAY;
-        List<GameState.Task> availableTasks =
-                List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE);
+        List<GameState.Task> availableTasks = new ArrayList<>(
+                List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE));
 
         EnumMap<GameState.Task, Object> taskProperties = new EnumMap<>(GameState.Task.class);
         if(countConsonants != 0){
-            int win = Integer.parseInt(game.getGameState().getTaskParameters()
-                    .get(GameState.Task.GUESS_CONSONANT).toString());
+            int win = WHEEL_OF_FORTUNE[Integer.parseInt(game.getGameState().getTaskParameters()
+                    .get(GameState.Task.GUESS_CONSONANT).toString())].getReward();
 
-            game.getConsonantLeftToGuess().remove(guessedConsonant); //FIXME
+            game.getConsonantLeftToGuess().remove((Character) guessedConsonant); //fixed you (:
             taskProperties.put(GameState.Task.GUESS_CONSONANT, "Guessed Correct! +" + win * countConsonants + " budget");
             game.setBudget(game.getBudget() + win * countConsonants);
         }else{
@@ -153,9 +155,11 @@ public class GameService {
             game.setHp(game.getHp() - 1);
         }
 
-        if(game.getHp() > 0)
+        if(game.getHp() > 0) {
+            if(game.getBudget() >= VOWEL_PRICE)
+                availableTasks.add(GameState.Task.BUY_VOWEL);
             game.setGameState(new GameState(state, availableTasks, taskProperties));
-        else
+        } else
             game.setGameState(new GameState(GameState.State.FORCED, List.of(GameState.Task.HP_DEATH),
                     new EnumMap<>(GameState.Task.class)));
 

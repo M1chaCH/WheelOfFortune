@@ -55,6 +55,6 @@ public class GameController {
 
     @PostMapping("/{gameId}/consonant/{consonant}")
     public ResponseEntity<GameDTO> guessConsonant(@PathVariable String gameId, @PathVariable char consonant){
-        return ResponseEntity.ok(service.guessConsonant(gameId, Character.toLowerCase(consonant)));
+        return ResponseEntity.ok(service.guessConsonant(gameId, consonant));
     }
 }

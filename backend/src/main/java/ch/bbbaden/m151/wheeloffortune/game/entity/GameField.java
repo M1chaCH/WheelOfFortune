@@ -9,7 +9,8 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 public class GameField {
-    public static final List<Character> PUNCTUATIONS = List.of( '.', ',', '!', '?', ' ', '-', '"', '\'', '/' );
+    public static final char HIDDEN_CHAR = '*';
+    public static final List<Character> PUNCTUATIONS = List.of( '.', ',', '!', '?', ' ', '-', '"', '\'', '/', '#' );
     private final int sentenceLength;
     private char[] revealedCharacters;
 
@@ -26,7 +27,7 @@ public class GameField {
             if(PUNCTUATIONS.contains(sentenceArray[i]))
                 visibleCharacters[i] = sentenceArray[i];
             else
-                visibleCharacters[i] = ' ';
+                visibleCharacters[i] = HIDDEN_CHAR;
         }
 
         return visibleCharacters;

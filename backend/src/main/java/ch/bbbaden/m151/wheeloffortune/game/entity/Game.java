@@ -1,5 +1,6 @@
 package ch.bbbaden.m151.wheeloffortune.game.entity;
 
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.DisallowedSentenceException;
 import ch.bbbaden.m151.wheeloffortune.game.GameService;
 import ch.bbbaden.m151.wheeloffortune.game.data.question.Question;
 import ch.bbbaden.m151.wheeloffortune.game.data.sentence.Sentence;
@@ -67,6 +68,9 @@ public class Game {
     }
 
     public void setCurrentSentence(Sentence sentence){
+        if (sentence.getSentence().contains(String.valueOf(GameField.HIDDEN_CHAR)))
+            throw new DisallowedSentenceException(sentence.getSentence());
+
         this.currentSentence = sentence;
         consonantLeftToGuess = new ArrayList<>(GameService.CONSONANTS);
         vowelsLeftToGuess = new ArrayList<>(GameService.VOWELS);
