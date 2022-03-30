@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {ApiEndpoint} from "../config/apiEndpoint";
 import {appConfig} from "../config/appConfig";
-import {SessionStorageAccessService} from "./session-storage-access.service";
+import {LocalStorageAccessService} from "./local-storage-access.service";
 import {AppRout} from "../config/appRout";
 import {Router} from "@angular/router";
 import {ApiHttpMethods} from "../config/apiHttpMethods";
@@ -13,91 +13,108 @@ import {ErrorHandlingService} from "./error-handling.service";
 export class WheelOfFortuneApiService {
   constructor(
     private http: HttpClient,
-    private localStorageAccess: SessionStorageAccessService,
+    private localStorageAccess: LocalStorageAccessService,
     private router: Router,
     private errorHandlingService: ErrorHandlingService,
   ) { }
 
-  /**
-   * sends get http request to endpoint with payload in the request body
-   * @param endpoint the endpoint to send the request to
-   * @param payload any object to be sent in the request body
-   * @returns the response
-   */
-  get(endpoint: string, payload: any) {
-    return this.http.get<any>(`${appConfig.api_url}${endpoint}`, payload);
+  private static generateRequestUrl(endpoint: string, pathVariables: any[]): string{
+    let url: string = appConfig.api_url + endpoint;
+
+    let amountToReplace: any = (endpoint.match(/\[!]/g) || []).length;
+
+    for (let i = 0; i < amountToReplace; i++)
+      url = url.replace(/\[!]/, pathVariables[i]);
+    console.log(url); //TODO: remove when releasing
+    return url;
   }
 
   /**
-   * sends post http request to endpoint with payload in the request body
+   * sends get http request to endpoint with bodyPayload in the request body
    * @param endpoint the endpoint to send the request to
-   * @param payload any object to be sent in the request body
+   * @param bodyPayload any object to be sent in the request body
+   * @param pathVariables any[] that contains the pathVariables which will replace "[!]" in the endpoint
    * @returns the response
    */
-  post(endpoint: string, payload: any) {
-    return this.http.post<any>(`${appConfig.api_url}${endpoint}`, payload);
+  get(endpoint: string, bodyPayload: any, pathVariables: any[] = []) {
+    return this.http.get<any>(WheelOfFortuneApiService.generateRequestUrl(endpoint, pathVariables), bodyPayload);
   }
 
   /**
-   * sends put http request to endpoint with payload in the request body
+   * sends post http request to endpoint with bodyPayload in the request body
    * @param endpoint the endpoint to send the request to
-   * @param payload any object to be sent in the request body
+   * @param bodyPayload any object to be sent in the request body
+   * @param pathVariables any[] that contains the pathVariables which will replace "[!]" in the endpoint
    * @returns the response
    */
-  put(endpoint: string, payload: any) {
-    return this.http.put<any>(`${appConfig.api_url}${endpoint}`, payload);
+  post(endpoint: string, bodyPayload: any, pathVariables: any[] = []) {
+    return this.http.post<any>(WheelOfFortuneApiService.generateRequestUrl(endpoint, pathVariables), bodyPayload);
   }
 
   /**
-   * sends delete http request to endpoint with payload in the request body
+   * sends put http request to endpoint with bodyPayload in the request body
    * @param endpoint the endpoint to send the request to
-   * @param payload any object to be sent in the request body
+   * @param bodyPayload any object to be sent in the request body
+   * @param pathVariables any[] that contains the pathVariables which will replace "[!]" in the endpoint
    * @returns the response
    */
-  delete(endpoint: string, payload: any) {
-    return this.http.delete<any>(`${appConfig.api_url}${endpoint}`, { body: payload });
+  put(endpoint: string, bodyPayload: any, pathVariables: any[] = []) {
+    return this.http.put<any>(WheelOfFortuneApiService.generateRequestUrl(endpoint, pathVariables), bodyPayload);
   }
 
   /**
-   * sends a http request as the given method to the given endpoint with the payload in the request body
+   * sends delete http request to endpoint with bodyPayload in the request body
+   * @param endpoint the endpoint to send the request to
+   * @param bodyPayload any object to be sent in the request body
+   * @param pathVariables any[] that contains the pathVariables which will replace "[!]" in the endpoint
+   * @returns the response
+   */
+  delete(endpoint: string, bodyPayload: any, pathVariables: any[] = []) {
+    return this.http.delete<any>(WheelOfFortuneApiService.generateRequestUrl(endpoint, pathVariables),
+      { body: bodyPayload });
+  }
+
+  /**
+   * sends a http request as the given method to the given endpoint with the bodyPayload in the request body
    * & handles the error if one occurs
    * @param endpoint the endpoint to send the request to
-   * @param payload any object to be sent in the request body
+   * @param bodyPayload any object to be sent in the request body
    * @param method the HTTP method by which to send the request
    * @param checkToken true: refresh token if needed
+   * @param pathVariables any[] that contains the pathVariables which will replace "[!]" in the endpoint
    */
-  callHandled(endpoint: string, payload: any, method: ApiHttpMethods, checkToken: boolean){
+  callHandled(endpoint: string, bodyPayload: any, method: ApiHttpMethods, checkToken: boolean, pathVariables: any[] = []){
     if(checkToken) {
       return new Observable<any>(observer => {
         this.refreshSecurityTokenIfExpired().subscribe(success => {
           if(success)
-            this.sendAndHandleRequest(endpoint, payload, method).subscribe((response: any) => observer.next(response));
+            this.sendAndHandleRequest(endpoint, bodyPayload, method, pathVariables).subscribe((response: any) => observer.next(response));
           else this.router.navigate([AppRout.LOGIN]);
         },() => this.router.navigate([AppRout.LOGIN]));
       })
     }else{
-      return this.sendAndHandleRequest(endpoint, payload, method);
+      return this.sendAndHandleRequest(endpoint, bodyPayload, method, pathVariables);
     }
   }
 
-  private sendAndHandleRequest(endpoint: string, payload: any, method: ApiHttpMethods){
+  private sendAndHandleRequest(endpoint: string, bodyPayload: any, method: ApiHttpMethods, pathVariables: any[] = []){
     let request: any;
     switch (method){
       case ApiHttpMethods.GET:
-        request = this.get(endpoint, payload);
+        request = this.get(endpoint, bodyPayload, pathVariables);
         break;
       case ApiHttpMethods.POST:
-        request = this.post(endpoint, payload);
+        request = this.post(endpoint, bodyPayload, pathVariables);
         break;
       case ApiHttpMethods.PUT:
-        request = this.put(endpoint, payload);
+        request = this.put(endpoint, bodyPayload, pathVariables);
         break;
       case ApiHttpMethods.DELETE:
-        request = this.delete(endpoint, payload);
+        request = this.delete(endpoint, bodyPayload, pathVariables);
         break;
     }
 
-    return this.handleError(request, payload);
+    return this.handleError(request, bodyPayload, pathVariables);
   }
 
   private refreshSecurityTokenIfExpired(): Observable<boolean>{
@@ -119,10 +136,10 @@ export class WheelOfFortuneApiService {
     });
   }
 
-  private handleError(request: any, payload: any){
+  private handleError(request: any, bodyPayload: any, pathVariables: any){
     return request.pipe(catchError(e => {
       console.log("caught error");
-      this.errorHandlingService.handleError(e, payload);
+      this.errorHandlingService.handleError(e, bodyPayload, pathVariables);
       return throwError(e);
     }));
   }

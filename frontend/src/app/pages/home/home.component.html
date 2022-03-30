@@ -8,17 +8,7 @@
 
   <main class="home-main">
     <div class="home-elements">
-      <h1>Hello Mate</h1>
-      <h2>Here are some random fields</h2>
-      <form [formGroup]="sample">
-        <mat-form-field>
-          <input matInput type="text" formControlName="random" placeholder="random"/>
-        </mat-form-field>
-        <mat-slider formControlName="slider" min="1" max="100" step="1"></mat-slider>
-        <br/>
-        <button mat-button type="submit" color="accent" (click)="sendForm()" [disabled]="!sample.valid">Send</button>
-      </form>
-      <p>Random: {{random}}<br/>Slider: {{slider}}</p>
+      <start-game></start-game>
     </div>
   </main>
 </div>

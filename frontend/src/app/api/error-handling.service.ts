@@ -16,7 +16,7 @@ export class ErrorHandlingService {
    * @param error the error that was thrown
    * @param requestPayload the payload of the request that cause the error
    */
-  handleError(error: any, requestPayload: any){
+  handleError(error: any, requestPayload: any, pathVariables: any[] = []){
     if(error?.status === 401) {
       console.log("caught 401 -> redirect login")
       this.redirectLogin();
@@ -28,7 +28,7 @@ export class ErrorHandlingService {
       this.router.navigate([AppRout.ERROR], { queryParams: {
           code: error.status,
           message: error.message,
-          payload: JSON.stringify(requestPayload),
+          payload: "Body: " + JSON.stringify(requestPayload) + "   PathVariables: " + JSON.stringify(pathVariables),
         } });
     }
   }

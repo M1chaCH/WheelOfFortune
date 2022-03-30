@@ -147,7 +147,7 @@ public class GameService {
             int win = WHEEL_OF_FORTUNE[Integer.parseInt(game.getGameState().getTaskParameters()
                     .get(GameState.Task.GUESS_CONSONANT).toString())].getReward();
 
-            game.getConsonantLeftToGuess().remove((Character) guessedConsonant); //fixed you (:
+            game.getConsonantLeftToGuess().remove((Character) guessedConsonant);
             taskProperties.put(GameState.Task.GUESS_CONSONANT, "Guessed Correct! +" + win * countConsonants + " budget");
             game.setBudget(game.getBudget() + win * countConsonants);
         }else{

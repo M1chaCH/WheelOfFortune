@@ -37,6 +37,7 @@ export class SentenceEditorBottomSheetComponent{
     this.selectedCategoryId = this.sentence.categoryDTO.id;
 
     this.sentenceForm = formBuilder.group({
+      //TODO: implement char validated (regex)
       newSentence: [this.sentence.sentence, Validators.compose([
         Validators.minLength(10),
         Validators.maxLength(35),

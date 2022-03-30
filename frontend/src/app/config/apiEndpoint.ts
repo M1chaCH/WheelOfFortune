@@ -1,3 +1,6 @@
+/**
+ * "[!]" should be replaced with some PathVariable
+ */
 export const enum ApiEndpoint{
   AUTH = "/auth",
   TOKEN = "/auth/token",
@@ -6,4 +9,8 @@ export const enum ApiEndpoint{
   QUESTION = "/game/data/question",
   SENTENCE = "/game/data/sentence",
   HIGHSCORE = "/game/highscore",
+  START_GAME = "/game",
+  GAME = "/game/[!]",
+  SPIN = "/game/[!]/spin",
+  CONSONANT = "/game/[!]/consonant/[!]",
 }
