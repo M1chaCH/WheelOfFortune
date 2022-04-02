@@ -86,6 +86,11 @@ public class GameController {
         return ResponseEntity.ok(service.handleTask(gameId, new BuyVowelGameTask(vowel)));
     }
 
+    @PostMapping("/{gameId}/next")
+    public ResponseEntity<GameDTO> nextSentence(@PathVariable String gameId){
+        return ResponseEntity.ok(service.handleTask(gameId, new NextSentenceGameTask()));
+    }
+
     @PostMapping("/{gameId}/bankrupt")
     public ResponseEntity<GameDTO> acceptBankruptcy(@PathVariable String gameId){
         return ResponseEntity.ok(service.handleTask(gameId, new BankruptGameTask()));

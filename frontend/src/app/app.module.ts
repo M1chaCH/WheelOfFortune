@@ -34,6 +34,7 @@ import {CharSelectorComponent} from "./components/game/play/char-selector/char-s
 import {BankruptDialogComponent} from "./components/game/dialogs/bankrupt-dialog.component";
 import {HpDeathDialogComponent} from "./components/game/dialogs/hp-death-dialog.component";
 import {SolvePuzzleComponent} from "./components/game/play/solve-puzzle/solve-puzzle.component";
+import {SentenceCompleteDialogComponent} from "./components/game/dialogs/sentence-complete-dialog.component";
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import {SolvePuzzleComponent} from "./components/game/play/solve-puzzle/solve-pu
     BankruptDialogComponent,
     HpDeathDialogComponent,
     SolvePuzzleComponent,
+    SentenceCompleteDialogComponent,
   ],
   imports: [
     BrowserModule,

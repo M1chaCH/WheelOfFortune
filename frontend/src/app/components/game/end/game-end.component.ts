@@ -13,7 +13,7 @@ export class GameEndComponent implements GameServiceListener{
   constructor(
     private gameService: GameService,
   ) {
-    this.update(this.gameService.attach(this));
+    this.update(this.gameService.attach("end-game", this));
   }
 
   update(game: Game): void {

@@ -1,10 +1,10 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {FormBuilder} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AppRout} from "../../config/appRout";
 import {AuthService} from "../../auth/auth.service";
 import {GameService, GameServiceListener} from "../../components/game/game.service";
-import {Game, GameStateTask, GameStateType} from "../../components/game/GameEntities";
+import {Game, GameStateType} from "../../components/game/GameEntities";
 
 @Component({
   selector: "home",
@@ -26,7 +26,7 @@ export class HomeComponent implements GameServiceListener{
   ) {
 
     auth.isLoggedIn().then(value => this.isLoggedIn = value).catch(() => this.isLoggedIn = false);
-    this.update(this.gameService.attach(this));
+    this.update(this.gameService.attach("home", this));
   }
 
   update(game: Game): void {

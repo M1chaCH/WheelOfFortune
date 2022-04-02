@@ -9,6 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {BankruptDialogComponent} from "../dialogs/bankrupt-dialog.component";
 import {HpDeathDialogComponent} from "../dialogs/hp-death-dialog.component";
 import {SolvePuzzleComponent} from "./solve-puzzle/solve-puzzle.component";
+import {SentenceCompleteDialogComponent} from "../dialogs/sentence-complete-dialog.component";
 
 @Component({
   selector: "play-game",
@@ -32,7 +33,7 @@ export class PlayGameComponent implements GameServiceListener{
     private bottomSheet: MatBottomSheet,
     private dialog: MatDialog,
   ) {
-    this.update(gameService.attach(this));
+    this.update(gameService.attach("play-game", this));
   }
 
   update(game: Game): void {
@@ -51,6 +52,18 @@ export class PlayGameComponent implements GameServiceListener{
       this.executeRiskIfIsTask(game);
       this.handleBankruptIfExists();
       this.handleHpDeathIfExists();
+      this.handleSentenceCompleteIfExists();
+    }
+  }
+
+  handleSentenceCompleteIfExists(){
+    if(this.gameService.isTaskAvailable(GameStateTask.SENTENCE_COMPLETED)){
+      this.openDialog = this.dialog.open(SentenceCompleteDialogComponent, {disableClose: true});
+
+      this.openDialog.afterClosed().subscribe((nextSentence: boolean) => {
+        if(nextSentence) this.gameService.nextSentence();
+        else this.gameService.quitGame();
+      });
     }
   }
 
@@ -172,15 +185,5 @@ export class PlayGameComponent implements GameServiceListener{
 
 
     return rewardString;
-  }
-
-  private buildTaskMessage(availableTasks: GameStateTask[]): string{ //hehehe bit sketchy 🤷
-    let message: string = "";
-    for (let availableTask of availableTasks) {
-      const param: string | undefined =  this.gameService.getTaskParameterValue(availableTask);
-      if(param != undefined)
-        message += param;
-    }
-    return message;
   }
 }

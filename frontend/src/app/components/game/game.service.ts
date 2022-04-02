@@ -16,7 +16,7 @@ export interface GameServiceListener{
 })
 export class GameService{
   game: Game;
-  private listeners: GameServiceListener[] = []
+  private listeners: Map<string, GameServiceListener> = new Map<string, GameServiceListener>([]);
 
   constructor(
     private api: WheelOfFortuneApiService,
@@ -26,8 +26,8 @@ export class GameService{
     this.loadGameIfExists();
   }
 
-  attach(toAttach: GameServiceListener): Game{
-    this.listeners.push(toAttach);
+  attach(id: string, toAttach: GameServiceListener): Game{
+    this.listeners.set(id, toAttach);
     return this.game;
   }
 
@@ -66,6 +66,11 @@ export class GameService{
 
   acceptBankruptcy(){
     this.api.callHandled(ApiEndpoint.BANKRUPT, {}, ApiHttpMethods.POST, false, [this.game.gameId])
+      .subscribe((response: Game) => this.setGame(response));
+  }
+
+  nextSentence(){
+    this.api.callHandled(ApiEndpoint.NEXT_SENTENCE, {}, ApiHttpMethods.POST, false, [this.game.gameId])
       .subscribe((response: Game) => this.setGame(response));
   }
 
@@ -159,6 +164,6 @@ export class GameService{
   private setGame(newGame: Game){
     this.game = newGame;
     this.localStorage.setGameId(this.game.gameId);
-    this.listeners.forEach(l => l.update(this.game));
+    this.listeners.forEach((v) => v.update(this.game));
   }
 }

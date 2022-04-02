@@ -19,4 +19,5 @@ export const enum ApiEndpoint{
   BANKRUPT = "/game/[!]/bankrupt",
   HP_DEATH = "/game/[!]/hpdeath",
   SOLVE_PUZZLE = "/game/[!]/solve/[!]",
+  NEXT_SENTENCE = "/game/[!]/next",
 }

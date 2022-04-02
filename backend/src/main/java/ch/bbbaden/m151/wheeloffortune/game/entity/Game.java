@@ -46,7 +46,8 @@ public class Game {
         this.username = username;
 
         this.availableSentences = sentences;
-        this.setCurrentSentence(sentences.get(0));
+        this.setCurrentSentence(sentences.get(0)); //TODO: make more random
+        this.availableSentences.remove(this.currentSentence);
         this.availableQuestions = questions;
 
         this.gameField = new GameField(currentSentence.getSentence());
