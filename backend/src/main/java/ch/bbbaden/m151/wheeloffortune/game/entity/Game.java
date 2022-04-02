@@ -51,7 +51,7 @@ public class Game {
         this.gameState = new GameState(GameState.State.PLAY, List.of(
                 GameState.Task.SPIN,
                 GameState.Task.SOLVE_PUZZLE,
-                GameState.Task.LEAVE), new EnumMap<>(GameState.Task.class));
+                GameState.Task.LEAVE), List.of());
     }
 
     public GameDTO parseDTO(){

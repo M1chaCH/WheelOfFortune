@@ -27,10 +27,19 @@ public class GameState {
         RISK,
         BANKRUPT,
         HP_DEATH,
-        REPLAY
+        REPLAY,
+        DELETE,
     }
 
     private State state;
     private List<Task> availableTasks;
-    private Map<Task, Object> taskParameters;
+    private List<TaskParameter> taskParameters;
+
+    public Object getTaskParameterValue(Task key){
+        for (TaskParameter taskParameter : taskParameters) {
+            if(taskParameter.getKey().equals(key))
+                return taskParameter.getValue();
+        }
+        return null;
+    }
 }

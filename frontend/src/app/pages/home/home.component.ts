@@ -1,19 +1,22 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {FormBuilder} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AppRout} from "../../config/appRout";
 import {AuthService} from "../../auth/auth.service";
-import {GameService} from "../../components/game/game.service";
-import {GameStateType} from "../../components/game/GameEntities";
+import {GameService, GameServiceListener} from "../../components/game/game.service";
+import {Game, GameStateTask, GameStateType} from "../../components/game/GameEntities";
 
 @Component({
   selector: "home",
   templateUrl: "home.component.html",
   styleUrls: ["home.component.scss"]
 })
-export class HomeComponent{
+export class HomeComponent implements GameServiceListener{
   isLoggedIn: boolean = false;
   username: string = "";
+  displayedBudget: string = "";
+  displayedScore: string = "";
+  displayedHp: string = "";
 
   constructor(
     private builder: FormBuilder,
@@ -23,6 +26,24 @@ export class HomeComponent{
   ) {
 
     auth.isLoggedIn().then(value => this.isLoggedIn = value).catch(() => this.isLoggedIn = false);
+    this.update(this.gameService.attach(this));
+  }
+
+  update(game: Game): void {
+    this.username = game.username;
+    const budget: number = game.budget;
+    const score: number = game.score;
+    const hp: number = game.hp;
+    if(hp !== -1 && budget !== -1 && score !== -1 && this.gameService.isInState(GameStateType.PLAY)
+      || this.gameService.isInState(GameStateType.FORCED)){
+      this.displayedBudget = "🤑 Budget: " + game.budget;
+      this.displayedScore = "🔝 Score: " + game.score;
+      this.displayedHp = "💕 HP: " + game.hp;
+    }else{
+      this.displayedBudget = "";
+      this.displayedScore = "";
+      this.displayedHp = "";
+    }
   }
 
   login(){
@@ -34,14 +55,14 @@ export class HomeComponent{
   }
 
   showStart(): boolean{
-    return this.gameService.game.gameState.state.valueOf() == -1;
+    return this.gameService.isInState(GameStateType.NOT_STARTED);
   }
 
   showPlay(): boolean{
-    return this.gameService.game.gameState.state === GameStateType.PLAY;
+    return this.gameService.isInState(GameStateType.PLAY) || this.gameService.isInState(GameStateType.FORCED);
   }
 
   showEnd(): boolean{
-    return this.gameService.game.gameState.state === GameStateType.END;
+    return this.gameService.isInState(GameStateType.END);
   }
 }

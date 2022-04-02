@@ -37,4 +37,8 @@ export class LocalStorageAccessService {
   getGameId(): string{
     return localStorage.getItem(this.GAME_ID) as string;
   }
+
+  removeGameId(){
+    localStorage.removeItem(this.GAME_ID);
+  }
 }

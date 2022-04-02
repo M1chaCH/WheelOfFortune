@@ -9,12 +9,20 @@
   grid-template-rows: 80px auto;
 
   .split-header{
+    position: sticky;
+    top: 0;
     .left, .right{
       .side{
         *{
           margin: 0 20px !important;
         }
       }
+    }
+    .left{
+      width: 80%;
+    }
+    .right{
+      width: 20%;
     }
   }
 
@@ -33,6 +41,7 @@
      justify-content: center;
 
      .home-element{
+       //TODO: decrease for mobile view (generally fix mobile view)
        padding: 20px;
        margin: 15px;
        max-height: 900px;
@@ -43,7 +52,7 @@
      }
 
      .game{
-       min-width: 650px;
+       min-width: 450px;
        max-width: 1200px;
      }
 

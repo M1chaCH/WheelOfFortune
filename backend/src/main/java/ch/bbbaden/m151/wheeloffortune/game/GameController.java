@@ -32,20 +32,28 @@ public class GameController {
     }
 
     /**
-     * restart a game
+     * quit game
      */
-    @PutMapping("/{gameId}")
+    @PostMapping("/{gameId}/quit")
+    public ResponseEntity<GameDTO> quitGame(@PathVariable String gameId){
+        return ResponseEntity.ok(service.quitGame(gameId));
+    }
+
+    /**
+     * restarts game
+     */
+    @PutMapping("/{gameId}/quit")
     public ResponseEntity<GameDTO> restartGame(@PathVariable String gameId){
         return ResponseEntity.ok(service.restartGame(gameId));
     }
 
     /**
-     * delete a game
+     * delete game
      */
-    @DeleteMapping("/{gameId}")
+    @DeleteMapping("/{gameId}/quit")
     public ResponseEntity<BasicResponseDTO> deleteGame(@PathVariable String gameId){
         service.deleteGame(gameId);
-        return ResponseEntity.ok(new BasicResponseDTO("Game successfully deleted"));
+        return ResponseEntity.ok(new BasicResponseDTO("successfully deleted game"));
     }
 
     @GetMapping("/{gameId}/spin")

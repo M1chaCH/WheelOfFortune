@@ -2,6 +2,7 @@
   <div class="center-child">
     <h1>Welcome To Wheel Of Fortune</h1>
     <h3>Enter a username here and start playing! 🎉</h3>
+    <h3 style="color: #f44336" *ngIf="usernameExists">Username already exists 😞</h3>
 
     <form class="form" [formGroup]="startForm">
       <mat-form-field appearance="fill" style="width: 100%;">

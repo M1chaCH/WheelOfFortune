@@ -13,10 +13,8 @@ import {WheelOfFortuneApiService} from "../../../api/wheel-of-fortune-api.servic
 })
 export class StartGameComponent implements OnInit {
 
-  @Input() username: string = "";
-  @Output() usernameChange: EventEmitter<string> = new EventEmitter<string>();
-
   startForm: FormGroup;
+  usernameExists: boolean = false;
 
   categories: Categroy[] = [];
   selectedCategoryId: number = -1;
@@ -45,8 +43,7 @@ export class StartGameComponent implements OnInit {
   play(){
     const username: string = this.startForm.value.username;
     const category: Categroy = this.findCategoryById(this.selectedCategoryId);
-    this.game.startGame(username, category);
-    this.usernameChange.emit(username);
+    this.game.startGame(username, category).then(() => this.usernameExists = false).catch(() => this.usernameExists = true);
   }
 
   private findCategoryById(id: number): Categroy{

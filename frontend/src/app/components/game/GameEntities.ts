@@ -1,21 +1,23 @@
 import {Categroy} from "../categroy-editor/categroy";
 
 export const enum GameStateType{
-  PLAY,
-  END,
-  FORCED,
+  PLAY = "PLAY",
+  END = "END",
+  FORCED = "FORCED",
+  NOT_STARTED = "NOT_STARTED"
 }
 
 export const enum GameStateTask{
-  SPIN,
-  GUESS_CONSONANT,
-  BUY_VOWEL,
-  SOLVE_PUZZLE,
-  LEAVE,
-  RISK,
-  BANKRUPT,
-  HP_DEATH,
-  REPLAY
+  SPIN = "SPIN",
+  GUESS_CONSONANT = "GUESS_CONSONANT",
+  BUY_VOWEL = "BUY_VOWEL",
+  SOLVE_PUZZLE = "SOLVE_PUZZLE",
+  LEAVE = "LEAVE",
+  RISK = "RISK",
+  BANKRUPT = "BANKRUPT",
+  HP_DEATH = "HP_DEATH",
+  REPLAY = "REPLAY",
+  DELETE = "DELETE"
 }
 
 export interface GameField{
@@ -26,7 +28,12 @@ export interface GameField{
 export interface GameState{
   state: GameStateType,
   availableTasks: GameStateTask[],
-  taskParameters: Map<GameStateTask, any>,
+  taskParameters: TaskParameter[],
+}
+
+export interface TaskParameter{
+  key: GameStateTask,
+  value: any,
 }
 
 export interface WheelOfFortuneField{
@@ -48,6 +55,8 @@ export interface Game{
 
   consonantLeftToGuess: string[],
   vowelsLeftToGuess: string[],
+
+  wheelOfFortune: WheelOfFortuneField[],
 }
 
 export interface StartGameRequest{

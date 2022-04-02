@@ -15,7 +15,7 @@ import java.util.stream.StreamSupport;
 @Service
 @AllArgsConstructor
 public class HighScoreService {
-
+    public static final int MAX_SAVED_HIGH_SCORES = 20;
     private final SecurityTokenService securityTokenService;
     private final HighScoreRepo repo;
 
@@ -33,12 +33,36 @@ public class HighScoreService {
     }
 
     /**
-     * Only cares about the username and the score in the {@link HighScoreDTO}. The other values are generated.
+     * searches through all the highScores and finds the position witch the given score would get
+     * @param score the score to check
+     * @return when the lowes -1 else the position
+     */
+    public int getPositionByScore(int score){
+        List<HighScoreDTO> highScores = getAllSortedByScoreAsDto();
+
+        if(highScores.get(highScores.size() - 1).getScore() >= score)
+            return -1;
+
+        for (int i = 0; i < highScores.size(); i++) {
+            if(highScores.get(i).getScore() < score)
+                return i;
+        }
+        return -1;
+    }
+
+    /**
+     * checks if the score fits in top 20 if so adds score to highScore list <br>
+     * !!Only cares about the username and the score in the {@link HighScoreDTO}. The other values are generated.
      * (id -> JPA, <strong>achievedAt -> NOW</strong>)
      * @param toAdd the DTO to read the values from
-     * @return the DTO representing the entity created in the database
+     * @return the DTO representing the entity created in the database &
+     * !null when the highScore was not added because it does not fit in top 20
      */
     public HighScoreDTO addNew(HighScoreDTO toAdd){
+        long currentlySavedHighScores = StreamSupport.stream(repo.findAll().spliterator(), false).count();
+        if(getPositionByScore(toAdd.getScore()) == -1 && currentlySavedHighScores == MAX_SAVED_HIGH_SCORES)
+            return null;
+
         HighScore highScoreToAdd = new HighScore();
         highScoreToAdd.setScore(toAdd.getScore());
         highScoreToAdd.setUsername(toAdd.getUsername());

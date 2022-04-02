@@ -1,3 +1,32 @@
 <div class="play-body">
-  <h1>Lol</h1>
+  <h1>Wheel Of Fortune - Web</h1>
+
+  <div class="game-field">
+    <div class="field" *ngFor="let char of gameFieldContent">
+      <div class="text">
+        <span>{{char.toUpperCase()}}</span>
+      </div>
+    </div>
+  </div>
+
+  <form class="controls-container">
+    <button mat-raised-button color="accent" *ngIf="canGuessConsonant()">Guess Consonant</button>
+    <button mat-raised-button color="accent" *ngIf="canBuyVowel()">Buy Vowel</button>
+    <button mat-raised-button color="accent" *ngIf="canSolvePuzzle()">Solve Puzzle</button>
+    <button mat-raised-button color="basic" *ngIf="canSolvePuzzle()" (click)="quit()">Quit Game</button>
+  </form>
+
+  <div class="wheel-of-fortune-container">
+
+    <div class="result element">
+      <div>
+        {{currentWheelOfFortuneTask()}}
+      </div>
+      <span class="amount">
+        {{currentWheelOfFortuneReward()}}
+      </span>
+    </div>
+
+    <button mat-raised-button color="accent" class="spin-button" (click)="spin()" *ngIf="canSpin()">🍀 SPIN!</button>
+  </div>
 </div>

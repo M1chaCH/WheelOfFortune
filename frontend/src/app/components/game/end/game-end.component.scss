@@ -1,0 +1,31 @@
+.parent{
+  display: block;
+
+  .results{
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+
+    .result{
+      margin: 10px;
+      font-size: 20px;
+      text-align: center;
+    }
+  }
+
+  .controls{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin: 20px 0;
+    justify-items: center;
+
+    *{
+      width: 100px;
+    }
+  }
+}
