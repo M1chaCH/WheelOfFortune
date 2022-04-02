@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+//TODO: implement state pattern for game tasks
 @Service
 @AllArgsConstructor
 public class GameService {
@@ -134,7 +135,7 @@ public class GameService {
                 state = GameState.State.FORCED;
                 availableTasks = List.of( GameState.Task.RISK, GameState.Task.LEAVE );
                 taskProperties.add(new TaskParameter(GameState.Task.RISK, game.getAvailableQuestions().get(0)));
-                taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()))
+                taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));
                 break;
             case BANKRUPT:
                 state = GameState.State.FORCED;
