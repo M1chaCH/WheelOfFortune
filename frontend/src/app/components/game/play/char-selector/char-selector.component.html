@@ -1,0 +1,10 @@
+<div class="parent">
+  <h1 *ngIf="buyMode">Buy a {{type}} for {{price}}</h1>
+  <h1 *ngIf="!buyMode">Select a {{type}}</h1>
+
+  <div class="char-container">
+    <div class="char" (click)="select(char)" *ngFor="let char of chars">
+      <span >{{char.toUpperCase()}}</span>
+    </div>
+  </div>
+</div>

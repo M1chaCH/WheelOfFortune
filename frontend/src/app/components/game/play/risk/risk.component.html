@@ -1,0 +1,29 @@
+<div class="parent">
+  <h1>Risk 😁
+  </h1>
+  <h2>Select the correct answer to the question</h2>
+
+  <form [formGroup]="questionForm">
+    <h3>{{question}}</h3>
+
+    <mat-radio-group formControlName="selectedAnswer" required>
+      <mat-radio-button value=true>{{answerOne}}</mat-radio-button>
+      <mat-radio-button value=false>{{answerTwo}}</mat-radio-button>
+    </mat-radio-group>
+
+    <h3>How much money would you like to risk?</h3>
+    <div class="controls">
+      <mat-form-field appearance="fill" style="width: 100%">
+        <mat-label>Amount</mat-label>
+        <mat-select [formControlName]="'possibleAmount'" required>
+          <mat-option [value]="possibleAmount" *ngFor="let possibleAmount of possibleRiskAmounts">
+            {{possibleAmount}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" class="submit-button" (click)="submit()" [disabled]="questionForm.invalid">Submit</button>
+    </div>
+
+  </form>
+</div>

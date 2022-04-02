@@ -29,6 +29,7 @@ public class GameState {
         HP_DEATH,
         REPLAY,
         DELETE,
+        MESSAGE,
     }
 
     private State state;

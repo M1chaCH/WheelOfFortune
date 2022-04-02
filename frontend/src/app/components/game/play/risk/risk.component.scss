@@ -1,0 +1,22 @@
+.parent{
+  display: block;
+
+  .mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+  }
+
+  .controls{
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 10px;
+    align-items: center;
+    justify-items: center;
+
+    .submit-button{
+      width: 100px;
+      height: 40px;
+    }
+  }
+}

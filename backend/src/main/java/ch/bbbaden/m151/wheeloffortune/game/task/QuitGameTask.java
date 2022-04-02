@@ -1,6 +1,5 @@
 package ch.bbbaden.m151.wheeloffortune.game.task;
 
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.IllegalGameTaskException;
 import ch.bbbaden.m151.wheeloffortune.game.entity.Game;
 import ch.bbbaden.m151.wheeloffortune.game.entity.GameState;
 import ch.bbbaden.m151.wheeloffortune.game.entity.TaskParameter;
@@ -17,9 +16,6 @@ public class QuitGameTask implements GameTask{
 
     @Override
     public Game execute(Game game) {
-        if(!game.getGameState().getAvailableTasks().contains(GameState.Task.LEAVE))
-            throw new IllegalGameTaskException(GameState.Task.LEAVE);
-
         String positionMessage;
         int position = highScoreService.getPositionByScore(game.getScore());
         if(position == -1) {
@@ -36,5 +32,10 @@ public class QuitGameTask implements GameTask{
                 List.of(new TaskParameter(GameState.Task.LEAVE, positionMessage)));
         game.setGameState(endState);
         return game;
+    }
+
+    @Override
+    public GameState.Task getRequiredTask() {
+        return GameState.Task.LEAVE;
     }
 }

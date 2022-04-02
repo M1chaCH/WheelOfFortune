@@ -1,7 +1,8 @@
 package ch.bbbaden.m151.wheeloffortune.game.task;
 
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.IllegalGameTaskException;
 import ch.bbbaden.m151.wheeloffortune.game.GameService;
+import ch.bbbaden.m151.wheeloffortune.game.data.question.Question;
+import ch.bbbaden.m151.wheeloffortune.game.data.question.QuestionDTO;
 import ch.bbbaden.m151.wheeloffortune.game.entity.Game;
 import ch.bbbaden.m151.wheeloffortune.game.entity.GameState;
 import ch.bbbaden.m151.wheeloffortune.game.entity.TaskParameter;
@@ -18,9 +19,6 @@ public class SpinGameTask implements GameTask{
 
     @Override
     public Game execute(Game game) {
-        if(!game.getGameState().getAvailableTasks().contains(GameState.Task.SPIN))
-            throw new IllegalGameTaskException(GameState.Task.SPIN);
-
         WheelOfFortuneField spinResult = GameService.WHEEL_OF_FORTUNE[new Random().nextInt(GameService.WHEEL_OF_FORTUNE.length)];
 
         GameState.State state;
@@ -29,19 +27,30 @@ public class SpinGameTask implements GameTask{
         switch (spinResult.getTask()){
         case GUESS_CONSONANT:
             state = GameState.State.PLAY;
-            availableTasks = List.of( GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE,
-                    GameState.Task.GUESS_CONSONANT, GameState.Task.LEAVE );
+            availableTasks = new ArrayList<>(List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE,
+                    GameState.Task.GUESS_CONSONANT, GameState.Task.LEAVE));
+            if(BuyVowelGameTask.hasEnoughMoneyForVowel(game))
+                availableTasks.add(GameState.Task.BUY_VOWEL);
+
             taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));
             break;
         case RISK:
             state = GameState.State.FORCED;
             availableTasks = List.of( GameState.Task.RISK, GameState.Task.LEAVE );
-            taskProperties.add(new TaskParameter(GameState.Task.RISK, game.getAvailableQuestions().get(0)));
+
+            //TODO maybe make a bit more random
+            Question currentQuestion = game.getAvailableQuestions().get(0);
+            game.setCurrentQuestion(currentQuestion);
+
+            QuestionDTO questionDTO = currentQuestion.parseToDTO();
+            questionDTO.setAnswerOneCorrect(true); //weak attempt to hide the correct answer for the frontend
+            taskProperties.add(new TaskParameter(GameState.Task.RISK, questionDTO));
             taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));
             break;
         case BANKRUPT:
             state = GameState.State.FORCED;
-            availableTasks = List.of( GameState.Task.BANKRUPT );
+            availableTasks = List.of( GameState.Task.BANKRUPT, GameState.Task.LEAVE );
+            taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));
             break;
         default:
             LOGGER.error("UNEXPECTED: failed to process spin returning default");
@@ -51,5 +60,10 @@ public class SpinGameTask implements GameTask{
         game.setGameState(new GameState(state, availableTasks, taskProperties));
         game.setRoundCount(game.getRoundCount() + 1);
         return game;
+    }
+
+    @Override
+    public GameState.Task getRequiredTask() {
+        return GameState.Task.SPIN;
     }
 }

@@ -53,7 +53,7 @@ public class DefaultDataloader {
             categoryRepo.saveAll(List.of(categoryPc, categoryMtb, testCategory));
 
             Question q1 = new Question("Select the newer CPU?", "Intel i7-12700K", "Intel i9-10900K", true, categoryPc);
-            Question q2 = new Question("What bike is usually heavier?", "Yeti SB150", "Scott Spark 900", false, categoryMtb);
+            Question q2 = new Question("What bike is usually heavier?", "Yeti SB150", "Scott Spark 900", true, categoryMtb);
             Question q3 = new Question("Which component is more expensive?", "Sram Code RSC", "Sram XX1-Eagle AXS", false, categoryMtb);
             questionRepo.saveAll(List.of(q1,q2,q3));
 

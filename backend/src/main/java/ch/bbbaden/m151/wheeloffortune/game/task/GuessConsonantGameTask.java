@@ -1,6 +1,5 @@
 package ch.bbbaden.m151.wheeloffortune.game.task;
 
-import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.IllegalGameTaskException;
 import ch.bbbaden.m151.wheeloffortune.game.GameService;
 import ch.bbbaden.m151.wheeloffortune.game.entity.Game;
 import ch.bbbaden.m151.wheeloffortune.game.entity.GameState;
@@ -19,43 +18,35 @@ public class GuessConsonantGameTask implements GameTask{
 
     @Override
     public Game execute(Game game) {
+        int countConsonants = game.getGameField()
+                .revealCharacter(guessedConsonant, game.getCurrentSentence().getSentence().toCharArray());
+        game.getConsonantLeftToGuess().remove(Character.valueOf(guessedConsonant));
 
-        if(!game.getGameState().getAvailableTasks().contains(GameState.Task.GUESS_CONSONANT))
-            throw new IllegalGameTaskException(GameState.Task.GUESS_CONSONANT);
-
-        int countConsonants = 0;
-        char[] sentenceChars = game.getCurrentSentence().getSentence().toCharArray();
-        char[] revealedChars = game.getGameField().getRevealedCharacters();
-        for (int i = 0; i < sentenceChars.length; i++) {
-            if(Character.toLowerCase(sentenceChars[i]) == Character.toLowerCase(guessedConsonant)){
-                countConsonants++;
-                revealedChars[i] = sentenceChars[i];
-            }
-        }
-
-        GameState.State state = GameState.State.PLAY;
-        List<GameState.Task> availableTasks = new ArrayList<>(
-                List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE));
-
+        GameState gameState = GameService.getDefaultPlayGameState(game);
         List<TaskParameter> taskProperties = new ArrayList<>();
+
         if(countConsonants != 0){
             int win = GameService.WHEEL_OF_FORTUNE[Integer.parseInt(game.getGameState()
-                    .getTaskParameterValue(GameState.Task.GUESS_CONSONANT).toString())].getReward();
+                    .getTaskParameterValue(GameState.Task.SPIN).toString())].getReward();
 
             game.getConsonantLeftToGuess().remove((Character) guessedConsonant);
-            taskProperties.add(new TaskParameter(GameState.Task.GUESS_CONSONANT, "Guessed Correct! +" + win * countConsonants + " budget"));
+            taskProperties.add(new TaskParameter(GameState.Task.MESSAGE, "Guessed Correct! +" + win * countConsonants + " budget"));
             game.setBudget(game.getBudget() + win * countConsonants);
         }else{
-            taskProperties.add(new TaskParameter(GameState.Task.GUESS_CONSONANT, "You guessed wrong ): -1 hp"));
+            taskProperties.add(new TaskParameter(GameState.Task.MESSAGE, "You guessed wrong ): -1 hp"));
             game.setHp(game.getHp() - 1);
         }
+        gameState.setTaskParameters(taskProperties);
 
-        if(game.getHp() > 0) {
-            if(game.getBudget() >= GameService.VOWEL_PRICE)
-                availableTasks.add(GameState.Task.BUY_VOWEL);
-            game.setGameState(new GameState(state, availableTasks, taskProperties));
-        } else
-            game.setGameState(new GameState(GameState.State.FORCED, List.of(GameState.Task.HP_DEATH), List.of()));
+        if(game.getHp() == 0)
+            gameState = new GameState(GameState.State.FORCED, List.of(GameState.Task.HP_DEATH, GameState.Task.LEAVE), List.of());
+
+        game.setGameState(gameState);
         return game;
+    }
+
+    @Override
+    public GameState.Task getRequiredTask() {
+        return GameState.Task.GUESS_CONSONANT;
     }
 }

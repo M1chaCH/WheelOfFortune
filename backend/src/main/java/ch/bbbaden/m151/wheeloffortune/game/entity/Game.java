@@ -21,6 +21,7 @@ public class Game {
     private String username;
     private int roundCount = 0;
     private int budget = 0;
+    //TODO: refactor from int to some sort of ranking system (highscores still measured by budgets but grouped by some rank)
     private int score = 0;
     private int hp = MAX_HP;
 
@@ -30,6 +31,7 @@ public class Game {
     private List<Character> vowelsLeftToGuess;
 
     private final List<Question> availableQuestions;
+    private Question currentQuestion;
 
     private GameField gameField;
     private GameState gameState;

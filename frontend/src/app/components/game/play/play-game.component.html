@@ -10,11 +10,15 @@
   </div>
 
   <form class="controls-container">
-    <button mat-raised-button color="accent" *ngIf="canGuessConsonant()">Guess Consonant</button>
-    <button mat-raised-button color="accent" *ngIf="canBuyVowel()">Buy Vowel</button>
+    <button mat-raised-button color="accent" *ngIf="canGuessConsonant()" (click)="guessConsonant()">Guess Consonant</button>
+    <button mat-raised-button color="accent" *ngIf="canBuyVowel()" (click)="buyVowel()">Buy Vowel</button>
     <button mat-raised-button color="accent" *ngIf="canSolvePuzzle()">Solve Puzzle</button>
-    <button mat-raised-button color="basic" *ngIf="canSolvePuzzle()" (click)="quit()">Quit Game</button>
+    <button mat-raised-button color="basic" (click)="quit()">Quit Game</button>
   </form>
+
+  <div class="task-messages">
+    <span>{{currentTaskMessage}}</span>
+  </div>
 
   <div class="wheel-of-fortune-container">
 

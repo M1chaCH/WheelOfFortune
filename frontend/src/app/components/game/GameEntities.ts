@@ -17,7 +17,8 @@ export const enum GameStateTask{
   BANKRUPT = "BANKRUPT",
   HP_DEATH = "HP_DEATH",
   REPLAY = "REPLAY",
-  DELETE = "DELETE"
+  DELETE = "DELETE",
+  MESSAGE = "MESSAGE",
 }
 
 export interface GameField{

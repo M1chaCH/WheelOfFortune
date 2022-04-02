@@ -49,6 +49,31 @@ export class GameService{
       .subscribe((response: Game) => this.setGame(response));
   }
 
+  guessConsonant(guess: string){
+    this.api.callHandled(ApiEndpoint.CONSONANT, {}, ApiHttpMethods.POST, false,
+      [this.game.gameId, guess]).subscribe((response: Game) => this.setGame(response));
+  }
+
+  buyVowel(vowel: string){
+    this.api.callHandled(ApiEndpoint.VOWEL, {}, ApiHttpMethods.POST, false,
+      [this.game.gameId, vowel]).subscribe((response: Game) => this.setGame(response));
+  }
+
+  solveQuestion(selectedAnswerOne: boolean, amount: number){
+    this.api.callHandled(ApiEndpoint.RISK, { selectedAnswerOne, amount }, ApiHttpMethods.POST, false,
+      [this.game.gameId]).subscribe((response: Game) => this.setGame(response));
+  }
+
+  acceptBankruptcy(){
+    this.api.callHandled(ApiEndpoint.BANKRUPT, {}, ApiHttpMethods.POST, false, [this.game.gameId])
+      .subscribe((response: Game) => this.setGame(response));
+  }
+
+  acceptHpDeath(){
+    this.api.callHandled(ApiEndpoint.HP_DEATH, {}, ApiHttpMethods.POST, false, [this.game.gameId])
+      .subscribe((response: Game) => this.setGame(response));
+  }
+
   quitGame(){
     this.api.callHandled(ApiEndpoint.QUIT, {}, ApiHttpMethods.POST, false, [this.game.gameId])
       .subscribe((response: Game) => this.setGame(response));
@@ -108,9 +133,11 @@ export class GameService{
   }
 
   getTaskParameterValue(key: GameStateTask): any{
-    for (let taskParameter of this.game.gameState.taskParameters) {
-      if(taskParameter.key.valueOf() === key)
-        return taskParameter.value;
+    if(this.game.gameState?.taskParameters?.length > 0){
+      for (let taskParameter of this.game.gameState.taskParameters) {
+        if(taskParameter.key.valueOf() === key)
+          return taskParameter.value;
+      }
     }
   }
 

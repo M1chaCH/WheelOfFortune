@@ -45,8 +45,13 @@
     justify-content: flex-start;
 
     *{
-      margin: 0 10px;
+      margin: 10px;
     }
+  }
+
+  .task-messages{
+    font-size: 15px;
+    margin: 10px;
   }
 
   .wheel-of-fortune-container{

@@ -1,6 +1,7 @@
 package ch.bbbaden.m151.wheeloffortune.game;
 
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.GameNotFoundException;
+import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.IllegalGameTaskException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.UsernameAlreadyExistsException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.UsernameToLongException;
 import ch.bbbaden.m151.wheeloffortune.game.data.category.CategoryDTO;
@@ -9,10 +10,12 @@ import ch.bbbaden.m151.wheeloffortune.game.data.question.QuestionService;
 import ch.bbbaden.m151.wheeloffortune.game.data.sentence.SentenceService;
 import ch.bbbaden.m151.wheeloffortune.game.entity.*;
 import ch.bbbaden.m151.wheeloffortune.game.highscore.HighScoreService;
+import ch.bbbaden.m151.wheeloffortune.game.task.BuyVowelGameTask;
 import ch.bbbaden.m151.wheeloffortune.game.task.GameTask;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -25,7 +28,7 @@ public class GameService {
 
     public static final List<Character> VOWELS = List.of( 'a', 'e', 'i', 'o', 'u' );
 
-    public static final int VOWEL_PRICE =  400;
+    public static final int VOWEL_PRICE =  200;
 
     public static final WheelOfFortuneField[] WHEEL_OF_FORTUNE = new WheelOfFortuneField[]{
             new WheelOfFortuneField(0, GameState.Task.BANKRUPT, -1),
@@ -51,6 +54,16 @@ public class GameService {
     private final CategoryService categoryService;
     private final GameRepo gameRepo = GameRepo.getInstance();
     private final Random random = new Random();
+
+    public static GameState getDefaultPlayGameState(Game game){
+        GameState gameState = new GameState();
+        gameState.setState(GameState.State.PLAY);
+        List<GameState.Task> availableTasks = new ArrayList<>(List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE));
+        if(BuyVowelGameTask.hasEnoughMoneyForVowel(game))
+            availableTasks.add(GameState.Task.BUY_VOWEL);
+        gameState.setAvailableTasks(availableTasks);
+        return gameState;
+    }
 
     public GameDTO startNewGame(StartGameRequest startGameRequest){
         checkUsername(startGameRequest.getUsername());
@@ -79,7 +92,12 @@ public class GameService {
     }
 
     public GameDTO handleTask(String id, GameTask task){
-        return prepareForResponse(task.execute(validateGameId(id)));
+        Game game = validateGameId(id);
+        GameState.Task requiredTask = task.getRequiredTask();
+        if(!game.getGameState().getAvailableTasks().contains(requiredTask))
+            throw new IllegalGameTaskException(requiredTask);
+
+        return prepareForResponse(task.execute(game));
     }
 
     public void deleteGame(String id){
