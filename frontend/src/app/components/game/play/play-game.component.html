@@ -12,7 +12,7 @@
   <form class="controls-container">
     <button mat-raised-button color="accent" *ngIf="canGuessConsonant()" (click)="guessConsonant()">Guess Consonant</button>
     <button mat-raised-button color="accent" *ngIf="canBuyVowel()" (click)="buyVowel()">Buy Vowel</button>
-    <button mat-raised-button color="accent" *ngIf="canSolvePuzzle()">Solve Puzzle</button>
+    <button mat-raised-button color="accent" *ngIf="canSolvePuzzle()" (click)="solvePuzzle()">Solve Puzzle</button>
     <button mat-raised-button color="basic" (click)="quit()">Quit Game</button>
   </form>
 

@@ -3,7 +3,6 @@ package ch.bbbaden.m151.wheeloffortune.game.entity;
 import lombok.*;
 
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -30,6 +29,7 @@ public class GameState {
         REPLAY,
         DELETE,
         MESSAGE,
+        SENTENCE_COMPLETED,
     }
 
     private State state;

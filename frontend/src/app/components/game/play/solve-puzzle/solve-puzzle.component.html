@@ -1,0 +1,14 @@
+<div class="parent">
+  <h2>Solve the Puzzle, if you can 👀</h2>
+
+  <form class="grid" [formGroup]="solutionForm">
+    <mat-form-field class="double-column" appearance="fill">
+      <mat-label>Solution</mat-label>
+      <input matInput formControlName="solution" placeholder="Good Luck" required>
+    </mat-form-field>
+
+    <button mat-raised-button color="accent" (click)="submit()" [disabled]="solutionForm.invalid">Solve</button>
+  </form>
+</div>
+
+

@@ -8,6 +8,7 @@ import {CharSelectorComponent} from "./char-selector/char-selector.component";
 import {MatDialog} from "@angular/material/dialog";
 import {BankruptDialogComponent} from "../dialogs/bankrupt-dialog.component";
 import {HpDeathDialogComponent} from "../dialogs/hp-death-dialog.component";
+import {SolvePuzzleComponent} from "./solve-puzzle/solve-puzzle.component";
 
 @Component({
   selector: "play-game",
@@ -129,6 +130,11 @@ export class PlayGameComponent implements GameServiceListener{
 
   spin(){
     this.gameService.spin();
+  }
+
+  solvePuzzle(){
+    this.openBottomSheet = this.bottomSheet.open(SolvePuzzleComponent);
+    this.openBottomSheet.afterDismissed().subscribe((solution: string) => this.gameService.solvePuzzle(solution));
   }
 
   quit(){

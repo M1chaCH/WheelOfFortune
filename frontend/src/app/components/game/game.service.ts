@@ -69,6 +69,11 @@ export class GameService{
       .subscribe((response: Game) => this.setGame(response));
   }
 
+  solvePuzzle(solution: string){
+    this.api.callHandled(ApiEndpoint.SOLVE_PUZZLE, {}, ApiHttpMethods.POST, false,
+      [this.game.gameId, solution]).subscribe((response: Game) => this.setGame(response));
+  }
+
   acceptHpDeath(){
     this.api.callHandled(ApiEndpoint.HP_DEATH, {}, ApiHttpMethods.POST, false, [this.game.gameId])
       .subscribe((response: Game) => this.setGame(response));

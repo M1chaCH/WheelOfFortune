@@ -70,6 +70,11 @@ public class GameController {
         return ResponseEntity.ok(service.handleTask(gameId, new GuessConsonantGameTask(consonant)));
     }
 
+    @PostMapping("/{gameId}/solve/{solution}")
+    public ResponseEntity<GameDTO> solvePuzzle(@PathVariable String gameId, @PathVariable String solution){
+        return ResponseEntity.ok(service.handleTask(gameId, new SolvePuzzleGameTask(solution)));
+    }
+
     @PostMapping("/{gameId}/risk")
     public ResponseEntity<GameDTO> answerQuestion(@PathVariable String gameId,
             @RequestBody CorrectQuestionRequest request) {

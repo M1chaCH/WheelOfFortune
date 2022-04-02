@@ -19,6 +19,7 @@ export const enum GameStateTask{
   REPLAY = "REPLAY",
   DELETE = "DELETE",
   MESSAGE = "MESSAGE",
+  SENTENCE_COMPLETED = "SENTENCE_COMPLETED",
 }
 
 export interface GameField{
