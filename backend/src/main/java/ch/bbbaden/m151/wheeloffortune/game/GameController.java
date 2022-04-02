@@ -2,6 +2,10 @@ package ch.bbbaden.m151.wheeloffortune.game;
 
 import ch.bbbaden.m151.wheeloffortune.game.entity.GameDTO;
 import ch.bbbaden.m151.wheeloffortune.game.entity.StartGameRequest;
+import ch.bbbaden.m151.wheeloffortune.game.highscore.HighScoreService;
+import ch.bbbaden.m151.wheeloffortune.game.task.GuessConsonantGameTask;
+import ch.bbbaden.m151.wheeloffortune.game.task.QuitGameTask;
+import ch.bbbaden.m151.wheeloffortune.game.task.SpinGameTask;
 import ch.bbbaden.m151.wheeloffortune.util.BasicResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class GameController {
 
     private final GameService service;
+    private final HighScoreService highScoreService;
 
     /**
      * starts a new game with the given username
@@ -36,7 +41,7 @@ public class GameController {
      */
     @PostMapping("/{gameId}/quit")
     public ResponseEntity<GameDTO> quitGame(@PathVariable String gameId){
-        return ResponseEntity.ok(service.quitGame(gameId));
+        return ResponseEntity.ok(service.handleTask(gameId, new QuitGameTask(highScoreService)));
     }
 
     /**
@@ -58,11 +63,11 @@ public class GameController {
 
     @GetMapping("/{gameId}/spin")
     public ResponseEntity<GameDTO> spin(@PathVariable String gameId){
-        return ResponseEntity.ok(service.spin(gameId));
+        return ResponseEntity.ok(service.handleTask(gameId, new SpinGameTask()));
     }
 
     @PostMapping("/{gameId}/consonant/{consonant}")
     public ResponseEntity<GameDTO> guessConsonant(@PathVariable String gameId, @PathVariable char consonant){
-        return ResponseEntity.ok(service.guessConsonant(gameId, consonant));
+        return ResponseEntity.ok(service.handleTask(gameId, new GuessConsonantGameTask(consonant)));
     }
 }
