@@ -19,10 +19,8 @@ public class Game {
 
     private final String gameId;
     private String username;
-    private int roundCount = 0;
+    private int roundCount = 1;
     private int budget = 0;
-    //TODO: refactor from int to some sort of ranking system (highscores still measured by budgets but grouped by some rank)
-    private int score = 0;
     private int hp = MAX_HP;
 
     private final List<Sentence> availableSentences;
@@ -62,7 +60,6 @@ public class Game {
                 username,
                 roundCount,
                 budget,
-                score,
                 hp,
                 gameField,
                 gameState,

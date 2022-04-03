@@ -13,7 +13,6 @@ public class BankruptGameTask implements GameTask{
         game.setGameState(new GameState(GameState.State.END, List.of(GameState.Task.REPLAY, GameState.Task.DELETE),
                 List.of(new TaskParameter(GameState.Task.LEAVE, "You went bankrupt! 😖"))));
         game.setBudget(0);
-        game.setScore(0);
 
         return game;
     }

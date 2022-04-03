@@ -49,7 +49,6 @@ export interface Game{
   username: string,
   roundCount: number,
   budget: number,
-  score: number,
   hp: number,
 
   gameField: GameField,

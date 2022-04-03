@@ -16,10 +16,9 @@ public class GameDTO {
 
     private final String gameId;
     private String username;
-    private int roundCount = 0;
-    private int budget = 0;
-    private int score = 0;
-    private int hp = Game.MAX_HP;
+    private int roundCount;
+    private int budget;
+    private int hp;
 
     private GameField gameField;
     private GameState gameState;

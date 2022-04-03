@@ -17,14 +17,15 @@ public class QuitGameTask implements GameTask{
     @Override
     public Game execute(Game game) {
         String positionMessage;
-        int position = highScoreService.getPositionByScore(game.getScore());
+        int position = highScoreService.getPositionByScore(game.getBudget());
         if(position == -1) {
             positionMessage = "Unfortunately you did not make it in to the HighScore List 😥";
         }else {
             positionMessage = "Congratulations! 🎉, you are position " + position + " of all time";
             HighScoreDTO highScoreDTO = new HighScoreDTO();
             highScoreDTO.setUsername(game.getUsername());
-            highScoreDTO.setScore(game.getScore());
+            highScoreDTO.setScore(game.getBudget());
+            highScoreDTO.setPlayedRounds(game.getRoundCount());
             highScoreService.addNew(highScoreDTO);
         }
 

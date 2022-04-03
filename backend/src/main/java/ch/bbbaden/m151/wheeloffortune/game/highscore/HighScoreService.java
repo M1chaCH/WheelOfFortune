@@ -15,7 +15,7 @@ import java.util.stream.StreamSupport;
 @Service
 @AllArgsConstructor
 public class HighScoreService {
-    public static final int MAX_SAVED_HIGH_SCORES = 20;
+    public static final int MAX_SAVED_HIGH_SCORES = 9999;
     private final SecurityTokenService securityTokenService;
     private final HighScoreRepo repo;
 
@@ -27,6 +27,7 @@ public class HighScoreService {
                 .map(highScore -> new HighScoreDTO(
                         highScore.getId(),
                         highScore.getScore(),
+                        highScore.getPlayedRounds(),
                         highScore.getUsername(),
                         LocalDateTimeParser.dateToString(highScore.getAchievedAt())))
                 .collect(Collectors.toList());
@@ -39,15 +40,17 @@ public class HighScoreService {
      */
     public int getPositionByScore(int score){
         List<HighScoreDTO> highScores = getAllSortedByScoreAsDto();
+        if(highScores.isEmpty())
+            return 1;
 
-        if(highScores.get(highScores.size() - 1).getScore() >= score)
+        if(highScores.get(highScores.size() - 1).getScore() > score && highScores.size() == MAX_SAVED_HIGH_SCORES)
             return -1;
 
         for (int i = 0; i < highScores.size(); i++) {
             if(highScores.get(i).getScore() < score)
-                return i;
+                return i + 1; //+1 because next
         }
-        return -1;
+        return highScores.size() + 1;
     }
 
     /**
@@ -71,6 +74,7 @@ public class HighScoreService {
         HighScore createdHighScore = repo.save(highScoreToAdd);
         return new HighScoreDTO(createdHighScore.getId(),
                 createdHighScore.getScore(),
+                createdHighScore.getPlayedRounds(),
                 createdHighScore.getUsername(),
                 LocalDateTimeParser.dateToString(createdHighScore.getAchievedAt()));
     }

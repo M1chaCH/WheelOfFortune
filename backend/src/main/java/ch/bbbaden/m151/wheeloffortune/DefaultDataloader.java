@@ -74,22 +74,22 @@ public class DefaultDataloader {
             }
             sentenceRepo.saveAll(sentences);
 
-            HighScore highScore = new HighScore(5500, "test", LocalDateTime.now());
-            HighScore highScore1 = new HighScore(7000, "test1", LocalDateTime.now().plusHours(1));
-            HighScore highScore2 = new HighScore(1243, "test2", LocalDateTime.now().plusMinutes(90));
-            HighScore highScore3 = new HighScore(7050, "test3", LocalDateTime.now().plusMinutes(91));
-            HighScore highScore4 = new HighScore(3523, "test4", LocalDateTime.now().plusMinutes(92));
-            HighScore highScore5 = new HighScore(4563, "test5", LocalDateTime.now().plusMinutes(93));
-            HighScore highScore6 = new HighScore(7050, "test6", LocalDateTime.now().plusMinutes(94));
-            HighScore highScore7 = new HighScore(7050, "test7", LocalDateTime.now().plusMinutes(95));
-            HighScore highScore8 = new HighScore(7050, "test8", LocalDateTime.now().plusMinutes(96));
-            HighScore highScore9 = new HighScore(1000, "test9", LocalDateTime.now().plusMinutes(97));
-            HighScore highScore10 = new HighScore(1000, "test10", LocalDateTime.now().plusMinutes(97));
-            HighScore highScore11 = new HighScore(1000, "test11", LocalDateTime.now().plusMinutes(32));
-            HighScore highScore12 = new HighScore(1000, "test12", LocalDateTime.now().plusMinutes(197));
-            HighScore highScore13 = new HighScore(1000, "test13", LocalDateTime.now().plusMinutes(93));
-            HighScore highScore14 = new HighScore(1000, "test14", LocalDateTime.now().plusMinutes(943));
-            HighScore highScore15 = new HighScore(1000, "test15", LocalDateTime.now().plusMinutes(77));
+            HighScore highScore = new HighScore(5500, 1, "test", LocalDateTime.now());
+            HighScore highScore1 = new HighScore(7000, 1, "test1", LocalDateTime.now().plusHours(1));
+            HighScore highScore2 = new HighScore(1243, 1, "test2", LocalDateTime.now().plusMinutes(90));
+            HighScore highScore3 = new HighScore(7050, 1, "test3", LocalDateTime.now().plusMinutes(91));
+            HighScore highScore4 = new HighScore(3523, 1, "test4", LocalDateTime.now().plusMinutes(92));
+            HighScore highScore5 = new HighScore(4563, 1, "test5", LocalDateTime.now().plusMinutes(93));
+            HighScore highScore6 = new HighScore(7050, 1, "test6", LocalDateTime.now().plusMinutes(94));
+            HighScore highScore7 = new HighScore(7050, 1, "test7", LocalDateTime.now().plusMinutes(95));
+            HighScore highScore8 = new HighScore(7050, 1, "test8", LocalDateTime.now().plusMinutes(96));
+            HighScore highScore9 = new HighScore(1000, 1, "test9", LocalDateTime.now().plusMinutes(97));
+            HighScore highScore10 = new HighScore(1000, 1, "test10", LocalDateTime.now().plusMinutes(97));
+            HighScore highScore11 = new HighScore(1000, 1, "test11", LocalDateTime.now().plusMinutes(32));
+            HighScore highScore12 = new HighScore(1000, 1, "test12", LocalDateTime.now().plusMinutes(197));
+            HighScore highScore13 = new HighScore(1000, 1, "test13", LocalDateTime.now().plusMinutes(93));
+            HighScore highScore14 = new HighScore(1000, 1, "test14", LocalDateTime.now().plusMinutes(943));
+            HighScore highScore15 = new HighScore(1000, 1, "test15", LocalDateTime.now().plusMinutes(77));
             highScoreRepo.saveAll(List.of(highScore, highScore1, highScore2, highScore3, highScore4,highScore5, highScore6,
                     highScore7, highScore8, highScore9, highScore10, highScore11, highScore12, highScore13, highScore14,
                     highScore15));

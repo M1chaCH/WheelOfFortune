@@ -108,7 +108,6 @@ export class GameService{
       username: "",
       roundCount: -1,
       budget: -1,
-      score: -1,
       hp: -1,
 
       gameField: {
@@ -128,7 +127,7 @@ export class GameService{
     };
   }
 
-  isTaskAvailable(task: string): boolean{
+  isTaskAvailable(task: GameStateTask): boolean{
     let allowed: boolean = false;
     this.game.gameState.availableTasks.forEach(t => {
       if(t.valueOf() === task)
@@ -138,7 +137,7 @@ export class GameService{
     return allowed;
   }
 
-  isInState(state: string): boolean{
+  isInState(state: GameStateType): boolean{
     return this.game.gameState.state.valueOf() === state;
   }
 

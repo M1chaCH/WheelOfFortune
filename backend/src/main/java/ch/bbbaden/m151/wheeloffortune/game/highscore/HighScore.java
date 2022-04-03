@@ -21,13 +21,17 @@ public class HighScore {
     private int score;
 
     @Column(nullable = false)
+    private int playedRounds;
+
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)
     private LocalDateTime achievedAt;
 
-    public HighScore(int score, String username, LocalDateTime achievedAt) {
+    public HighScore(int score, int playedRounds, String username, LocalDateTime achievedAt) {
         this.score = score;
+        this.playedRounds = playedRounds;
         this.username = username;
         this.achievedAt = achievedAt;
     }

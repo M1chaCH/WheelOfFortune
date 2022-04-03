@@ -15,7 +15,6 @@ export class HomeComponent implements GameServiceListener{
   isLoggedIn: boolean = false;
   username: string = "";
   displayedBudget: string = "";
-  displayedScore: string = "";
   displayedHp: string = "";
 
   constructor(
@@ -32,16 +31,13 @@ export class HomeComponent implements GameServiceListener{
   update(game: Game): void {
     this.username = game.username;
     const budget: number = game.budget;
-    const score: number = game.score;
     const hp: number = game.hp;
-    if(hp !== -1 && budget !== -1 && score !== -1 && this.gameService.isInState(GameStateType.PLAY)
+    if(hp !== -1 && budget !== -1 && this.gameService.isInState(GameStateType.PLAY)
       || this.gameService.isInState(GameStateType.FORCED)){
       this.displayedBudget = "🤑 Budget: " + game.budget;
-      this.displayedScore = "🔝 Score: " + game.score;
       this.displayedHp = "💕 HP: " + game.hp;
     }else{
       this.displayedBudget = "";
-      this.displayedScore = "";
       this.displayedHp = "";
     }
   }

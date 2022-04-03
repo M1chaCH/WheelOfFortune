@@ -31,14 +31,15 @@ class HighScoreServiceTest {
     @Test
     void addNew_successTest(){
         LocalDateTime achievedAt = LocalDateTime.now();
-        HighScoreDTO toAdd = new HighScoreDTO(1, 1123, "test", "1");
-        HighScore expected = new HighScore(1123, "test", achievedAt);
+        HighScoreDTO toAdd = new HighScoreDTO(1, 1, 1123, "test", "1");
+        HighScore expected = new HighScore(1123, 1, "test", achievedAt);
         expected.setId(45);
 
         when(repoMock.save(any())).thenReturn(expected);
 
         HighScoreDTO expectedDTO = new HighScoreDTO(expected.getId(),
                 expected.getScore(),
+                expected.getPlayedRounds(),
                 expected.getUsername(),
                 LocalDateTimeParser.dateToString(expected.getAchievedAt()));
         assertEquals(expectedDTO, service.addNew(toAdd));
@@ -51,7 +52,7 @@ class HighScoreServiceTest {
         when(securityTokenServiceMock.isTokenValid(token)).thenReturn(true);
         when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
 
-        service.edit(token, new HighScoreDTO(id, 0, "",
+        service.edit(token, new HighScoreDTO(id, 0, 1, "",
                 LocalDateTimeParser.dateToString(LocalDateTime.now())));
         assertTrue(true);
     }
@@ -64,7 +65,7 @@ class HighScoreServiceTest {
         when(repoMock.findById(id)).thenReturn(Optional.empty());
 
         HighScoreDTO toEdit =
-                new HighScoreDTO(id, 0, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
+                new HighScoreDTO(id, 0, 1, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
         assertThrows(EntityNotFoundException.class, () -> service.edit(token, toEdit));
     }
 
@@ -76,7 +77,7 @@ class HighScoreServiceTest {
         when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
 
         HighScoreDTO toEdit =
-                new HighScoreDTO(id, 0, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
+                new HighScoreDTO(id, 0, 1, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
         assertThrows(InvalidatedSecurityTokenException.class, () -> service.edit(token, toEdit));
     }
 
@@ -88,7 +89,7 @@ class HighScoreServiceTest {
         when(repoMock.findById(id)).thenReturn(Optional.of(new HighScore()));
 
         HighScoreDTO toEdit =
-                new HighScoreDTO(id, 0, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
+                new HighScoreDTO(id, 0, 1, "", LocalDateTimeParser.dateToString(LocalDateTime.now()));
         assertThrows(SecurityTokenNotFoundException.class, () -> service.edit(token, toEdit));
     }
 
