@@ -35,6 +35,7 @@ public class SentenceService extends GenericAuthenticatedEntityService<Integer, 
             String sentence = entity.getSentence();
             return sentence.length() >= MIN_SENTENCE_LENGTH
                     && sentence.length() <= MAX_SENTENCE_LENGTH
+                    && sentence.matches("[A-Za-z \\-.,!\"'?;öäü]*")
                     // don't give the category directly because need to check if actually exists
                     && categoryService.isEntityValid(categoryService.getById(entity.getCategory().getId()));
         }catch (Exception e){

@@ -36,6 +36,7 @@ public class QuestionService extends GenericAuthenticatedEntityService<Integer, 
 
             return question.length() >= MIN_QUESTION_LENGTH
                     && question.length() <= MAX_QUESTION_LENGTH
+                    && question.matches("^.*[?]")
                     && answerOne.length() >= MIN_QUESTION_ANSWER_LENGTH
                     && answerOne.length() <= MAX_QUESTION_ANSWER_LENGTH
                     && answerTwo.length() >= MIN_QUESTION_ANSWER_LENGTH
