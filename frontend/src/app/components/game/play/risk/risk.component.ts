@@ -35,7 +35,6 @@ export class RiskComponent{
   submit(){
     const selectedAnswerOneCorrect: boolean = this.questionForm.value.selectedAnswer;
     const selectedAmount: number = this.questionForm.value.possibleAmount;
-    console.log(selectedAmount)
     this._bottomSheetRef.dismiss({ answerOneSelected: selectedAnswerOneCorrect, amount: selectedAmount });
   }
 }

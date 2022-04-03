@@ -25,7 +25,6 @@ export class WheelOfFortuneApiService {
 
     for (let i = 0; i < amountToReplace; i++)
       url = url.replace(/\[!]/, pathVariables[i]);
-    console.log(url); //TODO: remove when releasing
     return url;
   }
 

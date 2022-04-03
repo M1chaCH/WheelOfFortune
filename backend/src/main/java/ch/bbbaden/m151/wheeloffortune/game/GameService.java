@@ -32,8 +32,8 @@ public class GameService {
     public static final int VOWEL_PRICE =  200;
 
     public static final WheelOfFortuneField[] WHEEL_OF_FORTUNE = new WheelOfFortuneField[]{
-            new WheelOfFortuneField(1, GameState.Task.GUESS_CONSONANT, 200),
-            new WheelOfFortuneField(0, GameState.Task.BANKRUPT, -1),
+            new WheelOfFortuneField(0, GameState.Task.GUESS_CONSONANT, 200),
+            new WheelOfFortuneField(1, GameState.Task.BANKRUPT, -1),
             new WheelOfFortuneField(2, GameState.Task.GUESS_CONSONANT, 100),
             new WheelOfFortuneField(3, GameState.Task.RISK, -1),
             new WheelOfFortuneField(4, GameState.Task.GUESS_CONSONANT, 300),
@@ -54,7 +54,7 @@ public class GameService {
     private final QuestionService questionService;
     private final CategoryService categoryService;
     private final GameRepo gameRepo = GameRepo.getInstance();
-    private final Random random = new Random();
+    private static final Random random = new Random();
 
     public static GameState getDefaultPlayGameState(Game game){
         GameState gameState = new GameState();
@@ -113,7 +113,7 @@ public class GameService {
         Game game = validateGameId(id);
         deleteGame(id);
         List<CategoryDTO> categories = categoryService.getAllAsDto();
-        int categoryId = random.nextInt(categories.size());
+        int categoryId = getNextRandomInt(categories.size());
         return startNewGame(new StartGameRequest(game.getUsername(), categories.get(categoryId)));
     }
 
@@ -155,5 +155,9 @@ public class GameService {
 
         if(username.length() > Game.MAX_USERNAME_LENGTH)
             throw new UsernameToLongException(username.length());
+    }
+
+    public static int getNextRandomInt(int bound){
+        return random.nextInt(bound);
     }
 }

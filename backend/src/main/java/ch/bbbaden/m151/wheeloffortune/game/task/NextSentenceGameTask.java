@@ -17,7 +17,8 @@ public class NextSentenceGameTask implements GameTask{
             return game;
         }
 
-        game.setCurrentSentence(game.getAvailableSentences().get(0)); //TODO: make more random
+        game.setCurrentSentence(game.getAvailableSentences().get(
+               GameService.getNextRandomInt(game.getAvailableSentences().size())));
         game.getAvailableSentences().remove(game.getCurrentSentence());
         game.setGameField(new GameField(game.getCurrentSentence().getSentence()));
         game.setGameState(GameService.getDefaultPlayGameState(game));

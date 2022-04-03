@@ -44,9 +44,9 @@ public class SpinGameTask implements GameTask{
                 return game;
             }
 
-            //TODO maybe make a bit more random
-            Question currentQuestion = game.getAvailableQuestions().get(0);
-            game.setCurrentQuestion(currentQuestion);
+            Question currentQuestion = game.getAvailableQuestions()
+                    .get(GameService.getNextRandomInt(game.getAvailableQuestions().size()));
+            game.setCurrentQuestion(currentQuestion); //removed on answered
 
             QuestionDTO questionDTO = currentQuestion.parseToDTO();
             questionDTO.setAnswerOneCorrect(true); //weak attempt to hide the correct answer for the frontend
