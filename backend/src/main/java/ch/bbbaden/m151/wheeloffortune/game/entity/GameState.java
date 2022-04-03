@@ -30,6 +30,7 @@ public class GameState {
         DELETE,
         MESSAGE,
         SENTENCE_COMPLETED,
+        WIN,
     }
 
     private State state;

@@ -84,6 +84,11 @@ export class GameService{
       .subscribe((response: Game) => this.setGame(response));
   }
 
+  acceptWin(){
+    this.api.callHandled(ApiEndpoint.WIN, {}, ApiHttpMethods.POST, false, [this.game.gameId])
+      .subscribe((response: Game) => this.setGame(response));
+  }
+
   quitGame(){
     this.api.callHandled(ApiEndpoint.QUIT, {}, ApiHttpMethods.POST, false, [this.game.gameId])
       .subscribe((response: Game) => this.setGame(response));

@@ -23,8 +23,8 @@ public class HighScoreService {
      * @return a list of all the {@link HighScoreDTO}s in the DB, sorted decreasing by achievedAt.
      */
     public List<HighScoreDTO> getAllSortedByScoreAsDto(){
-        return StreamSupport.stream(repo.findAllByOrderByScoreDesc().spliterator(), false)
-                .map(highScore -> new HighScoreDTO(
+        return StreamSupport.stream(repo.findAllByOrderByScoreDesc().spliterator(),
+                        false).map(highScore -> new HighScoreDTO(
                         highScore.getId(),
                         highScore.getScore(),
                         highScore.getPlayedRounds(),
@@ -55,8 +55,8 @@ public class HighScoreService {
 
     /**
      * checks if the score fits in top 20 if so adds score to highScore list <br>
-     * !!Only cares about the username and the score in the {@link HighScoreDTO}. The other values are generated.
-     * (id -> JPA, <strong>achievedAt -> NOW</strong>)
+     * !!Only cares about the username, the score and rounds played in the {@link HighScoreDTO}. The other values are
+     * generated. (id -> JPA, <strong>achievedAt -> NOW</strong>)
      * @param toAdd the DTO to read the values from
      * @return the DTO representing the entity created in the database &
      * !null when the highScore was not added because it does not fit in top 20
@@ -68,6 +68,7 @@ public class HighScoreService {
 
         HighScore highScoreToAdd = new HighScore();
         highScoreToAdd.setScore(toAdd.getScore());
+        highScoreToAdd.setPlayedRounds(toAdd.getPlayedRounds());
         highScoreToAdd.setUsername(toAdd.getUsername());
         highScoreToAdd.setAchievedAt(LocalDateTime.now());
 

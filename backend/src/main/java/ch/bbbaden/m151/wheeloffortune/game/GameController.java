@@ -100,5 +100,10 @@ public class GameController {
     public ResponseEntity<GameDTO> acceptHPDeath(@PathVariable String gameId){
         return ResponseEntity.ok(service.handleTask(gameId, new HPDeathGameTask()));
     }
+
+    @PostMapping("/{gameId}/win")
+    public ResponseEntity<GameDTO> acceptWin(@PathVariable String gameId){
+        return ResponseEntity.ok(service.handleTask(gameId, new WinGameTask(highScoreService)));
+    }
 }
 

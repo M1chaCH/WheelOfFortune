@@ -10,6 +10,7 @@ import {BankruptDialogComponent} from "../dialogs/bankrupt-dialog.component";
 import {HpDeathDialogComponent} from "../dialogs/hp-death-dialog.component";
 import {SolvePuzzleComponent} from "./solve-puzzle/solve-puzzle.component";
 import {SentenceCompleteDialogComponent} from "../dialogs/sentence-complete-dialog.component";
+import {WinDialogComponent} from "../dialogs/win-dialog.component";
 
 @Component({
   selector: "play-game",
@@ -53,6 +54,15 @@ export class PlayGameComponent implements GameServiceListener{
       this.handleBankruptIfExists();
       this.handleHpDeathIfExists();
       this.handleSentenceCompleteIfExists();
+      this.handleWinIfExists();
+    }
+  }
+
+  handleWinIfExists(){
+    if(this.gameService.isTaskAvailable(GameStateTask.WIN)) {
+      this.openDialog = this.dialog.open(WinDialogComponent, {disableClose: true});
+
+      this.openDialog.afterClosed().subscribe(() => this.gameService.acceptWin());
     }
   }
 

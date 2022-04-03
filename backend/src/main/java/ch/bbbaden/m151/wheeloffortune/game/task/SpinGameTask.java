@@ -38,6 +38,12 @@ public class SpinGameTask implements GameTask{
             state = GameState.State.FORCED;
             availableTasks = List.of( GameState.Task.RISK, GameState.Task.LEAVE );
 
+            if(game.getAvailableQuestions().isEmpty()){
+                game.setGameState(new GameState(GameState.State.FORCED, List.of(GameState.Task.WIN, GameState.Task.LEAVE),
+                        List.of()));
+                return game;
+            }
+
             //TODO maybe make a bit more random
             Question currentQuestion = game.getAvailableQuestions().get(0);
             game.setCurrentQuestion(currentQuestion);
