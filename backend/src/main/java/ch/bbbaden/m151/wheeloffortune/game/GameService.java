@@ -32,8 +32,8 @@ public class GameService {
     public static final int VOWEL_PRICE =  200;
 
     public static final WheelOfFortuneField[] WHEEL_OF_FORTUNE = new WheelOfFortuneField[]{
-            new WheelOfFortuneField(0, GameState.Task.BANKRUPT, -1),
             new WheelOfFortuneField(1, GameState.Task.GUESS_CONSONANT, 200),
+            new WheelOfFortuneField(0, GameState.Task.BANKRUPT, -1),
             new WheelOfFortuneField(2, GameState.Task.GUESS_CONSONANT, 100),
             new WheelOfFortuneField(3, GameState.Task.RISK, -1),
             new WheelOfFortuneField(4, GameState.Task.GUESS_CONSONANT, 300),

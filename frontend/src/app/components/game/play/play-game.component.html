@@ -22,13 +22,10 @@
 
   <div class="wheel-of-fortune-container">
 
-    <div class="result element">
+    <div class="result">
       <div>
-        {{currentWheelOfFortuneTask()}}
+        <img src="../../../../assets/{{wheelOfFortuneImageName()}}.png" alt="😥"/>
       </div>
-      <span class="amount">
-        {{currentWheelOfFortuneReward()}}
-      </span>
     </div>
 
     <button mat-raised-button color="accent" class="spin-button" (click)="spin()" *ngIf="canSpin()">🍀 SPIN!</button>

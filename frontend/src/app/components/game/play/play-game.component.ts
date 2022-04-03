@@ -19,7 +19,7 @@ import {WinDialogComponent} from "../dialogs/win-dialog.component";
 })
 export class PlayGameComponent implements GameServiceListener{
   gameFieldContent: string[] = [];
-  currentWheelOfFortuneFieldId: number = -1;
+  currentWheelOfFortuneFieldId: number = 0;
   currentTaskMessage: string = "";
   private openSnackBar: any;
   private openBottomSheet: any;
@@ -182,18 +182,13 @@ export class PlayGameComponent implements GameServiceListener{
     return this.gameService.isTaskAvailable(GameStateTask.SPIN);
   }
 
-  currentWheelOfFortuneTask(): string{
-    return this.wheelOfFortune[this.currentWheelOfFortuneFieldId]?.task?.valueOf();
-  }
+  wheelOfFortuneImageName(): string{
+    const currentTask: WheelOfFortuneField | undefined = this.wheelOfFortune[this.currentWheelOfFortuneFieldId];
 
-  currentWheelOfFortuneReward(): string{
-    let reward: number = this.wheelOfFortune[this.currentWheelOfFortuneFieldId]?.reward;
-    let rewardString: string = "";
-    //don't ask why!! (only "reward >= -1" did not work neither did "reward >== -1 work") 🤷
-    if(reward >= -1 && reward !== -1)
-        rewardString += reward;
-
-
-    return rewardString;
+    if(currentTask.task === GameStateTask.GUESS_CONSONANT){
+      return "wheeloffortune-" + currentTask.reward;
+    }else{
+      return "wheeloffortune-" + currentTask.task.toLocaleLowerCase();
+    }
   }
 }
