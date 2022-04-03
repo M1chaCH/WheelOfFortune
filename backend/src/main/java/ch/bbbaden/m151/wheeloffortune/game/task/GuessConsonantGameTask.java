@@ -22,25 +22,39 @@ public class GuessConsonantGameTask implements GameTask{
                 .revealCharacter(guessedConsonant, game.getCurrentSentence().getSentence().toCharArray());
         game.getConsonantLeftToGuess().remove(Character.valueOf(guessedConsonant));
 
+        if(GameService.isSentenceComplete(game)){
+            game.setGameState(new GameState(GameState.State.FORCED, List.of(GameState.Task.LEAVE, GameState.Task.SENTENCE_COMPLETED),
+                    List.of()));
+            return game;
+        }
+
         GameState gameState = GameService.getDefaultPlayGameState(game);
         List<TaskParameter> taskProperties = new ArrayList<>();
+        String message;
 
         if(countConsonants != 0){
             int win = GameService.WHEEL_OF_FORTUNE[Integer.parseInt(game.getGameState()
                     .getTaskParameterValue(GameState.Task.SPIN).toString())].getReward();
 
             game.getConsonantLeftToGuess().remove((Character) guessedConsonant);
-            taskProperties.add(new TaskParameter(GameState.Task.MESSAGE, "Guessed Correct! +" + win * countConsonants + " budget"));
+            message = "Guessed Correct! +" + win * countConsonants + " budget";
             game.setBudget(game.getBudget() + win * countConsonants);
         }else{
-            taskProperties.add(new TaskParameter(GameState.Task.MESSAGE, "You guessed wrong ): -1 hp"));
+            message = "You guessed wrong ): -1 hp";
             game.setHp(game.getHp() - 1);
         }
+
+        if(game.getHp() == 0) {
+            game.setGameState(new GameState(GameState.State.FORCED, List.of(GameState.Task.HP_DEATH, GameState.Task.LEAVE),
+                    List.of()));
+            return game;
+        }
+
+        if (GameService.areAllConsonantsRevealed(game))
+            message += " & Congratulations! 🎉 You guessed all consonants.";
+
+        taskProperties.add(new TaskParameter(GameState.Task.MESSAGE, message));
         gameState.setTaskParameters(taskProperties);
-
-        if(game.getHp() == 0)
-            gameState = new GameState(GameState.State.FORCED, List.of(GameState.Task.HP_DEATH, GameState.Task.LEAVE), List.of());
-
         game.setGameState(gameState);
         return game;
     }

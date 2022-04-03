@@ -29,7 +29,7 @@ public class SpinGameTask implements GameTask{
             state = GameState.State.PLAY;
             availableTasks = new ArrayList<>(List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE,
                     GameState.Task.GUESS_CONSONANT, GameState.Task.LEAVE));
-            if(BuyVowelGameTask.hasEnoughMoneyForVowel(game))
+            if(BuyVowelGameTask.canBuyVowel(game))
                 availableTasks.add(GameState.Task.BUY_VOWEL);
 
             taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));

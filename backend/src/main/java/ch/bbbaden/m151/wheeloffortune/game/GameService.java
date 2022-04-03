@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -58,11 +59,36 @@ public class GameService {
     public static GameState getDefaultPlayGameState(Game game){
         GameState gameState = new GameState();
         gameState.setState(GameState.State.PLAY);
-        List<GameState.Task> availableTasks = new ArrayList<>(List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE));
-        if(BuyVowelGameTask.hasEnoughMoneyForVowel(game))
+
+        List<GameState.Task> availableTasks = new ArrayList<>(List.of(GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE));
+        if(!areAllConsonantsRevealed(game))
+            availableTasks.add(GameState.Task.SPIN);
+        if(BuyVowelGameTask.canBuyVowel(game))
             availableTasks.add(GameState.Task.BUY_VOWEL);
+
         gameState.setAvailableTasks(availableTasks);
         return gameState;
+    }
+
+    public static boolean areAllConsonantsRevealed(Game game){
+        int consonantsInSentence = 0;
+        int consonantsRevealed = 0;
+        char[] sentence = game.getCurrentSentence().getSentence().toCharArray();
+        char[] revealed = game.getGameField().getRevealedCharacters();
+        for (int i = 0; i < sentence.length; i++) {
+            if(!GameField.PUNCTUATIONS.contains(sentence[i]) && CONSONANTS.contains(Character.toLowerCase(sentence[i]))) {
+                consonantsInSentence++;
+                if (sentence[i] == revealed[i])
+                    consonantsRevealed++;
+            }
+        }
+
+        return consonantsInSentence == consonantsRevealed;
+    }
+
+    public static boolean isSentenceComplete(Game game){
+        return Arrays.equals(game.getCurrentSentence().getSentence().toCharArray(),
+                game.getGameField().getRevealedCharacters());
     }
 
     public GameDTO startNewGame(StartGameRequest startGameRequest){

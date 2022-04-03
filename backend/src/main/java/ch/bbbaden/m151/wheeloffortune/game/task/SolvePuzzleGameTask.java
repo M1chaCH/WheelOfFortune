@@ -7,6 +7,7 @@ import ch.bbbaden.m151.wheeloffortune.game.entity.TaskParameter;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.Locale;
 
 @AllArgsConstructor
 public class SolvePuzzleGameTask implements GameTask{
@@ -17,7 +18,7 @@ public class SolvePuzzleGameTask implements GameTask{
     public Game execute(Game game) {
         GameState gameState = GameService.getDefaultPlayGameState(game);
 
-        if(game.getCurrentSentence().getSentence().equals(givenSolution)){
+        if(game.getCurrentSentence().getSentence().toLowerCase(Locale.ROOT).equals(givenSolution.toLowerCase(Locale.ROOT))){
             gameState = new GameState(GameState.State.FORCED, List.of(GameState.Task.LEAVE, GameState.Task.SENTENCE_COMPLETED),
                     List.of());
         }else{

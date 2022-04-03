@@ -21,6 +21,12 @@ public class BuyVowelGameTask implements GameTask{
                 .revealCharacter(boughtVowel, game.getCurrentSentence().getSentence().toCharArray());
         game.getVowelsLeftToGuess().remove(Character.valueOf(boughtVowel));
 
+        if(GameService.isSentenceComplete(game)){
+            game.setGameState(new GameState(GameState.State.FORCED, List.of(GameState.Task.LEAVE, GameState.Task.SENTENCE_COMPLETED),
+                    List.of()));
+            return game;
+        }
+
         GameState gameState = GameService.getDefaultPlayGameState(game);
 
         if(countRevealedCharacters == 0){
@@ -31,7 +37,7 @@ public class BuyVowelGameTask implements GameTask{
             }
         }else game.setBudget(game.getBudget() - GameService.VOWEL_PRICE);
 
-        if(!hasEnoughMoneyForVowel(game))
+        if(!canBuyVowel(game))
             gameState.getAvailableTasks().remove(GameState.Task.BUY_VOWEL);
 
         game.setGameState(gameState);
@@ -43,7 +49,7 @@ public class BuyVowelGameTask implements GameTask{
         return GameState.Task.BUY_VOWEL;
     }
 
-    public static boolean hasEnoughMoneyForVowel(Game game){
-        return game.getBudget() >= GameService.VOWEL_PRICE;
+    public static boolean canBuyVowel(Game game){
+        return game.getBudget() >= GameService.VOWEL_PRICE && !game.getVowelsLeftToGuess().isEmpty();
     }
 }
