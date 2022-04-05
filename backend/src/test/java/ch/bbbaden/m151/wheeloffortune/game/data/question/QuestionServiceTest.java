@@ -57,6 +57,32 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     }
 
     @Test
+    void getAllByCategory_successTest(){
+        final Integer categoryId = 1;
+        List<Question> entities = generateSomeEntities();
+        Category category = new CategoryDTO(categoryId, "random").parseToEntity();
+        when(categoryServiceMock.getById(categoryId)).thenReturn(category);
+        when(repoMock.findQuestionsByCategory(category)).thenReturn(entities);
+
+        List<Question> returnedEntities = service.getAllByCategory(categoryId);
+        assertEquals(entities.size(), returnedEntities.size());
+        for (int i = 0; i < entities.size(); i++) {
+            assertEquals(returnedEntities.get(i), entities.get(i));
+        }
+    }
+
+    @Test
+    void getAllByCategory_deletedTest(){
+        final Integer categoryId = 2;
+        List<Question> entities = generateSomeEntities();
+        Category category = new CategoryDTO(categoryId, "random").parseToEntity();
+        when(categoryServiceMock.getById(categoryId)).thenThrow(EntityNotFoundException.class);
+        when(repoMock.findQuestionsByCategory(category)).thenReturn(entities);
+
+        assertThrows(EntityNotFoundException.class, () -> service.getAllByCategory(categoryId));
+    }
+
+    @Test
     void isEntityValid_trueTest(){
         Category category = new Category("some dud");
         Question question =
@@ -153,7 +179,7 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
 
     private Question generateEntity(Integer id){
         Question question = new Question(
-                "This is question with the number: " + id,
+                "This is question with the number: " + id + "?",
                 "answerOne",
                 "answerTwo",
                 true,
@@ -176,7 +202,7 @@ class QuestionServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     protected QuestionDTO generateDTO() {
         return new QuestionDTO(
                 1,
-                "This is question with the number: 1",
+                "This is question with the number: 1?",
                 "answerOne",
                 "answerTwo",
                 true,
