@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Service
 @AllArgsConstructor
 public class AuthService {
@@ -97,7 +99,7 @@ public class AuthService {
      * @throws AccountNotFoundException when the username does not exist
      */
     public AdminUser authenticateAdmin(String username, String password){
-        AdminUser admin = adminService.getAdminByUsername(username);
+        AdminUser admin = adminService.getAdminByUsername(username.toLowerCase(Locale.ROOT));
         String encodedPassword = EncodingUtil.hashString(password, admin.getPasswordSalt());
 
         if(encodedPassword.equals(admin.getPassword()))

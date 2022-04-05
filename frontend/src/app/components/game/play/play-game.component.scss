@@ -1,0 +1,93 @@
+.play-body{
+  display: block;
+
+  .game-field{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+
+    .field{
+      display: block;
+      width: 50px;
+      height: 50px;
+      margin: 10px;
+      background-color: #9c27b0;
+
+      .text{
+        height: 100%;
+        width: 100%;
+        margin: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+
+        font-weight: bold;
+        font-size: 30px;
+        text-align: center;
+      }
+    }
+  }
+
+  .controls-container{
+    width: 100%;
+    height: 80px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: flex-start;
+
+    *{
+      margin: 10px;
+    }
+  }
+
+  .task-messages{
+    font-size: 15px;
+    margin: 10px;
+  }
+
+  .wheel-of-fortune-container{
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
+    .result{
+      height: 100px;
+      width: 100px;
+      margin: 7px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+
+      background-color: #9c27b0;
+      border-radius: 20px;
+      border: 2px solid #69f0ae;
+
+      img{
+        height: 80px;
+        width: 80px;
+      }
+    }
+
+    .spin-button{
+      margin: 7px;
+      width: 100px;
+      border-radius: 20px;
+    }
+  }
+}

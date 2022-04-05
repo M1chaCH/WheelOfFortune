@@ -11,14 +11,14 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 public class GameDTO {
-    private final WheelOfFortuneField[] WHEEL_OF_FORTUNE = GameService.WHEEL_OF_FORTUNE;
+    @SuppressWarnings("java:S1170") //should not be static because jackson ignores static fields
+    private final WheelOfFortuneField[] wheelOfFortune = GameService.WHEEL_OF_FORTUNE;
 
     private final String gameId;
     private String username;
-    private int roundCount = 0;
-    private int budget = 0;
-    private int score = 0;
-    private int hp = Game.MAX_HP;
+    private int roundCount;
+    private int budget;
+    private int hp;
 
     private GameField gameField;
     private GameState gameState;

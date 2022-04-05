@@ -1,0 +1,13 @@
+<div class="parent">
+  <h1>Thanks for playing! 🙏</h1>
+  <h3>You finished the game with the following statistics</h3>
+
+  <div class="results">
+    <span class="result" *ngFor="let result of results">{{result}}</span>
+  </div>
+
+  <form class="controls">
+    <button mat-raised-button color="accent" (click)="restart()" matTooltip="Selects a random Category">Restart</button>
+    <button mat-raised-button color="warn" (click)="leave()">Leave</button>
+  </form>
+</div>

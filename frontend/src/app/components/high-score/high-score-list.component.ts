@@ -5,13 +5,15 @@ import {ApiEndpoint} from "../../config/apiEndpoint";
 import {ApiHttpMethods} from "../../config/apiHttpMethods";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DeletedSnackComponent} from "../deleted-snack.component";
+import {GameService, GameServiceListener} from "../game/game.service";
+import {Game, GameStateType} from "../game/GameEntities";
 
 @Component({
   selector: "high-score-list",
   templateUrl: "high-score-list.component.html",
   styleUrls: ["high-score-list.component.scss"]
 })
-export class HighScoreListComponent implements OnInit{
+export class HighScoreListComponent implements OnInit, GameServiceListener{
 
   @Input() admin: boolean = false;
   highScores: Highscore[] = [];
@@ -19,10 +21,16 @@ export class HighScoreListComponent implements OnInit{
   constructor(
     private api: WheelOfFortuneApiService,
     private snackBar: MatSnackBar,
+    private gameService: GameService,
   ) { }
 
   ngOnInit(): void {
     this.loadHighScores();
+  }
+
+  update(game: Game): void {
+    if(this.gameService.isInState(GameStateType.END))
+      this.loadHighScores();
   }
 
   delete(highScore: Highscore){

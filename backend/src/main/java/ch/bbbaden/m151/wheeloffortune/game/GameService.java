@@ -10,12 +10,15 @@ import ch.bbbaden.m151.wheeloffortune.game.data.question.QuestionService;
 import ch.bbbaden.m151.wheeloffortune.game.data.sentence.SentenceService;
 import ch.bbbaden.m151.wheeloffortune.game.entity.*;
 import ch.bbbaden.m151.wheeloffortune.game.highscore.HighScoreService;
+import ch.bbbaden.m151.wheeloffortune.game.task.BuyVowelGameTask;
+import ch.bbbaden.m151.wheeloffortune.game.task.GameTask;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 @Service
 @AllArgsConstructor
@@ -26,11 +29,11 @@ public class GameService {
 
     public static final List<Character> VOWELS = List.of( 'a', 'e', 'i', 'o', 'u' );
 
-    public static final int VOWEL_PRICE =  400;
+    public static final int VOWEL_PRICE =  200;
 
     public static final WheelOfFortuneField[] WHEEL_OF_FORTUNE = new WheelOfFortuneField[]{
-            new WheelOfFortuneField(0, GameState.Task.BANKRUPT, -1),
-            new WheelOfFortuneField(1, GameState.Task.GUESS_CONSONANT, 200),
+            new WheelOfFortuneField(0, GameState.Task.GUESS_CONSONANT, 200),
+            new WheelOfFortuneField(1, GameState.Task.BANKRUPT, -1),
             new WheelOfFortuneField(2, GameState.Task.GUESS_CONSONANT, 100),
             new WheelOfFortuneField(3, GameState.Task.RISK, -1),
             new WheelOfFortuneField(4, GameState.Task.GUESS_CONSONANT, 300),
@@ -46,14 +49,47 @@ public class GameService {
             new WheelOfFortuneField(14, GameState.Task.GUESS_CONSONANT, 100),
     };
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameService.class);
-
     private final HighScoreService highScoreService;
     private final SentenceService sentenceService;
     private final QuestionService questionService;
     private final CategoryService categoryService;
     private final GameRepo gameRepo = GameRepo.getInstance();
-    private final Random random = new Random();
+    private static final Random random = new Random();
+
+    public static GameState getDefaultPlayGameState(Game game){
+        GameState gameState = new GameState();
+        gameState.setState(GameState.State.PLAY);
+
+        List<GameState.Task> availableTasks = new ArrayList<>(List.of(GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE));
+        if(!areAllConsonantsRevealed(game))
+            availableTasks.add(GameState.Task.SPIN);
+        if(BuyVowelGameTask.canBuyVowel(game))
+            availableTasks.add(GameState.Task.BUY_VOWEL);
+
+        gameState.setAvailableTasks(availableTasks);
+        return gameState;
+    }
+
+    public static boolean areAllConsonantsRevealed(Game game){
+        int consonantsInSentence = 0;
+        int consonantsRevealed = 0;
+        char[] sentence = game.getCurrentSentence().getSentence().toCharArray();
+        char[] revealed = game.getGameField().getRevealedCharacters();
+        for (int i = 0; i < sentence.length; i++) {
+            if(!GameField.PUNCTUATIONS.contains(sentence[i]) && CONSONANTS.contains(Character.toLowerCase(sentence[i]))) {
+                consonantsInSentence++;
+                if (sentence[i] == revealed[i])
+                    consonantsRevealed++;
+            }
+        }
+
+        return consonantsInSentence == consonantsRevealed;
+    }
+
+    public static boolean isSentenceComplete(Game game){
+        return Arrays.equals(game.getCurrentSentence().getSentence().toCharArray(),
+                game.getGameField().getRevealedCharacters());
+    }
 
     public GameDTO startNewGame(StartGameRequest startGameRequest){
         checkUsername(startGameRequest.getUsername());
@@ -61,8 +97,7 @@ public class GameService {
         Game game = new Game(startGameRequest.getUsername(),
                 sentenceService.getAllByCategory(startGameRequest.getCategory().getId()),
                 questionService.getAllByCategory(startGameRequest.getCategory().getId()));
-        gameRepo.save(game);
-        return game.parseDTO();
+        return prepareForResponse(game);
     }
 
     public GameDTO getByGameId(String id){
@@ -78,91 +113,27 @@ public class GameService {
         Game game = validateGameId(id);
         deleteGame(id);
         List<CategoryDTO> categories = categoryService.getAllAsDto();
-        int categoryId = random.nextInt(categories.size());
+        int categoryId = getNextRandomInt(categories.size());
         return startNewGame(new StartGameRequest(game.getUsername(), categories.get(categoryId)));
+    }
+
+    public GameDTO handleTask(String id, GameTask task){
+        Game game = validateGameId(id);
+        GameState.Task requiredTask = task.getRequiredTask();
+        if(!game.getGameState().getAvailableTasks().contains(requiredTask))
+            throw new IllegalGameTaskException(requiredTask);
+
+        return prepareForResponse(task.execute(game));
     }
 
     public void deleteGame(String id){
         gameRepo.delete(id);
     }
 
-    public GameDTO spin(String gameId){
-        Game game = validateGameId(gameId);
-        if(!game.getGameState().getAvailableTasks().contains(GameState.Task.SPIN))
-            throw new IllegalGameTaskException(GameState.Task.SPIN);
-
-        WheelOfFortuneField spinResult = WHEEL_OF_FORTUNE[random.nextInt(WHEEL_OF_FORTUNE.length)];
-
-        GameState.State state;
-        List<GameState.Task> availableTasks;
-        EnumMap<GameState.Task, Object> taskProperties = new EnumMap<>(GameState.Task.class);
-        switch (spinResult.getTask()){
-            case GUESS_CONSONANT:
-                state = GameState.State.PLAY;
-                 availableTasks = List.of( GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE,
-                        GameState.Task.GUESS_CONSONANT, GameState.Task.LEAVE );
-                 taskProperties.put(GameState.Task.GUESS_CONSONANT, spinResult.getId());
-                break;
-            case RISK:
-                state = GameState.State.FORCED;
-                availableTasks = List.of( GameState.Task.RISK, GameState.Task.LEAVE );
-                taskProperties.put(GameState.Task.RISK, game.getAvailableQuestions().get(0));
-                break;
-            case BANKRUPT:
-                state = GameState.State.FORCED;
-                availableTasks = List.of( GameState.Task.BANKRUPT );
-                break;
-            default:
-                LOGGER.error("UNEXPECTED: failed to process spin returning default");
-                state = GameState.State.PLAY;
-                availableTasks = new ArrayList<>();
-        }
-        game.setGameState(new GameState(state, availableTasks, taskProperties));
-        game.setRoundCount(game.getRoundCount() + 1);
-        gameRepo.save(game);
-        return game.parseDTO();
-    }
-
-    public GameDTO guessConsonant(String id, char guessedConsonant){
-        Game game = validateGameId(id);
-        if(!game.getGameState().getAvailableTasks().contains(GameState.Task.GUESS_CONSONANT))
-            throw new IllegalGameTaskException(GameState.Task.GUESS_CONSONANT);
-
-        int countConsonants = 0;
-        char[] sentenceChars = game.getCurrentSentence().getSentence().toCharArray();
-        char[] revealedChars = game.getGameField().getRevealedCharacters();
-        for (int i = 0; i < sentenceChars.length; i++) {
-            if(Character.toLowerCase(sentenceChars[i]) == Character.toLowerCase(guessedConsonant)){
-                countConsonants++;
-                revealedChars[i] = sentenceChars[i];
-            }
-        }
-
-        GameState.State state = GameState.State.PLAY;
-        List<GameState.Task> availableTasks = new ArrayList<>(
-                List.of(GameState.Task.SPIN, GameState.Task.SOLVE_PUZZLE, GameState.Task.LEAVE));
-
-        EnumMap<GameState.Task, Object> taskProperties = new EnumMap<>(GameState.Task.class);
-        if(countConsonants != 0){
-            int win = WHEEL_OF_FORTUNE[Integer.parseInt(game.getGameState().getTaskParameters()
-                    .get(GameState.Task.GUESS_CONSONANT).toString())].getReward();
-
-            game.getConsonantLeftToGuess().remove((Character) guessedConsonant); //fixed you (:
-            taskProperties.put(GameState.Task.GUESS_CONSONANT, "Guessed Correct! +" + win * countConsonants + " budget");
-            game.setBudget(game.getBudget() + win * countConsonants);
-        }else{
-            taskProperties.put(GameState.Task.GUESS_CONSONANT, "You guessed wrong ): -1 hp");
-            game.setHp(game.getHp() - 1);
-        }
-
-        if(game.getHp() > 0) {
-            if(game.getBudget() >= VOWEL_PRICE)
-                availableTasks.add(GameState.Task.BUY_VOWEL);
-            game.setGameState(new GameState(state, availableTasks, taskProperties));
-        } else
-            game.setGameState(new GameState(GameState.State.FORCED, List.of(GameState.Task.HP_DEATH),
-                    new EnumMap<>(GameState.Task.class)));
-
+    /**
+     * saves the given game and returns the game parsed as DTO
+     */
+    private GameDTO prepareForResponse(Game game){
         gameRepo.save(game);
         return game.parseDTO();
     }
@@ -184,5 +155,9 @@ public class GameService {
 
         if(username.length() > Game.MAX_USERNAME_LENGTH)
             throw new UsernameToLongException(username.length());
+    }
+
+    public static int getNextRandomInt(int bound){
+        return random.nextInt(bound);
     }
 }

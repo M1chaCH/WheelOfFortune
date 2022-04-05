@@ -32,4 +32,15 @@ public class GameField {
 
         return visibleCharacters;
     }
+
+    public int revealCharacter(char toReveal, char[] sentence){
+        int countConsonants = 0;
+        for (int i = 0; i < sentence.length; i++) {
+            if(Character.toLowerCase(sentence[i]) == Character.toLowerCase(toReveal)){
+                countConsonants++;
+                revealedCharacters[i] = sentence[i];
+            }
+        }
+        return countConsonants;
+    }
 }

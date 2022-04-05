@@ -19,9 +19,8 @@ public class Game {
 
     private final String gameId;
     private String username;
-    private int roundCount = 0;
+    private int roundCount = 1;
     private int budget = 0;
-    private int score = 0;
     private int hp = MAX_HP;
 
     private final List<Sentence> availableSentences;
@@ -30,6 +29,7 @@ public class Game {
     private List<Character> vowelsLeftToGuess;
 
     private final List<Question> availableQuestions;
+    private Question currentQuestion;
 
     private GameField gameField;
     private GameState gameState;
@@ -44,14 +44,15 @@ public class Game {
         this.username = username;
 
         this.availableSentences = sentences;
-        this.setCurrentSentence(sentences.get(0));
+        this.setCurrentSentence(sentences.get(GameService.getNextRandomInt(sentences.size())));
+        this.availableSentences.remove(this.currentSentence);
         this.availableQuestions = questions;
 
         this.gameField = new GameField(currentSentence.getSentence());
         this.gameState = new GameState(GameState.State.PLAY, List.of(
                 GameState.Task.SPIN,
                 GameState.Task.SOLVE_PUZZLE,
-                GameState.Task.LEAVE), new EnumMap<>(GameState.Task.class));
+                GameState.Task.LEAVE), List.of());
     }
 
     public GameDTO parseDTO(){
@@ -59,7 +60,6 @@ public class Game {
                 username,
                 roundCount,
                 budget,
-                score,
                 hp,
                 gameField,
                 gameState,

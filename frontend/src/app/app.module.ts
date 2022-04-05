@@ -26,6 +26,16 @@ import {QuestionEditorComponent} from "./components/quesiton-editor/question-edi
 import {
   QuestionEditorBottomSheetComponent
 } from "./components/quesiton-editor/bottom-sheet/question-editor-bottom-sheet.component";
+import {StartGameComponent} from "./components/game/start/start-game.component";
+import {PlayGameComponent} from "./components/game/play/play-game.component";
+import {GameEndComponent} from "./components/game/end/game-end.component";
+import {RiskComponent} from "./components/game/play/risk/risk.component";
+import {CharSelectorComponent} from "./components/game/play/char-selector/char-selector.component";
+import {BankruptDialogComponent} from "./components/game/dialogs/bankrupt-dialog.component";
+import {HpDeathDialogComponent} from "./components/game/dialogs/hp-death-dialog.component";
+import {SolvePuzzleComponent} from "./components/game/play/solve-puzzle/solve-puzzle.component";
+import {SentenceCompleteDialogComponent} from "./components/game/dialogs/sentence-complete-dialog.component";
+import {WinDialogComponent} from "./components/game/dialogs/win-dialog.component";
 
 @NgModule({
   declarations: [
@@ -44,6 +54,16 @@ import {
     CategoryAdderDialogComponent,
     QuestionEditorComponent,
     QuestionEditorBottomSheetComponent,
+    StartGameComponent,
+    PlayGameComponent,
+    GameEndComponent,
+    RiskComponent,
+    CharSelectorComponent,
+    BankruptDialogComponent,
+    HpDeathDialogComponent,
+    WinDialogComponent,
+    SolvePuzzleComponent,
+    SentenceCompleteDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,7 @@
 package ch.bbbaden.m151.wheeloffortune.game.data.category;
 
 import ch.bbbaden.m151.wheeloffortune.game.data.WebEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Category implements WebEntity<Integer, CategoryDTO> {
 

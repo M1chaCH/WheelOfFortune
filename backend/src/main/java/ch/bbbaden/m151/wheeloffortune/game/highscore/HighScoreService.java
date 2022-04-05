@@ -15,7 +15,7 @@ import java.util.stream.StreamSupport;
 @Service
 @AllArgsConstructor
 public class HighScoreService {
-
+    public static final int MAX_SAVED_HIGH_SCORES = 9999;
     private final SecurityTokenService securityTokenService;
     private final HighScoreRepo repo;
 
@@ -23,30 +23,59 @@ public class HighScoreService {
      * @return a list of all the {@link HighScoreDTO}s in the DB, sorted decreasing by achievedAt.
      */
     public List<HighScoreDTO> getAllSortedByScoreAsDto(){
-        return StreamSupport.stream(repo.findAllByOrderByScoreDesc().spliterator(), false)
-                .map(highScore -> new HighScoreDTO(
+        return StreamSupport.stream(repo.findAllByOrderByScoreDesc().spliterator(),
+                        false).map(highScore -> new HighScoreDTO(
                         highScore.getId(),
                         highScore.getScore(),
+                        highScore.getPlayedRounds(),
                         highScore.getUsername(),
                         LocalDateTimeParser.dateToString(highScore.getAchievedAt())))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Only cares about the username and the score in the {@link HighScoreDTO}. The other values are generated.
-     * (id -> JPA, <strong>achievedAt -> NOW</strong>)
+     * searches through all the highScores and finds the position witch the given score would get
+     * @param score the score to check
+     * @return when the lowes -1 else the position
+     */
+    public int getPositionByScore(int score){
+        List<HighScoreDTO> highScores = getAllSortedByScoreAsDto();
+        if(highScores.isEmpty())
+            return 1;
+
+        if(highScores.get(highScores.size() - 1).getScore() > score && highScores.size() == MAX_SAVED_HIGH_SCORES)
+            return -1;
+
+        for (int i = 0; i < highScores.size(); i++) {
+            if(highScores.get(i).getScore() < score)
+                return i + 1; //+1 because next
+        }
+        return highScores.size() + 1;
+    }
+
+    /**
+     * checks if the score fits in top 20 if so adds score to highScore list <br>
+     * !!Only cares about the username, the score and rounds played in the {@link HighScoreDTO}. The other values are
+     * generated. (id -> JPA, <strong>achievedAt -> NOW</strong>)
      * @param toAdd the DTO to read the values from
-     * @return the DTO representing the entity created in the database
+     * @return the DTO representing the entity created in the database &
+     * !null when the highScore was not added because it does not fit in top 20
      */
     public HighScoreDTO addNew(HighScoreDTO toAdd){
+        long currentlySavedHighScores = StreamSupport.stream(repo.findAll().spliterator(), false).count();
+        if(getPositionByScore(toAdd.getScore()) == -1 && currentlySavedHighScores == MAX_SAVED_HIGH_SCORES)
+            return null;
+
         HighScore highScoreToAdd = new HighScore();
         highScoreToAdd.setScore(toAdd.getScore());
+        highScoreToAdd.setPlayedRounds(toAdd.getPlayedRounds());
         highScoreToAdd.setUsername(toAdd.getUsername());
         highScoreToAdd.setAchievedAt(LocalDateTime.now());
 
         HighScore createdHighScore = repo.save(highScoreToAdd);
         return new HighScoreDTO(createdHighScore.getId(),
                 createdHighScore.getScore(),
+                createdHighScore.getPlayedRounds(),
                 createdHighScore.getUsername(),
                 LocalDateTimeParser.dateToString(createdHighScore.getAchievedAt()));
     }

@@ -11,7 +11,7 @@ import lombok.*;
 public class HighScoreDTO {
     private int id;
     private int score;
+    private int playedRounds;
     private String username;
     private String achievedAt;
-    //TODO: add until matches: Rang, Name des Spielers, Zeitpunkt des Spiels, Geldbetrag, Anzahl Spielrunden
 }

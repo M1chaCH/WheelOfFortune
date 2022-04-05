@@ -54,6 +54,7 @@ export class QuestionEditorBottomSheetComponent{
       question: [this.question.question, Validators.compose([
         Validators.minLength(10),
         Validators.maxLength(60),
+        Validators.pattern('^.*[?]'),
         Validators.required
       ])],
       answerOne: [this.question.answerOne, Validators.compose([

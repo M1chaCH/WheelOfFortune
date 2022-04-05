@@ -1,0 +1,49 @@
+.parent{
+  display: block;
+
+  .char-container{
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
+    .char{
+      animation: on-hover-leave .3s ease-out;
+
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+
+      width: 60px;
+      height: 60px;
+      margin: 5px;
+      border-radius: 50%;
+      background-color: #333333;
+
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .char:hover{
+      animation: on-hover-enter .3s ease-out;
+      background-color: #404040;
+      cursor: pointer;
+    }
+  }
+
+  @keyframes on-hover-enter {
+    0% { background-color: #333333 }
+    100% { background-color: #404040 }
+  }
+
+  @keyframes on-hover-leave {
+    0% { background-color: #404040 }
+    100% { background-color: #333333 }
+  }
+}
