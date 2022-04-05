@@ -3,7 +3,6 @@ package ch.bbbaden.m151.wheeloffortune;
 import ch.bbbaden.m151.wheeloffortune.auth.api.AuthService;
 import ch.bbbaden.m151.wheeloffortune.auth.user.AdminRepo;
 import ch.bbbaden.m151.wheeloffortune.auth.user.AdminUser;
-import ch.bbbaden.m151.wheeloffortune.game.candidate.CandidateRepo;
 import ch.bbbaden.m151.wheeloffortune.game.data.category.Category;
 import ch.bbbaden.m151.wheeloffortune.game.data.category.CategoryService;
 import ch.bbbaden.m151.wheeloffortune.game.data.question.Question;
@@ -26,7 +25,6 @@ public class DefaultDataloader {
     public static final Logger LOGGER = LoggerFactory.getLogger(DefaultDataloader.class);
 
     private final AdminRepo adminRepo;
-    private final CandidateRepo candidateRepo;
 
     private final CategoryService categoryService;
     private final SentenceService sentenceService;
@@ -35,7 +33,7 @@ public class DefaultDataloader {
 
     @EventListener(ApplicationReadyEvent.class)
     public void loadData(){
-        if(adminRepo.count() == 0 && candidateRepo.count() == 0) {
+        if(adminRepo.count() == 0) {
             //add default admin users
             String salt = EncodingUtil.generateSalt();
             AdminUser admin = new AdminUser("admin", EncodingUtil.hashString("Adm1nUser", salt), salt);
