@@ -31,6 +31,32 @@ class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     CategoryService categoryServiceMock;
 
     @Test
+    void getAllByCategory_successTest() {
+        final Integer categoryId = 1;
+        List<Sentence> entities = generateSomeEntities();
+        Category category = new CategoryDTO(categoryId, "random").parseToEntity();
+        when(categoryServiceMock.getById(categoryId)).thenReturn(category);
+        when(repoMock.findSentencesByCategory(category)).thenReturn(entities);
+
+        List<Sentence> returnedEntities = service.getAllByCategory(categoryId);
+        assertEquals(entities.size(), returnedEntities.size());
+        for (int i = 0; i < entities.size(); i++) {
+            assertEquals(entities.get(i), returnedEntities.get(i));
+        }
+    }
+
+    @Test
+    void getAllByCategory_deletedCategoryTest() {
+        final Integer categoryId = 2;
+        List<Sentence> entities = generateSomeEntities();
+        Category category = new CategoryDTO(categoryId, "random").parseToEntity();
+        when(categoryServiceMock.getById(categoryId)).thenThrow(EntityNotFoundException.class);
+        when(repoMock.findSentencesByCategory(category)).thenReturn(entities);
+
+        assertThrows(EntityNotFoundException.class, () -> service.getAllByCategory(categoryId));
+    }
+
+    @Test
     void getAllAsDtoByCategory_successTest() {
         final Integer categoryId = 1;
         List<Sentence> entities = generateSomeEntities();
@@ -77,6 +103,20 @@ class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
     }
 
     @Test
+    void isEntityValid_containsInvalidTest(){
+        Sentence sentence = generateEntity();
+
+        sentence.setSentence("this sentence <> is illegal");
+        assertFalse(service.isEntityValid(sentence));
+
+        sentence.setSentence("this sentence ;is illegal");
+        assertFalse(service.isEntityValid(sentence));
+
+        sentence.setSentence("this123 sentence is illegal");
+        assertFalse(service.isEntityValid(sentence));
+    }
+
+    @Test
     void isEntityValid_categoryInvalidTest(){
         Sentence sentence = generateEntity();
         when(categoryServiceMock.isEntityValid(any())).thenReturn(false);
@@ -106,7 +146,7 @@ class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
 
     protected Sentence generateEntity(Integer id) {
         Sentence sentence = new Sentence(
-                "This is a Number: " + id,
+                "This is just some Sentence!",
                 new CategoryDTO(1, "random").parseToEntity()
         );
         sentence.setId(id);
@@ -124,7 +164,7 @@ class SentenceServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
 
     @Override
     protected SentenceDTO generateDTO() {
-        return new SentenceDTO(1, "This is a Number: 1", new CategoryDTO(1, "random"));
+        return new SentenceDTO(1, "This is just some Sentence!", new CategoryDTO(1, "random"));
     }
 
     @Override

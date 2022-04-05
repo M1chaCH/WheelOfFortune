@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +28,19 @@ class HighScoreServiceTest {
     HighScoreRepo repoMock;
     @MockBean
     SecurityTokenService securityTokenServiceMock;
+
+    @Test
+    void getPositionByScore_test(){
+        List<HighScore> highScores = List.of(new HighScore(1, 20, 3, "dud", LocalDateTime.now()),
+                new HighScore(2, 12, 4, "dude", LocalDateTime.now()),
+                new HighScore(3, 9, 1, "SomeDud", LocalDateTime.now()));
+
+        when(repoMock.findAllByOrderByScoreDesc()).thenReturn(highScores);
+
+        assertEquals(3, service.getPositionByScore(10));
+        assertEquals(4, service.getPositionByScore(9));
+        assertEquals(1, service.getPositionByScore(100));
+    }
 
     @Test
     void addNew_successTest(){

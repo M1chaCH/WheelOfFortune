@@ -24,7 +24,7 @@ class CategoryServiceTest extends GenericAuthenticatedEntityServiceTest<Integer,
 
     @Test
     void isEntityValid_trueTest(){
-        Category category = new Category("Categroy");
+        Category category = new Category("Category");
         assertTrue(service.isEntityValid(category));
     }
 
