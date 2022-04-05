@@ -1,17 +1,15 @@
 package ch.bbbaden.m151.wheeloffortune;
 
+import ch.bbbaden.m151.wheeloffortune.auth.api.AuthService;
 import ch.bbbaden.m151.wheeloffortune.auth.user.AdminRepo;
 import ch.bbbaden.m151.wheeloffortune.auth.user.AdminUser;
-import ch.bbbaden.m151.wheeloffortune.game.candidate.Candidate;
 import ch.bbbaden.m151.wheeloffortune.game.candidate.CandidateRepo;
 import ch.bbbaden.m151.wheeloffortune.game.data.category.Category;
-import ch.bbbaden.m151.wheeloffortune.game.data.category.CategoryRepo;
+import ch.bbbaden.m151.wheeloffortune.game.data.category.CategoryService;
 import ch.bbbaden.m151.wheeloffortune.game.data.question.Question;
-import ch.bbbaden.m151.wheeloffortune.game.data.question.QuestionRepo;
+import ch.bbbaden.m151.wheeloffortune.game.data.question.QuestionService;
 import ch.bbbaden.m151.wheeloffortune.game.data.sentence.Sentence;
-import ch.bbbaden.m151.wheeloffortune.game.data.sentence.SentenceRepo;
-import ch.bbbaden.m151.wheeloffortune.game.highscore.HighScore;
-import ch.bbbaden.m151.wheeloffortune.game.highscore.HighScoreRepo;
+import ch.bbbaden.m151.wheeloffortune.game.data.sentence.SentenceService;
 import ch.bbbaden.m151.wheeloffortune.util.EncodingUtil;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -20,8 +18,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -31,70 +27,66 @@ public class DefaultDataloader {
 
     private final AdminRepo adminRepo;
     private final CandidateRepo candidateRepo;
-    private final CategoryRepo categoryRepo;
-    private final QuestionRepo questionRepo;
-    private final SentenceRepo sentenceRepo;
-    private final HighScoreRepo highScoreRepo;
+
+    private final CategoryService categoryService;
+    private final SentenceService sentenceService;
+    private final QuestionService questionService;
+    private final AuthService authService;
 
     @EventListener(ApplicationReadyEvent.class)
     public void loadData(){
-        if(adminRepo.count() == 0 && candidateRepo.count() == 0){
+        if(adminRepo.count() == 0 && candidateRepo.count() == 0) {
+            //add default admin users
             String salt = EncodingUtil.generateSalt();
-            AdminUser admin = new AdminUser("admin", EncodingUtil.hashString("admin", salt), salt);
-            adminRepo.save(admin);
+            AdminUser admin = new AdminUser("admin", EncodingUtil.hashString("Adm1nUser", salt), salt);
+            String bachofnerSalt = EncodingUtil.generateSalt();
+            AdminUser secondary = new AdminUser("manuel bachofner",
+                    EncodingUtil.hashString("BachofnersPass3", bachofnerSalt), bachofnerSalt);
+            adminRepo.saveAll(List.of(admin, secondary));
 
-            Candidate candidate = new Candidate("test");
-            Candidate candidate1 = new Candidate("candidate");
-            candidateRepo.saveAll(List.of(candidate, candidate1));
+            //login
+            String token = authService.loginAdmin("admin", "Adm1nUser").getBody().getToken();
 
-            Category categoryPc = new Category("PC");
-            Category categoryMtb = new Category("MTB");
-            Category testCategory = new Category("test");
-            categoryRepo.saveAll(List.of(categoryPc, categoryMtb, testCategory));
+            //Categories
+            Category categoryPc = new Category(1, "PC");
+            categoryService.addNew(token, categoryPc);
+            Category categoryMtb = new Category(2, "MTB");
+            categoryService.addNew(token, categoryMtb);
+            Category categoryGeneral = new Category(3, "GENERAL");
+            categoryService.addNew(token, categoryGeneral);
 
-            Question q1 = new Question("Select the newer CPU?", "Intel i7-12700K", "Intel i9-10900K", true, categoryPc);
-            Question q2 = new Question("What bike is usually heavier?", "Yeti SB150", "Scott Spark 900", true, categoryMtb);
-            Question q3 = new Question("Which component is more expensive?", "Sram Code RSC", "Sram XX1-Eagle AXS", false, categoryMtb);
-            questionRepo.saveAll(List.of(q1,q2,q3));
+            //Sentences
+            sentenceService.addNew(token, new Sentence(1, "This PC is cool.", categoryPc));
+            sentenceService.addNew(token, new Sentence(2, "Asus is a company.", categoryPc));
+            sentenceService.addNew(token, new Sentence(3, "Nvidia is better than AMD!", categoryPc));
+            sentenceService.addNew(token, new Sentence(4, "Red key are the best!", categoryPc));
 
-            List<Question> questions = new ArrayList<>();
-            for (int i = 0; i < 20; i++) {
-                questions.add(new Question("This is a question: " + i, "A1", "A2", true, testCategory));
-            }
-            questionRepo.saveAll(questions);
+            sentenceService.addNew(token, new Sentence(5, "Orbea is a company.", categoryMtb));
+            sentenceService.addNew(token, new Sentence(6, "Yeti bikes are heavy.", categoryMtb));
+            sentenceService.addNew(token, new Sentence(7, "Evening rides are awesome.", categoryMtb));
+            sentenceService.addNew(token, new Sentence(8, "Fox is better than RockShox", categoryMtb));
 
-            Sentence s1 = new Sentence("This PC is cool.", categoryPc);
-            Sentence s2 = new Sentence("Asus is a company.", categoryPc);
-            Sentence s3 = new Sentence("Orbea is a company.", categoryMtb);
-            sentenceRepo.saveAll(List.of(s1,s2,s3));
+            sentenceService.addNew(token, new Sentence(9, "Red flowers look fake.", categoryGeneral));
+            sentenceService.addNew(token, new Sentence(10, "I like food.", categoryGeneral));
+            sentenceService.addNew(token, new Sentence(11, "School can be annoying.", categoryGeneral));
+            sentenceService.addNew(token, new Sentence(12, "What if, the grass was orange?", categoryGeneral));
 
-            List<Sentence> sentences = new ArrayList<>();
-            for (int i = 0; i < 20; i++) {
-                sentences.add(new Sentence("This is a Test Sentence " + i, testCategory));
-            }
-            sentenceRepo.saveAll(sentences);
+            //Questions
+            questionService.addNew(token, new Question(1, "What CPU is newer?", "Intel i7-12700K", "Intel i9-10900K", true, categoryPc));
+            questionService.addNew(token, new Question(2, "What is RGB?", "Red Green Blue", "Right, GOOD & Bold", true, categoryPc));
+            questionService.addNew(token, new Question(3, "Should i always water cool?", "YES", "NO", false, categoryPc));
+            questionService.addNew(token, new Question(4, "What is CSS used for?", "Validates HTML", "Designs HTML", false, categoryPc));
 
-            HighScore highScore = new HighScore(5500, 1, "test", LocalDateTime.now());
-            HighScore highScore1 = new HighScore(7000, 1, "test1", LocalDateTime.now().plusHours(1));
-            HighScore highScore2 = new HighScore(1243, 1, "test2", LocalDateTime.now().plusMinutes(90));
-            HighScore highScore3 = new HighScore(7050, 1, "test3", LocalDateTime.now().plusMinutes(91));
-            HighScore highScore4 = new HighScore(3523, 1, "test4", LocalDateTime.now().plusMinutes(92));
-            HighScore highScore5 = new HighScore(4563, 1, "test5", LocalDateTime.now().plusMinutes(93));
-            HighScore highScore6 = new HighScore(7050, 1, "test6", LocalDateTime.now().plusMinutes(94));
-            HighScore highScore7 = new HighScore(7050, 1, "test7", LocalDateTime.now().plusMinutes(95));
-            HighScore highScore8 = new HighScore(7050, 1, "test8", LocalDateTime.now().plusMinutes(96));
-            HighScore highScore9 = new HighScore(1000, 1, "test9", LocalDateTime.now().plusMinutes(97));
-            HighScore highScore10 = new HighScore(1000, 1, "test10", LocalDateTime.now().plusMinutes(97));
-            HighScore highScore11 = new HighScore(1000, 1, "test11", LocalDateTime.now().plusMinutes(32));
-            HighScore highScore12 = new HighScore(1000, 1, "test12", LocalDateTime.now().plusMinutes(197));
-            HighScore highScore13 = new HighScore(1000, 1, "test13", LocalDateTime.now().plusMinutes(93));
-            HighScore highScore14 = new HighScore(1000, 1, "test14", LocalDateTime.now().plusMinutes(943));
-            HighScore highScore15 = new HighScore(1000, 1, "test15", LocalDateTime.now().plusMinutes(77));
-            highScoreRepo.saveAll(List.of(highScore, highScore1, highScore2, highScore3, highScore4,highScore5, highScore6,
-                    highScore7, highScore8, highScore9, highScore10, highScore11, highScore12, highScore13, highScore14,
-                    highScore15));
+            questionService.addNew(token, new Question(5, "What bike is usually heavier?", "Yeti SB150", "Scott Spark 900", true, categoryMtb));
+            questionService.addNew(token, new Question(6, "Which component is more expensive?", "Sram Code RSC", "Sram XX1-Eagle AXS", false, categoryMtb));
+            questionService.addNew(token, new Question(7, "RockShox ... is a XC Fork?", "ZEB", "SID", false, categoryMtb));
+            questionService.addNew(token, new Question(8, "Bold only sells hard-tails?", "YES", "NO", true, categoryMtb));
 
-            LOGGER.warn("data loaded");
+            questionService.addNew(token, new Question(9, "What country has the most inhabitants?", "China", "USA", true, categoryGeneral));
+            questionService.addNew(token, new Question(10, "What is the highest Mountain?", "Matterhorn", "Mount Everest", false, categoryGeneral));
+            questionService.addNew(token, new Question(11, "How much Ballon d'Or's did Messi Win?", "05", "07", false, categoryGeneral));
+            questionService.addNew(token, new Question(12, "How much water is in the pacific Ocean?", "394 million cubic kilometers", "714 million cubic kilometers", false, categoryGeneral));
+            LOGGER.info("game data successfully loaded");
         }
     }
 }
