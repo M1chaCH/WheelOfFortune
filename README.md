@@ -1,6 +1,134 @@
 # WheelOfFortune
 Dies ist ein Schulprojekt. Es geht darum eine Webseite zu implementieren. Die Technologien können frei gewählt werden. Ich habe mich für PostgreSQL, Spring & AngularJS entschieden. 
 
+# Authentifizierungssystem (Portfolio)
+[Zum Portfolio im BBBaden Portfolio Portal](https://portfolio.bbbaden.ch/view/view.php?t=zZ1MC89kgLcxA3dUQTyK) **(Hier ist besser 💯)**
+
+## Rollen
+Mein Authentifizierungssystem funktioniert einfach mit einer User Rolle. Also man hat nicht die möglichkeit zu sagen, User a kann auf Seite X & Y zugreifen und User b nur auf die Seite Y. Man kann aber abfragen ob ein Client eingelogt ist oder nicht. So kann man auch einfache Restriktionen machen für Clients die nicht eingelogt sind. 
+
+## Aufbau
+Das ganze funktioniert mit einem einzigen SecurityToken. Wenn sich ein Client anmeldet, wird ihm einen neuen Token geschickt.<br/>
+Falls ein anderer Client schon mit diesem Benutzer angemeldet ist wird sein Token invalid.<br/>
+Immer wenn eine Aktion authentifiziert sein muss, wird ein valider Token im Request-Header erwartet.<br/>
+Falls ein Token abläuft, hat ein Client eine gewisse Zeitspanne Zeit ihn zu refresehen. Wenn ein Token refreshed worden ist, wird ein neuer dem Client gesendet und der alte invalid. Wird ein Token nicht rechtzeitig refreshed, wird er auch invalid und der Client muss sich neu anmelden.
+
+![Security Token Lifetime Visualisation](SecurityTokenLifetimeVisualisation.png "Lifetime Visualisation")
+
+## Backend
+Das Backend besteht aus verschiedenen typen. <br/>
+Es ist geschrieben in Java & Spring. 
+- Controller
+- Service
+- Repository
+- Data Access Object
+- Data Transfer Object
+- Exception
+- Advice
+
+### Controller
+Der Controller ist die öffentliche API-Schnittstelle zum Web. Er kann mit normalen HTTP-Requests angesprochen werden. Wichtig hier ist, dass einem wirklich bewusst ist, dass alles im Controller öffentlich zugänglich ist und deshalb authentifiziert werden muss.<br/>
+Zu jedem Controller gehört ein Service. Und der Controller macht wirklich nichts anderes als requests entgegen nehmen, sie an seinem Service weitergeben und eine response schicken. 
+
+### Service
+Ein Service sollte immer ein stateless bean sein, welches unteranderem vom Controller angesprochen wird und Aufgaben löst.<br/> 
+Der Service ist dieser Teil im Programm welcher umhergegeben wird. Also wenn ein GameService plötzlich, aus irgeneinem Grund, etwas am User ändern muss, dann importiert er nicht das UserRepo sondern importiert den UserService und nimmt über ihn dann die Änderungen vor. So kann im UserService die Änderung validiert werden.
+
+### Repsoitory
+Das Repository ist die Anbindung zur Datenbank. Spring leistet hier sehr viel Hilfe. Sie haben ihre eigene implementierung von JPA umgesetzt und relativ viel generisch zur verfügung gestellt. <br/>
+Ein Repository gehört immer zu einem Service und sollte auch nur von diesem gebraucht werden. 
+
+**Gebrauch von Spring Data JPA:**
+- Konfigurieren der Datenbankanbindung im `application.properties`.
+- Entity mit JPA-Annotations erstellen
+- Repo erstellen -> Interface welches CRUDRepository extendet. Das CRUDRepo ist generisch und verlangt die Entity und deren Typ der Id (Primary Key). 
+
+Falls einem die Methoden im CRUDRepo nicht ausreichen kann man im eigenen Repo-Interface weitere Methoden definieren. Für diese wird dann von Spring dynamisch ein SQL-Script generiert. 
+
+```java
+public interface UserRepo extends CRUDRepository<User, Long> {
+    Optional<User> findUserByUsername(String username);
+}
+```
+
+Mann kann auch Methoden mit eigenem Query schreiben. 
+
+```java
+public interface UserRepo extends CRUDRepository<User, Long> {
+    @Query(
+        value = "SELECT * FROM User AS u WHERE u.username = '?1'" //?1 references the first parameter (String username)
+    )
+    Optional<User> findUserByUsername(String username);
+}
+```
+
+### Data Access Object (DAO)
+Das ist eine Java Klasse welche nur Daten beinhaltet und mit den JPA-Annotations annotiert ist. Sie wird gebraucht als Schnittstelle zwischen der Datenbank und Java. Wenn mann in Java etwas (mit Spring Data JPA) in einer Datenbank speichern will übergibt man ein solches Objekt einem Repository. Auf diese Klasse habe ich vorhin mit Entity verwiesen.
+
+### Data Transfer Object (DTO)
+Das sind diese Java Klassen die der Controller entgegen nimmt wenn er Daten erwartet oder die er in der Response sendet. Also wenn der Controller mit einem User im Body antworten will sendet er eine Http Response mit einem UserDTO zum Client. Das DTO wird von Spring via Jackson in einen JSON String gewandelt. 
+
+### Exception
+In Spring ist es good practice eigene Exceptions zu gebrauchen. Also wenn man einen User nach Username sucht und ein lehres Optional bekommt, ist es am besten einfach eine UserNotFountException zu werfen. 
+Weil durch die Advices von Spring kann man diese extrem gut handeln. 
+
+### Advice
+Advices sind Methoden in einem AdviceBean die warten bis eine Exception geworfen wird. Also jeder Advice ist mit einer spezifischen Exception konfiguriert. Sobald ihre Exception geworfen wird, werden sie aufgerufen. <br/>
+Von einem Advice wird immer einen String als return Wert erwartet. Das ist normalerweise die Fehlermeldung.
+
+Ein Advice wird durch Annotationen konfiguriert: 
+- @ResponseBody - definiert, dass der return Wert im Body des HTTP-Responses sein soll.
+- @ResponseStatus - der HTTP-Status welcher die HTTP-Response haben soll. 
+- @ExceptionHandler(""ExceptionName"".class) - Die Exception welche den Advice triggern soll.
+
+Die Klasse in denen mann die Advice-Methoden schreibt wird mit "@ConrollerAdvice" annotiert. 
+
+**Beispiel:** <br/>
+Fängt die UserNotFoundException & Spring generiert und sendet eine HttpResponse mit dem Status NOT_FOUND und dem Body `User 1 (oder was auch immer als exception message definiert worden ist) not found`
+```java
+@ControllerAdvice
+public class UserAdvice {
+    @ResponseBody
+    @ResonseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UserNotFoundException.class)
+    public String userNotFound(UserNotFoundException e){
+        return "User " + e.getMessage() + " not found"; 
+    }
+}
+```
+ 
+## Frontend
+Das Frontend ist einfach ein simples Angular Projekt mit vier Seiten. 
+- Home 
+- Login
+- Admin  
+- Error
+
+Um die Admin Seite anzuschauen muss mann eingeloggt sein. Dies ist mit einem Angular Guard umgesetzt.
+
+Die Error Seite sollte man eigendlich nie sehen. Sie zeigt einfach unerwartete Fehler an. 
+
+Auch das Frontend besteht aus verschiedenen Typen. 
+ - Component
+ - Service
+ - Guard
+ - Interceptor
+
+ ### Component
+ Ein Component ist ein kleiner Teil einer Webseite, wie zum Beispiel ein Button. Jeder Component besteht normalerweise aus einem Html file, einem CSS file und einem TypeScript file. 
+ Das Html file und das TypeScript file stehen in enger Verbindung. Mann kann zum Beispiel Daten aus dem ts. file im Html anzeigen oder vom Html Funktionen im ts. file aufrufen. Das ts. file vom Component wird nie von einem anderen Service oder so direkt angesprochen. Der Component aber imporitiert Services um seine Arbeit zu erledigen.
+
+ ### Service
+ Ein Service in Angular ist relativ ähndlich wie ein Service in Spring. Er ist verantwortlich für das ausführen einer gewissen Arbeit. Dieser sollte normaler weise auch Stateless aufgebaut sein, weil Daten im Frontend relativ schnell verlohren gehen können. Zum Beispiel wenn die Seite neu geladen wird. Ein Service kann aber verantwortlich sein für das Speichern verschiedener Daten im LocalStorage oder so. 
+
+ ### Guard 
+ Ein Guard ist die Art wie man in Angular eine Rout vor unerlaubtem Zugriff schützt. Also wenn man nicht eingeloggt ist aber den Link einer Seite eingibt, für die man eingeloggt sein muss, dann springt der Guard dazwischen und leitet einem, zum Beispiel zur Login Seite, weiter. Ein Guard ist auch eine ts Klasse welche einfach als Guard konfiguriert wurde. Das heisst, was ein Guard macht ist 100% frei programmierbar.
+
+ ### Interceptor
+ Ein Interceptor ist auch eine ts Klasse welche vor jedem HTTP-Request ausgeführt wird. So kann man konfigurationen an einem Request automatisch vornehmen. Ich habe dies zum Beispiel gebraucht um, falls vorhanden, das "auth" Feld mit dem SecurityToken am Header des Requests anzuhängen.  
+
+<br><br>
+
 # LB Aufgaben
 ## Aufgabe 2
 ### Tier 1 Presentation
