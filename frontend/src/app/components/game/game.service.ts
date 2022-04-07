@@ -127,8 +127,7 @@ export class GameService{
 
       consonantLeftToGuess: [],
       vowelsLeftToGuess: [],
-
-      wheelOfFortune: [],
+      currentWheelOfFortuneField: undefined,
     };
   }
 

@@ -21,7 +21,6 @@ import {WheelOfFortuneComponent} from "./wheel-of-fortune/wheel-of-fortune.compo
 export class PlayGameComponent implements GameServiceListener{
   gameFieldContent: string[] = [];
   currentTaskMessage: string = "";
-  wheelOfFortune: WheelOfFortuneField[] = [];
   spinPressed: boolean = false;
   showWheelOfFortuneWheel: boolean = true;
   currentWheelOfFortuneField: WheelOfFortuneField | undefined;
@@ -43,8 +42,7 @@ export class PlayGameComponent implements GameServiceListener{
   }
 
   update(game: Game): void {
-    this.currentWheelOfFortuneField = this.wheelOfFortune[this.gameService.getTaskParameterValue(GameStateTask.SPIN)];
-    this.wheelOfFortune = game.wheelOfFortune;
+    this.currentWheelOfFortuneField = game.currentWheelOfFortuneField;
     this.showWheelOfFortuneWheel = this.currentWheelOfFortuneField === undefined || this.spinPressed;
     if(this.spinPressed){
       this.wheelOfFortuneCmp?.animate().subscribe((done) => {
