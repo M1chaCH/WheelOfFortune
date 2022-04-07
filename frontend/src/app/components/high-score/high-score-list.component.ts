@@ -7,6 +7,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {DeletedSnackComponent} from "../deleted-snack.component";
 import {GameService, GameServiceListener} from "../game/game.service";
 import {Game, GameStateType} from "../game/GameEntities";
+import {GenericSearchService} from "../generic-search.service";
 
 @Component({
   selector: "high-score-list",
@@ -16,12 +17,16 @@ import {Game, GameStateType} from "../game/GameEntities";
 export class HighScoreListComponent implements OnInit, GameServiceListener{
 
   @Input() admin: boolean = false;
-  highScores: Highscore[] = [];
+  @Input() searchQuery: string | undefined;
+  filteredHighScores: Highscore[] = [];
+
+  private highScores: Highscore[] = [];
 
   constructor(
     private api: WheelOfFortuneApiService,
     private snackBar: MatSnackBar,
     private gameService: GameService,
+    private search: GenericSearchService,
   ) { }
 
   ngOnInit(): void {
@@ -46,6 +51,12 @@ export class HighScoreListComponent implements OnInit, GameServiceListener{
 
   private loadHighScores(){
     this.api.callHandled(ApiEndpoint.HIGHSCORE, {}, ApiHttpMethods.GET, false)
-      .subscribe((response: Highscore[]) => this.highScores = response);
+      .subscribe((response: Highscore[]) => {
+        this.highScores = response;
+        if(this.searchQuery === undefined)
+          this.filteredHighScores = this.highScores;
+        else
+          this.filteredHighScores = this.search.search(this.searchQuery, this.highScores);
+      });
   }
 }

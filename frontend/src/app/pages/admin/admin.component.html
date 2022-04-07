@@ -15,17 +15,32 @@
     </div>
   </nav>
 
+  <div class="search-box">
+    <form [formGroup]="searchForm" class="search-container">
+      <mat-form-field appearance="fill">
+        <mat-label>Search</mat-label>
+        <input matInput placeholder="Query" (submit)="search()" formControlName="search">
+      </mat-form-field>
+      <button mat-mini-fab class="element" type="submit" (click)="search()" color="accent">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-mini-fab class="element" color="warn" (click)="revertSearch()" matTooltip="revert search">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </form>
+  </div>
+
   <main class="admin-main">
     <div class="component-holder">
-      <high-score-list [admin]=true></high-score-list>
+      <high-score-list [admin]=true [searchQuery]="searchQuery"></high-score-list>
     </div>
 
     <div class="component-holder">
-      <question-editor></question-editor>
+      <question-editor [searchQuery]="searchQuery"></question-editor>
     </div>
 
     <div class="component-holder">
-      <sentence-editor></sentence-editor>
+      <sentence-editor [searchQuery]="searchQuery"></sentence-editor>
     </div>
   </main>
 

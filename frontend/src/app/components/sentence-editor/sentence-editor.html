@@ -17,7 +17,7 @@
   </form>
 
   <div class="container">
-    <div *ngFor="let entry of sentences | keyvalue">
+    <div *ngFor="let entry of filteredSentencesMap | keyvalue">
       <category-editor [category]=entry.key></category-editor>
       <div class="sentence-box">
         <div *ngFor="let sentence of entry.value" class="sentence" (click)="edit(sentence)">
