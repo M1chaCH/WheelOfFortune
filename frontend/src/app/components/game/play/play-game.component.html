@@ -23,9 +23,7 @@
   <div class="wheel-of-fortune-container">
 
     <div class="result">
-      <div>
-        <img src="../../../../assets/{{wheelOfFortuneImageName()}}.png" alt="😥"/>
-      </div>
+      <wheel-of-fortune [currentField]="currentWheelOfFortuneField" [showWheel]="showWheelOfFortuneWheel"></wheel-of-fortune>
     </div>
 
     <button mat-raised-button color="accent" class="spin-button" (click)="spin()" *ngIf="canSpin()">🍀 SPIN!</button>

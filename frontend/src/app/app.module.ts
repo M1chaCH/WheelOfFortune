@@ -36,6 +36,7 @@ import {HpDeathDialogComponent} from "./components/game/dialogs/hp-death-dialog.
 import {SolvePuzzleComponent} from "./components/game/play/solve-puzzle/solve-puzzle.component";
 import {SentenceCompleteDialogComponent} from "./components/game/dialogs/sentence-complete-dialog.component";
 import {WinDialogComponent} from "./components/game/dialogs/win-dialog.component";
+import {WheelOfFortuneComponent} from "./components/game/play/wheel-of-fortune/wheel-of-fortune.component";
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import {WinDialogComponent} from "./components/game/dialogs/win-dialog.component
     WinDialogComponent,
     SolvePuzzleComponent,
     SentenceCompleteDialogComponent,
+    WheelOfFortuneComponent,
   ],
   imports: [
     BrowserModule,
