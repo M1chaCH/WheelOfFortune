@@ -57,11 +57,11 @@
   .wheel-of-fortune-container{
     width: 100%;
 
-    display: grid;
-    grid-template-columns: auto 100px auto;
-    grid-template-rows: 100px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-items: center;
+    align-content: center;
+    justify-content: center;
 
     .result{
       height: 100px;
@@ -77,25 +77,6 @@
       background-color: #9c27b0;
       border-radius: 20px;
       border: 2px solid #69f0ae;
-
-
-      .wheel-of-fortune-wheel{
-        height: 80px;
-        width: 80px;
-
-        transition: transform 1s;
-        transform-style: preserve-3d;
-        transform-origin: center;
-        animation: scaleUpAnim 0.5s ease-out;
-      }
-
-      .wheel-of-fortune-result{
-        height: 80px;
-        width: 80px;
-
-        animation: scaleUpAnim 0.5s ease-out;
-      }
-
     }
 
     .spin-button{
@@ -103,21 +84,5 @@
       width: 100px;
       border-radius: 20px;
     }
-
-    .banner{
-      //z-index: 99;
-      //background-color: #303030;
-      width: 100%;
-      height: 100%;
-    }
-  }
-}
-
-@keyframes scaleUpAnim {
-  0%   {
-    transform: scale(0);
-  }
-  100%{
-    transform: scale(1.0);
   }
 }

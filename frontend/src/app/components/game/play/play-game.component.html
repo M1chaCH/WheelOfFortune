@@ -22,17 +22,10 @@
 
   <div class="wheel-of-fortune-container">
 
-    <div class="banner"></div>
     <div class="result">
-      <div>
-        <img src="../../../../assets/wheeloffortune-wheel.png" alt="😥" [ngClass]="wheelOfFortuneWheelClass()" *ngIf="!showWheelOfFortuneField()"/>
-        <img src="../../../../assets/{{wheelOfFortuneImageName()}}.png" alt="😥" class="wheel-of-fortune-result" *ngIf="showWheelOfFortuneField()"/>
-      </div>
+      <wheel-of-fortune [currentField]="currentWheelOfFortuneField" [showWheel]="showWheelOfFortuneWheel"></wheel-of-fortune>
     </div>
-    <div class="banner"></div>
 
-    <div class="banner"></div>
     <button mat-raised-button color="accent" class="spin-button" (click)="spin()" *ngIf="canSpin()">🍀 SPIN!</button>
-    <div class="banner"></div>
   </div>
 </div>

@@ -1,0 +1,49 @@
+.wheel-of-fortune{
+  height: 80px;
+  width: 80px;
+
+  animation: growIn 0.5s ease-out;
+}
+
+.wheel-of-fortune-wheel{
+}
+
+.wheel-of-fortune-leave{
+  animation: growOut 0.5s ease-in;
+}
+
+.wheel-of-fortune-wheel-spin{
+  animation: spin 2000ms 1 ease-in-out;
+}
+
+@keyframes growIn {
+  0%   {
+    transform: scale(0.15);
+  }
+  100%{
+    transform: scale(1.0);
+  }
+}
+
+@keyframes growOut {
+  0%   {
+    transform: scale(1.0);
+    opacity: 100%;
+  }
+  50%{
+    opacity: 30%;
+  }
+  100%{
+    transform: scale(3.0);
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform:rotate(0deg);
+  }
+  to {
+    transform:rotate(1080deg);
+  }
+}
