@@ -19,7 +19,7 @@
     <form [formGroup]="searchForm" class="search-container">
       <mat-form-field appearance="fill">
         <mat-label>Search</mat-label>
-        <input matInput placeholder="Query" (submit)="search()" formControlName="search">
+        <input matInput placeholder="Query" (submit)="search()" formControlName="search" (keyup.esc)="revertSearch()" autofocus>
       </mat-form-field>
       <button mat-mini-fab class="element" type="submit" (click)="search()" color="accent">
         <mat-icon>search</mat-icon>

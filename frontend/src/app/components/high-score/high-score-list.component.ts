@@ -53,10 +53,14 @@ export class HighScoreListComponent implements OnInit, GameServiceListener{
     this.api.callHandled(ApiEndpoint.HIGHSCORE, {}, ApiHttpMethods.GET, false)
       .subscribe((response: Highscore[]) => {
         this.highScores = response;
-        if(this.searchQuery === undefined)
-          this.filteredHighScores = this.highScores;
-        else
-          this.filteredHighScores = this.search.search(this.searchQuery, this.highScores);
+        this.filterHighScores(this.searchQuery ? this.searchQuery : "");
       });
+  }
+
+  filterHighScores(query: string){
+    if(!query)
+      this.filteredHighScores = this.highScores;
+    else
+      this.filteredHighScores = this.search.search(query, this.highScores);
   }
 }

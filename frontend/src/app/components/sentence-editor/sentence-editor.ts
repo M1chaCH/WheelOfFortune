@@ -28,28 +28,33 @@ export class SentenceEditor implements OnInit{
   ngOnInit() {
     this.api.callHandled(ApiEndpoint.CATEGORY, {}, ApiHttpMethods.GET, false)
       .subscribe((categories: Categroy[]) => {
-        let filteredCategories: Categroy[];
-        if(this.searchQuery === undefined)
-          filteredCategories = categories;
-        else {
-          filteredCategories = this.search.search(this.searchQuery, categories);
-          if(filteredCategories.length === 0)
-            filteredCategories = categories;
-        }
-
-        for (let category of filteredCategories) {
+        for (let category of categories) {
           this.api.callHandled(`${ApiEndpoint.SENTENCE}/${category.id}`, {}, ApiHttpMethods.GET, false)
             .subscribe((sentences: Sentence[]) => {
               this.sentencesMap.set(category, sentences);
-              if(this.searchQuery === undefined) {
-                this.filteredSentencesMap.set(category, sentences);
-              } else {
-                let filteredSentences: Sentence[] = this.search.search(this.searchQuery, sentences);
-                this.filteredSentencesMap.set(category, filteredSentences);
-              }
+              if(this.sentencesMap.size === categories.length) //if the last iteration
+                this.filterSentences(this.searchQuery);
             });
         }
       });
+  }
+
+  filterSentences(query: string | undefined){
+    if(query === "" || query === undefined){
+      this.filteredSentencesMap = this.sentencesMap;
+      return;
+    }
+
+    this.filteredSentencesMap = new Map<Categroy, Sentence[]>();
+    
+    for (let category of this.sentencesMap.keys()) {
+      let sentences: Sentence[] | undefined = this.sentencesMap.get(category);
+      
+      if(sentences !== undefined){
+        let filteredSentences: Sentence[] = this.search.search(query, sentences);
+        this.filteredSentencesMap.set(category, filteredSentences);
+      }
+    }
   }
 
   create(){

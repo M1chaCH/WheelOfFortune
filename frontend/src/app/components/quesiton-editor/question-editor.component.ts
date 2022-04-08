@@ -28,28 +28,33 @@ export class QuestionEditorComponent implements OnInit{
   ngOnInit(): void {
     this.api.callHandled(ApiEndpoint.CATEGORY, {}, ApiHttpMethods.GET, false)
       .subscribe((categories: Categroy[]) => {
-        let filteredCategories: Categroy[];
-        if(this.searchQuery === undefined)
-          filteredCategories = categories;
-        else {
-          filteredCategories = this.search.search(this.searchQuery, categories);
-          if(filteredCategories.length === 0)
-            filteredCategories = categories;
-        }
-
-        for (let category of filteredCategories) {
+        for (let category of categories) {
           this.api.callHandled(`${ApiEndpoint.QUESTION}/${category.id}`, {}, ApiHttpMethods.GET, false)
             .subscribe((questions: Question[]) => {
               this.questionsMap.set(category, questions)
-              if(this.searchQuery === undefined) {
-                this.filteredQuestionsMap.set(category, questions);
-              } else {
-                let filteredQuestions: Question[] = this.search.search(this.searchQuery, questions);
-                this.filteredQuestionsMap.set(category, filteredQuestions);
-              }
+              if(this.questionsMap.size === categories.length)
+                this.filterQuestions(this.searchQuery);
             });
         }
       });
+  }
+
+  filterQuestions(query: string | undefined){
+    if(query === "" || query === undefined){
+      this.filteredQuestionsMap = this.questionsMap;
+      return;
+    }
+
+    this.filteredQuestionsMap = new Map<Categroy, Question[]>();
+
+    for (let category of this.questionsMap.keys()) {
+      let questions: Question[] | undefined = this.questionsMap.get(category);
+      
+      if(questions !== undefined) {
+        let filteredQuestions: Question[] = this.search.search(query, questions);
+        this.filteredQuestionsMap.set(category, filteredQuestions);
+      }
+    }
   }
 
   create(){

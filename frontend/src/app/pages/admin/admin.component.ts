@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AppRout} from "../../config/appRout";
 import {AuthService} from "../../auth/auth.service";
@@ -6,6 +6,9 @@ import {WheelOfFortuneApiService} from "../../api/wheel-of-fortune-api.service";
 import {ApiEndpoint} from "../../config/apiEndpoint";
 import {ApiHttpMethods} from "../../config/apiHttpMethods";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import { HighScoreListComponent } from "src/app/components/high-score/high-score-list.component";
+import { SentenceEditor } from "src/app/components/sentence-editor/sentence-editor";
+import { QuestionEditorComponent } from "src/app/components/quesiton-editor/question-editor.component";
 
 @Component({
   selector: "admin",
@@ -17,6 +20,10 @@ export class AdminComponent implements OnInit{
   username: string = "";
   searchQuery: string | undefined;
   searchForm: FormGroup;
+
+  @ViewChild(HighScoreListComponent) highScoreList: HighScoreListComponent | undefined;
+  @ViewChild(SentenceEditor) sentenceEditor: SentenceEditor | undefined;
+  @ViewChild(QuestionEditorComponent) questionEditor: QuestionEditorComponent | undefined;
 
   constructor(
     private router: Router,
@@ -43,14 +50,24 @@ export class AdminComponent implements OnInit{
   }
 
   search(){
-    let query = this.searchForm.value.search;
-    this.router.navigate([AppRout.ADMIN], { queryParams: { search: query } })
-      .then(() => location.reload());
+    this.searchQuery = this.searchForm.value.search;
+    this.router.navigate([AppRout.ADMIN], { queryParams: { search: this.searchQuery } })
+      .then(() => this.reloadFilters());
   }
 
   revertSearch() {
+    this.searchQuery = ""; 
     this.router.navigate([AppRout.ADMIN], {queryParams: {}})
-      .then(() => location.reload());
+      .then(() => this.reloadFilters());
+  }
+
+  private reloadFilters(){
+    if(this.highScoreList)
+      this.highScoreList.filterHighScores(this.searchQuery ? this.searchQuery : "");
+    if(this.sentenceEditor)
+      this.sentenceEditor.filterSentences(this.searchQuery ? this.searchQuery : "");
+    if(this.questionEditor)
+      this.questionEditor.filterQuestions(this.searchQuery ? this.searchQuery : "");
   }
 
   goHome(){
