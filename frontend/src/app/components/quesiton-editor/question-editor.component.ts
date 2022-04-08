@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {Categroy} from "../categroy-editor/categroy";
 import {Question} from "./question";
 import {WheelOfFortuneApiService} from "../../api/wheel-of-fortune-api.service";
@@ -6,6 +6,7 @@ import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {ApiEndpoint} from "../../config/apiEndpoint";
 import {ApiHttpMethods} from "../../config/apiHttpMethods";
 import {QuestionEditorBottomSheetComponent} from "./bottom-sheet/question-editor-bottom-sheet.component";
+import {GenericSearchService} from "../generic-search.service";
 
 @Component({
   selector: "question-editor",
@@ -14,11 +15,14 @@ import {QuestionEditorBottomSheetComponent} from "./bottom-sheet/question-editor
 })
 export class QuestionEditorComponent implements OnInit{
 
-  questions: Map<Categroy, Question[]> = new Map<Categroy, Question[]>();
+  @Input() searchQuery: string | undefined;
+  filteredQuestionsMap: Map<Categroy, Question[]> = new Map<Categroy, Question[]>();
+  private questionsMap: Map<Categroy, Question[]> = new Map<Categroy, Question[]>();
 
   constructor(
     private api: WheelOfFortuneApiService,
     private bottomSheet: MatBottomSheet,
+    private search: GenericSearchService,
   ) { }
 
   ngOnInit(): void {
@@ -26,16 +30,38 @@ export class QuestionEditorComponent implements OnInit{
       .subscribe((categories: Categroy[]) => {
         for (let category of categories) {
           this.api.callHandled(`${ApiEndpoint.QUESTION}/${category.id}`, {}, ApiHttpMethods.GET, false)
-            .subscribe((questions: Question[]) => this.questions.set(category, questions));
+            .subscribe((questions: Question[]) => {
+              this.questionsMap.set(category, questions)
+              if(this.questionsMap.size === categories.length)
+                this.filterQuestions(this.searchQuery);
+            });
         }
       });
+  }
+
+  filterQuestions(query: string | undefined){
+    if(query === "" || query === undefined){
+      this.filteredQuestionsMap = this.questionsMap;
+      return;
+    }
+
+    this.filteredQuestionsMap = new Map<Categroy, Question[]>();
+
+    for (let category of this.questionsMap.keys()) {
+      let questions: Question[] | undefined = this.questionsMap.get(category);
+      
+      if(questions !== undefined) {
+        let filteredQuestions: Question[] = this.search.search(query, questions);
+        this.filteredQuestionsMap.set(category, filteredQuestions);
+      }
+    }
   }
 
   create(){
     this.bottomSheet.open(QuestionEditorBottomSheetComponent, {
       data: {
         element: {},
-        categories: Array.from(this.questions.keys()),
+        categories: Array.from(this.questionsMap.keys()),
         edit: false
       }
     });
@@ -45,7 +71,7 @@ export class QuestionEditorComponent implements OnInit{
     this.bottomSheet.open(QuestionEditorBottomSheetComponent, {
       data: {
         element: question,
-        categories: Array.from(this.questions.keys()),
+        categories: Array.from(this.questionsMap.keys()),
         edit: true
       }
     });
