@@ -20,8 +20,9 @@ export class SolvePuzzleComponent{
   }
 
   submit(){
-    const solution = this.solutionForm.value.solution;
-    this._bottomSheetRef.dismiss(solution);
+    if(this.solutionForm.valid) {
+      const solution = this.solutionForm.value.solution;
+      this._bottomSheetRef.dismiss(solution);
+    }
   }
-
 }

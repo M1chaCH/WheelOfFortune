@@ -169,7 +169,10 @@ export class PlayGameComponent implements GameServiceListener{
 
   solvePuzzle(){
     this.openBottomSheet = this.bottomSheet.open(SolvePuzzleComponent);
-    this.openBottomSheet.afterDismissed().subscribe((solution: string) => this.gameService.solvePuzzle(solution));
+    this.openBottomSheet.afterDismissed().subscribe((solution: string) => {
+      if(!!solution)
+        this.gameService.solvePuzzle(solution);
+    });
   }
 
   quit(){
