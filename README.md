@@ -151,7 +151,7 @@ Mein Application Server ist eine Java Spring Applikation. Spring selber verwende
 Als Data Server habe ich jetzt PostgreSQL verwendet. Da aber Spring Data JPA recht flexibel ist, kann dieser auch recht schnell durch einen anderen SQL Data Server ersetzt werden.
 
 ## Aufgabe 4
-Ich steure meine Daten via Spring Data JPA. Das ist ein ORM von Spring basierend auf dem Java JPA interface. 
+Ich steure meine Daten via Spring Data JPA. Das ist ein ORM von Spring basierend auf der JPA. 
 
 Spring Data JPA funktioniert mit herkömmlichen Java Entities welche mit JPA Annotations verziert wurden. Die Verknüpfung zur Datenbank funktioniert aber über ein Java Interface. Dieses wird als Repository bezeichnet. Die Implementation für das Repository wird von Spring bei Build-Time generiert. 
 
@@ -234,8 +234,8 @@ Hier ist mein Wireframe: (Erstellt am Dienstag 15 März 2022)
 
 Guten Tag Herr Projektabnehmer
 
-Ich habe Ihre Applikation nach den vorgegebenen Testfällen getestet. Dabei konnte ich keine Fehler finden, die entsprechenden Resultate des Testes entnehmen Sie dem Testprotokoll. So empfehle ich Ihnen, gemäss Planung im Projekt fortzufahren.
+Ich habe Ihre Applikation nach den vorgegebenen Testfällen getestet. Dabei konnte ich keine Fehler finden, die entsprechenden Resultate des Testes entnehmen Sie dem Testprotokoll. So empfehle ich Ihnen, gemäss Planung im Projekt fortzufahren. <br>
 Ich freue mich über eine Rückmeldung.
 
-Mit Freundliche Grüssen
+Mit Freundliche Grüssen<br>
 Micha Schweizer
