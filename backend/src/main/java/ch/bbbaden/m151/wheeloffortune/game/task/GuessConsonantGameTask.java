@@ -33,8 +33,7 @@ public class GuessConsonantGameTask implements GameTask{
         String message;
 
         if(countConsonants != 0){
-            int win = GameService.WHEEL_OF_FORTUNE[Integer.parseInt(game.getGameState()
-                    .getTaskParameterValue(GameState.Task.SPIN).toString())].getReward();
+            int win = game.getCurrentWheelOfFortuneField().getReward();
 
             game.getConsonantLeftToGuess().remove((Character) guessedConsonant);
             message = "Guessed Correct! +" + win * countConsonants + " budget";

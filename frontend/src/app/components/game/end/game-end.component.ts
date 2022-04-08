@@ -28,10 +28,6 @@ export class GameEndComponent implements GameServiceListener{
     this.results[4] = message;
   }
 
-  restart(){
-    this.gameService.restartGame();
-  }
-
   leave(){
     this.gameService.deleteGame();
   }

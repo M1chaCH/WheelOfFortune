@@ -40,12 +40,6 @@ public class GameController {
         return ResponseEntity.ok(service.handleTask(gameId, new QuitGameTask(highScoreService)));
     }
 
-    @Operation(summary = "restart a Game")
-    @PutMapping("/{gameId}/quit")
-    public ResponseEntity<GameDTO> restartGame(@PathVariable String gameId) {
-        return ResponseEntity.ok(service.restartGame(gameId));
-    }
-
     @Operation(summary = "actually delete a game")
     @DeleteMapping("/{gameId}/quit")
     public ResponseEntity<BasicResponseDTO> deleteGame(@PathVariable String gameId) {
