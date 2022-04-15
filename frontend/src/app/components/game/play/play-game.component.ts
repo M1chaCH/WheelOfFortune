@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 import {GameService, GameServiceListener} from "../game.service";
 import {Game, GameStateTask, GameStateType, WheelOfFortuneField} from "../GameEntities";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -11,22 +11,26 @@ import {HpDeathDialogComponent} from "../dialogs/hp-death-dialog.component";
 import {SolvePuzzleComponent} from "./solve-puzzle/solve-puzzle.component";
 import {SentenceCompleteDialogComponent} from "../dialogs/sentence-complete-dialog.component";
 import {WinDialogComponent} from "../dialogs/win-dialog.component";
+import {WheelOfFortuneComponent} from "./wheel-of-fortune/wheel-of-fortune.component";
 
 @Component({
   selector: "play-game",
   templateUrl: "play-game.component.html",
-  styleUrls: ["play-game.component.scss"]
+  styleUrls: ["play-game.component.scss"],
 })
 export class PlayGameComponent implements GameServiceListener{
   gameFieldContent: string[] = [];
-  currentWheelOfFortuneFieldId: number = 0;
   currentTaskMessage: string = "";
+  spinPressed: boolean = false;
+  showWheelOfFortuneWheel: boolean = true;
+  currentWheelOfFortuneField: WheelOfFortuneField | undefined;
   private openSnackBar: any;
   private openBottomSheet: any;
   private openDialog: any;
-  private wheelOfFortune: WheelOfFortuneField[] = [];
   private consonantsToGuess: string[] = [];
   private vowelsToGuess: string[] = [];
+
+  @ViewChild(WheelOfFortuneComponent) wheelOfFortuneCmp: WheelOfFortuneComponent | undefined;
 
   constructor(
     private gameService: GameService,
@@ -38,14 +42,21 @@ export class PlayGameComponent implements GameServiceListener{
   }
 
   update(game: Game): void {
+    this.currentWheelOfFortuneField = game.currentWheelOfFortuneField;
+    this.showWheelOfFortuneWheel = this.currentWheelOfFortuneField === undefined || this.spinPressed;
+    if(this.spinPressed){
+      this.wheelOfFortuneCmp?.animate().subscribe((done) => {
+        if(done) {
+          this.spinPressed = false;
+          this.update(game);
+        }
+      });
+      return;
+    }
+
     this.gameFieldContent = game.gameField.revealedCharacters.split("");
-    this.wheelOfFortune = game.wheelOfFortune;
     this.consonantsToGuess = game.consonantLeftToGuess;
     this.vowelsToGuess = game.vowelsLeftToGuess;
-
-    const currentFieldId: number = this.gameService.getTaskParameterValue(GameStateTask.SPIN);
-    if(currentFieldId >= -1)
-      this.currentWheelOfFortuneFieldId = currentFieldId;
 
     this.currentTaskMessage = this.gameService.getTaskParameterValue(GameStateTask.MESSAGE);
 
@@ -152,12 +163,16 @@ export class PlayGameComponent implements GameServiceListener{
   }
 
   spin(){
+    this.spinPressed = true;
     this.gameService.spin();
   }
 
   solvePuzzle(){
     this.openBottomSheet = this.bottomSheet.open(SolvePuzzleComponent);
-    this.openBottomSheet.afterDismissed().subscribe((solution: string) => this.gameService.solvePuzzle(solution));
+    this.openBottomSheet.afterDismissed().subscribe((solution: string) => {
+      if(!!solution)
+        this.gameService.solvePuzzle(solution);
+    });
   }
 
   quit(){
@@ -167,28 +182,18 @@ export class PlayGameComponent implements GameServiceListener{
   }
 
   canGuessConsonant(): boolean{
-    return this.gameService.isTaskAvailable(GameStateTask.GUESS_CONSONANT);
+    return this.gameService.isTaskAvailable(GameStateTask.GUESS_CONSONANT) && !this.spinPressed;
   }
 
   canBuyVowel(): boolean{
-    return this.gameService.isTaskAvailable(GameStateTask.BUY_VOWEL);
+    return this.gameService.isTaskAvailable(GameStateTask.BUY_VOWEL) && !this.spinPressed;
   }
 
   canSolvePuzzle(): boolean{
-    return this.gameService.isTaskAvailable(GameStateTask.SOLVE_PUZZLE);
+    return this.gameService.isTaskAvailable(GameStateTask.SOLVE_PUZZLE) && !this.spinPressed;
   }
 
   canSpin(): boolean{
-    return this.gameService.isTaskAvailable(GameStateTask.SPIN);
-  }
-
-  wheelOfFortuneImageName(): string{
-    const currentTask: WheelOfFortuneField | undefined = this.wheelOfFortune[this.currentWheelOfFortuneFieldId];
-
-    if(currentTask.task === GameStateTask.GUESS_CONSONANT){
-      return "wheeloffortune-" + currentTask.reward;
-    }else{
-      return "wheeloffortune-" + currentTask.task.toLocaleLowerCase();
-    }
+    return this.gameService.isTaskAvailable(GameStateTask.SPIN) && !this.spinPressed;
   }
 }

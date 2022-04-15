@@ -4,7 +4,6 @@ import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.GameNotFoundE
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.IllegalGameTaskException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.UsernameAlreadyExistsException;
 import ch.bbbaden.m151.wheeloffortune.errorhandling.exception.game.UsernameToLongException;
-import ch.bbbaden.m151.wheeloffortune.game.data.category.CategoryDTO;
 import ch.bbbaden.m151.wheeloffortune.game.data.category.CategoryService;
 import ch.bbbaden.m151.wheeloffortune.game.data.question.QuestionService;
 import ch.bbbaden.m151.wheeloffortune.game.data.sentence.SentenceService;
@@ -133,20 +132,6 @@ public class GameService {
 
     public GameDTO getByGameId(String id){
         return validateGameId(id).parseDTO();
-    }
-
-    /**
-     * deletes the old game and starts a new one with the same username and a random category
-     * @param id the game id
-     * @return the newly created game
-     * @throws GameNotFoundException if no game with the given id exists
-     */
-    public GameDTO restartGame(String id){
-        Game game = validateGameId(id);
-        deleteGame(id);
-        List<CategoryDTO> categories = categoryService.getAllAsDto();
-        int categoryId = getNextRandomInt(categories.size());
-        return startNewGame(new StartGameRequest(game.getUsername(), categories.get(categoryId)));
     }
 
     /**

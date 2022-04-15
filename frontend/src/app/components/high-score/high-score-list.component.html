@@ -2,7 +2,7 @@
   <h1>High Scores</h1>
 
   <div class="record-container">
-    <div *ngFor="let highScore of highScores; let i = index" [attr.data-index]="i">
+    <div *ngFor="let highScore of filteredHighScores; let i = index" [attr.data-index]="i">
       <div class="record">
         <span style="font-weight: bold">{{i + 1}}</span>
         <div style="display: block">

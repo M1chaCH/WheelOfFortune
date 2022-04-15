@@ -57,7 +57,7 @@ public class DefaultDataloader {
             sentenceService.addNew(token, new Sentence(1, "This PC is cool.", categoryPc));
             sentenceService.addNew(token, new Sentence(2, "Asus is a company.", categoryPc));
             sentenceService.addNew(token, new Sentence(3, "Nvidia is better than AMD!", categoryPc));
-            sentenceService.addNew(token, new Sentence(4, "Red key are the best!", categoryPc));
+            sentenceService.addNew(token, new Sentence(4, "Red keys are the best!", categoryPc));
 
             sentenceService.addNew(token, new Sentence(5, "Orbea is a company.", categoryMtb));
             sentenceService.addNew(token, new Sentence(6, "Yeti bikes are heavy.", categoryMtb));
@@ -75,10 +75,10 @@ public class DefaultDataloader {
             questionService.addNew(token, new Question(3, "Should i always water cool?", "YES", "NO", false, categoryPc));
             questionService.addNew(token, new Question(4, "What is CSS used for?", "Validates HTML", "Designs HTML", false, categoryPc));
 
-            questionService.addNew(token, new Question(5, "What bike is usually heavier?", "Yeti SB150", "Scott Spark 900", true, categoryMtb));
+            questionService.addNew(token, new Question(5, "What bike is usually heavier?", "Scott Spark 900", "Yeti SB150", false, categoryMtb));
             questionService.addNew(token, new Question(6, "Which component is more expensive?", "Sram Code RSC", "Sram XX1-Eagle AXS", false, categoryMtb));
-            questionService.addNew(token, new Question(7, "RockShox ... is a XC Fork?", "ZEB", "SID", false, categoryMtb));
-            questionService.addNew(token, new Question(8, "Bold only sells hard-tails?", "YES", "NO", true, categoryMtb));
+            questionService.addNew(token, new Question(7, "RockShox ... is a XC Fork?", "SID", "ZEB", true, categoryMtb));
+            questionService.addNew(token, new Question(8, "Bold only sells hard-tails?", "YES", "NO", false, categoryMtb));
 
             questionService.addNew(token, new Question(9, "What country has the most inhabitants?", "China", "USA", true, categoryGeneral));
             questionService.addNew(token, new Question(10, "What is the highest Mountain?", "Matterhorn", "Mount Everest", false, categoryGeneral));

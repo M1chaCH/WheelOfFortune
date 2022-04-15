@@ -1,6 +1,5 @@
 package ch.bbbaden.m151.wheeloffortune.game.entity;
 
-import ch.bbbaden.m151.wheeloffortune.game.GameService;
 import lombok.*;
 
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 public class GameDTO {
-    @SuppressWarnings("java:S1170") //should not be static because jackson ignores static fields
-    private final WheelOfFortuneField[] wheelOfFortune = GameService.WHEEL_OF_FORTUNE;
 
     private final String gameId;
     private String username;
@@ -22,6 +19,7 @@ public class GameDTO {
 
     private GameField gameField;
     private GameState gameState;
+    private WheelOfFortuneField currentWheelOfFortuneField;
 
     private List<Character> consonantLeftToGuess;
     private List<Character> vowelsLeftToGuess;

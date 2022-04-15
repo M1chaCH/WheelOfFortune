@@ -94,11 +94,6 @@ export class GameService{
       .subscribe((response: Game) => this.setGame(response));
   }
 
-  restartGame(){
-    this.api.callHandled(ApiEndpoint.QUIT, {}, ApiHttpMethods.PUT, false, [this.game.gameId])
-      .subscribe((response: Game) => this.setGame(response));
-  }
-
   deleteGame(){
     this.api.callHandled(ApiEndpoint.QUIT, {}, ApiHttpMethods.DELETE, false, [this.game.gameId])
       .subscribe(() => this.setGame(this.createEmptyGame()));
@@ -127,8 +122,7 @@ export class GameService{
 
       consonantLeftToGuess: [],
       vowelsLeftToGuess: [],
-
-      wheelOfFortune: [],
+      currentWheelOfFortuneField: undefined,
     };
   }
 

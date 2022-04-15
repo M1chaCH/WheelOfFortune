@@ -54,11 +54,10 @@ export interface Game{
 
   gameField: GameField,
   gameState: GameState,
+  currentWheelOfFortuneField: WheelOfFortuneField | undefined,
 
   consonantLeftToGuess: string[],
   vowelsLeftToGuess: string[],
-
-  wheelOfFortune: WheelOfFortuneField[],
 }
 
 export interface StartGameRequest{

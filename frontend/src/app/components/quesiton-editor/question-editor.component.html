@@ -18,7 +18,7 @@
   </div>
 
   <div class="container">
-    <div *ngFor="let entry of questions | keyvalue">
+    <div *ngFor="let entry of filteredQuestionsMap | keyvalue">
       <category-editor [category]="entry.key"></category-editor>
       <div class="question-box">
         <div *ngFor="let question of entry.value" class="question" (click)="edit(question)">

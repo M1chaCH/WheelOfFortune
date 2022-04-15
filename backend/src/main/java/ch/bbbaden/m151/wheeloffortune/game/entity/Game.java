@@ -33,6 +33,7 @@ public class Game {
 
     private GameField gameField;
     private GameState gameState;
+    private WheelOfFortuneField currentWheelOfFortuneField = null;
 
     /**
      * constructor to use when starting a new game
@@ -63,6 +64,7 @@ public class Game {
                 hp,
                 gameField,
                 gameState,
+                currentWheelOfFortuneField,
                 consonantLeftToGuess,
                 vowelsLeftToGuess);
     }

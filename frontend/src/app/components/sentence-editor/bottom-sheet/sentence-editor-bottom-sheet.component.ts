@@ -40,7 +40,7 @@ export class SentenceEditorBottomSheetComponent{
       newSentence: [this.sentence.sentence, Validators.compose([
         Validators.minLength(10),
         Validators.maxLength(35),
-        Validators.pattern('[A-Za-z \\-.,!"\'?;öäü]*'),
+        Validators.pattern('[A-Za-z \\-.,!"\'?:öäü]*'),
       ])],
     })
   }

@@ -3,5 +3,5 @@
  \\ /\ // ||==|| ||==  ||==  ||    ((   )) ||==  ||==  ((   )) ||_//   ||   || || ||\\|| ||==
   \V/\V/  ||  || ||___ ||___ ||__|  \\_//  ||    ||     \\_//  || \\   ||   \\_// || \|| ||___
 
-${application.title} ${application.version}
+WheelOfFortune v2.0.0-SNAPSHOT
 Powered by Spring Boot ${spring-boot.version}

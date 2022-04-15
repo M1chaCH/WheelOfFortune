@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class SpinGameTask implements GameTask{
     private static final Logger LOGGER = LoggerFactory.getLogger(SpinGameTask.class);
 
     @Override
     public Game execute(Game game) {
-        WheelOfFortuneField spinResult = GameService.WHEEL_OF_FORTUNE[new Random().nextInt(GameService.WHEEL_OF_FORTUNE.length)];
+        WheelOfFortuneField spinResult = GameService.WHEEL_OF_FORTUNE[GameService.getNextRandomInt(GameService.WHEEL_OF_FORTUNE.length)];
+        game.setCurrentWheelOfFortuneField(spinResult);
 
         GameState.State state;
         List<GameState.Task> availableTasks;
@@ -32,7 +32,6 @@ public class SpinGameTask implements GameTask{
             if(BuyVowelGameTask.canBuyVowel(game))
                 availableTasks.add(GameState.Task.BUY_VOWEL);
 
-            taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));
             break;
         case RISK:
             state = GameState.State.FORCED;
@@ -51,12 +50,10 @@ public class SpinGameTask implements GameTask{
             QuestionDTO questionDTO = currentQuestion.parseToDTO();
             questionDTO.setAnswerOneCorrect(true); //weak attempt to hide the correct answer for the frontend
             taskProperties.add(new TaskParameter(GameState.Task.RISK, questionDTO));
-            taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));
             break;
         case BANKRUPT:
             state = GameState.State.FORCED;
             availableTasks = List.of( GameState.Task.BANKRUPT, GameState.Task.LEAVE );
-            taskProperties.add(new TaskParameter(GameState.Task.SPIN, spinResult.getId()));
             break;
         default:
             LOGGER.error("UNEXPECTED: failed to process spin returning default");
