@@ -17,6 +17,7 @@
 
     <properties>
         <java.version>11</java.version>
+        <output.jar.name>${project.name}-${project.version}</output.jar.name>
     </properties>
 
     <dependencies>
@@ -57,6 +58,7 @@
     </dependencies>
 
     <build>
+        <finalName>${output.jar.name}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

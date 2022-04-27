@@ -1,0 +1,46 @@
+version: "3.9"
+services: 
+
+  wheeloffortune-db:
+    build: postgres-db
+    environment:
+      POSTGRES_USER: java 
+      POSTGRES_PASSWORD: java
+      POSTGRES_DB: wheeloffortune
+    container_name: wheeloffortune_db
+    networks:
+      - wheeloffortune
+    volumes:
+      - main-postgres-data:/var/lib/postgresql/data
+
+  wheeloffortune-backend:
+    build: ../backend
+    container_name: wheeloffortune_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - wheeloffortune-db
+    networks:
+      - wheeloffortune
+    volumes:
+      - maven-repo:/var/local/.m2
+
+  wheeloffortune-frontend:
+    build: ../frontend
+    container_name: wheeloffortune-frontend
+    depends_on:
+      - wheeloffortune-backend
+    networks:
+      - wheeloffortune
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+      - "443:443"
+
+networks:
+  wheeloffortune:
+
+volumes:
+  main-postgres-data:
+  maven-repo:
