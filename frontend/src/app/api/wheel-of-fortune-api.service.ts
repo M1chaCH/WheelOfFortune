@@ -1,13 +1,13 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ApiEndpoint} from "../config/apiEndpoint";
-import {appConfig} from "../config/appConfig";
 import {LocalStorageAccessService} from "./local-storage-access.service";
 import {AppRout} from "../config/appRout";
 import {Router} from "@angular/router";
 import {ApiHttpMethods} from "../config/apiHttpMethods";
 import {catchError, Observable, throwError} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({providedIn: "root"})
 export class WheelOfFortuneApiService {
@@ -19,7 +19,7 @@ export class WheelOfFortuneApiService {
   ) { }
 
   private static generateRequestUrl(endpoint: string, pathVariables: any[]): string{
-    let url: string = appConfig.api_url + endpoint;
+    let url: string = environment.api_url + endpoint;
 
     let amountToReplace: any = (endpoint.match(/\[!]/g) || []).length;
 
